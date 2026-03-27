@@ -24,26 +24,26 @@ export default function DashboardPreview() {
             <div className="w-full md:w-1/3 border border-border rounded-lg p-5">
               <h4 className="font-semibold mb-4 text-sm uppercase text-textMuted tracking-wider">Top Performers</h4>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors cursor-default">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">1</div>
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-primary">1</div>
                     <div className="text-sm font-medium">Alice Smith</div>
                   </div>
                   <div className="font-bold text-primary">3.98</div>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors cursor-default">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">2</div>
                     <div className="text-sm font-medium">John Doe</div>
                   </div>
-                  <div className="font-bold text-primary">3.95</div>
+                  <div className="font-bold text-textDark">3.95</div>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors cursor-default">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">3</div>
                     <div className="text-sm font-medium">Emma Watson</div>
                   </div>
-                  <div className="font-bold text-primary">3.91</div>
+                  <div className="font-bold text-textDark">3.91</div>
                 </div>
               </div>
             </div>

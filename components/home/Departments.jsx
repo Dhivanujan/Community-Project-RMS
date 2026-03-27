@@ -9,12 +9,12 @@ export default function Departments() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* SE */}
-          <div className="bg-background rounded-xl p-6 border border-border hover-lift flex flex-col">
+          <div className="bg-background rounded-xl p-6 border border-border hover-lift flex flex-col group cursor-pointer">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-10 h-10 bg-white rounded shadow-sm flex items-center justify-center text-primary">
+              <div className="w-10 h-10 bg-white rounded shadow-sm flex items-center justify-center text-primary transition-transform duration-300 group-hover:scale-110">
                 <i className="fa-solid fa-code"></i>
               </div>
-              <h3 className="font-bold text-lg">Software Engineering</h3>
+              <h3 className="font-bold text-lg transition-colors group-hover:text-primary">Software Engineering</h3>
             </div>
             <div className="mt-auto border-t border-border pt-4 flex justify-between text-sm text-textMuted">
               <span>Students: <strong>850</strong></span>
@@ -22,12 +22,12 @@ export default function Departments() {
             </div>
           </div>
           {/* CIS */}
-          <div className="bg-background rounded-xl p-6 border border-border hover-lift flex flex-col">
+          <div className="bg-background rounded-xl p-6 border border-border hover-lift flex flex-col group cursor-pointer">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-10 h-10 bg-white rounded shadow-sm flex items-center justify-center text-primary">
+              <div className="w-10 h-10 bg-white rounded shadow-sm flex items-center justify-center text-primary transition-transform duration-300 group-hover:scale-110">
                 <i className="fa-solid fa-network-wired"></i>
               </div>
-              <h3 className="font-bold text-lg">Computing & Info Systems</h3>
+              <h3 className="font-bold text-lg transition-colors group-hover:text-primary">Computing & Info Systems</h3>
             </div>
             <div className="mt-auto border-t border-border pt-4 flex justify-between text-sm text-textMuted">
               <span>Students: <strong>620</strong></span>
@@ -35,12 +35,12 @@ export default function Departments() {
             </div>
           </div>
           {/* DS */}
-          <div className="bg-background rounded-xl p-6 border border-border hover-lift flex flex-col">
+          <div className="bg-background rounded-xl p-6 border border-border hover-lift flex flex-col group cursor-pointer">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-10 h-10 bg-white rounded shadow-sm flex items-center justify-center text-primary">
+              <div className="w-10 h-10 bg-white rounded shadow-sm flex items-center justify-center text-primary transition-transform duration-300 group-hover:scale-110">
                 <i className="fa-solid fa-database"></i>
               </div>
-              <h3 className="font-bold text-lg">Data Science</h3>
+              <h3 className="font-bold text-lg transition-colors group-hover:text-primary">Data Science</h3>
             </div>
             <div className="mt-auto border-t border-border pt-4 flex justify-between text-sm text-textMuted">
               <span>Students: <strong>410</strong></span>

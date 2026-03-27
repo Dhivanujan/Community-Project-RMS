@@ -5,21 +5,24 @@ export default function Hero() {
     <section id="home" className="relative bg-surface overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col lg:flex-row items-center gap-12">
         {/* Left Side */}
-        <div className="flex-1 text-center lg:text-left">
+        <div className="flex-1 text-center lg:text-left opacity-0 animate-fadeInUp" style={{ animationDelay: '100ms' }}>
           <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
-            Smart Results Management for <span className="text-primary">Modern Universities</span>
+            Smart Results Management for <span className="text-primary relative inline-block">
+              Modern Universities
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-blue-100 -z-10 rounded-sm opacity-50 transform -skew-x-12"></span>
+            </span>
           </h1>
           <p className="text-lg text-textMuted mb-8 max-w-2xl mx-auto lg:mx-0">
             Empowering the Faculty of Computing with intelligent GPA automation, real-time student ranking, and predictive academic analytics.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Link href="#login" className="bg-primary hover:bg-primaryHover text-white px-8 py-3 rounded-md font-medium transition-colors shadow-sm inline-block">Login</Link>
-            <Link href="#features" className="bg-white border border-border text-textDark hover:bg-gray-50 px-8 py-3 rounded-md font-medium transition-colors shadow-sm inline-block">Explore Features</Link>
+            <Link href="#login" className="bg-primary hover:bg-primaryHover text-white px-8 py-3 rounded-md font-medium transition-all transform hover:-translate-y-1 hover:shadow-lg inline-block">Login</Link>
+            <Link href="#features" className="bg-white border border-border text-textDark hover:bg-gray-50 px-8 py-3 rounded-md font-medium transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] inline-block">Explore Features</Link>
           </div>
         </div>
         {/* Right Side (Dashboard Mockup) */}
-        <div className="flex-1 w-full max-w-xl relative">
-          <div className="bg-white border border-border rounded-xl shadow-lg p-6 relative z-10">
+        <div className="flex-1 w-full max-w-xl relative opacity-0 animate-fadeIn" style={{ animationDelay: '300ms' }}>
+          <div className="bg-white border border-border rounded-xl shadow-xl p-6 relative z-10 transition-transform duration-500 hover:scale-[1.02]">
             {/* Fake Header */}
             <div className="flex justify-between items-center mb-6 pb-4 border-b border-border">
               <div className="font-semibold text-textMuted">Overview</div>
@@ -49,8 +52,8 @@ export default function Hero() {
             </div>
           </div>
           {/* Decorative background elements */}
-          <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-50 rounded-full z-0"></div>
-          <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-gray-100 rounded-full z-0"></div>
+          <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-50 rounded-full z-0 animate-float" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-gray-100 rounded-full z-0 animate-float" style={{ animationDelay: '2s' }}></div>
         </div>
       </div>
     </section>

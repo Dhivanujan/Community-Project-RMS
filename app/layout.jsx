@@ -1,7 +1,7 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'UniInsight - Results Management System',
+  title: 'SUSL MeritMatrix - Results Management System',
   description: 'Smart Results Management for Modern Universities',
 }
 

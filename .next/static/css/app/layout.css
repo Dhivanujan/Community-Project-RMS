@@ -600,6 +600,9 @@ video {
 .mt-auto {
   margin-top: auto;
 }
+.mt-6 {
+  margin-top: 1.5rem;
+}
 .flex {
   display: flex;
 }
@@ -1134,6 +1137,10 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 .pb-32 {
   padding-bottom: 8rem;

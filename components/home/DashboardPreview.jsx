@@ -20,7 +20,7 @@ export default function DashboardPreview() {
               <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
             </div>
             <div className="mx-auto bg-white/50 border border-slate-200 shadow-sm rounded-md px-24 py-1.5 flex items-center justify-center text-xs font-medium text-slate-400">
-              admin.uniinsight.edu
+              admin.SUSL MeritMatrix.edu
             </div>
             <div className="w-16"></div> {/* Spacer for centering */}
           </div>

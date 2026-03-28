@@ -1,118 +1,127 @@
 import Link from 'next/link';
-import { ArrowRight, GraduationCap, BarChart3, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Activity, TrendingUp, Trophy, Users, BookOpen } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section id="home" className="relative bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden pt-24 pb-32">
-      {/* Decorative background grid and blurs */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
-      <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[600px] bg-blue-100/50 rounded-full blur-3xl opacity-50 z-0"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-[600px] h-[600px] bg-indigo-100/50 rounded-full blur-3xl opacity-50 z-0"></div>
+    <section id="home" className="relative bg-white overflow-hidden pt-20 pb-32">
+      {/* Minimal clean background */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-50"></div>
+      <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[600px] bg-blue-50 rounded-full blur-3xl opacity-60 z-0"></div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-8">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           {/* Left Side Content */}
-          <div className="flex-1 text-center lg:text-left opacity-0 animate-fadeInUp" style={{ animationDelay: '100ms' }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100/80 text-blue-800 text-sm font-medium mb-6 border border-blue-200">
-              <GraduationCap className="w-4 h-4" />
-              <span>Official Results Management System</span>
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
-              Empowering Academic <br className="hidden lg:block"/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600">
-                Excellence
-              </span>
+          <div className="flex-1 text-center lg:text-left opacity-0 animate-fadeInUp" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] mb-6">
+              Smart Results <br className="hidden lg:block"/> Management for <span className="text-blue-600">SUSL</span>
             </h1>
             
-            <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              A secure, intuitive, and comprehensive platform for the Faculty of Computing to manage student performance, generate analytics, and ensure academic integrity.
+            <p className="text-xl text-slate-700 font-medium mb-4 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Automate GPA calculations, track academic performance, and identify top achievers with an intelligent results management system.
+            </p>
+
+            <p className="text-base text-slate-500 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Designed for the Faculty of Computing to support Software Engineering, Computing & Information Systems, and Data Science departments.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link href="#login" className="group flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-0.5 hover:shadow-lg shadow-blue-500/30">
-                Faculty Login
+              <Link href="#login" className="group flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-0.5 shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30">
+                Login
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="#features" className="flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-0.5 hover:shadow-md">
-                Student Portal
+              <Link href="#features" className="flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-0.5 hover:shadow-sm">
+                Explore Features
               </Link>
-            </div>
-
-            <div className="mt-10 flex items-center justify-center lg:justify-start gap-8 text-sm font-medium text-slate-500">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                <span>UGC Compliant</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-blue-600" />
-                <span>Real-time Analytics</span>
-              </div>
             </div>
           </div>
 
-          {/* Right Side Mockup */}
-          <div className="flex-1 w-full max-w-xl lg:max-w-2xl opacity-0 animate-fadeIn" style={{ animationDelay: '300ms' }}>
-            <div className="bg-white/60 backdrop-blur-xl border border-white/80 rounded-2xl shadow-2xl p-2 relative z-10 ring-1 ring-slate-900/5">
-              <div className="bg-white rounded-xl overflow-hidden border border-slate-100">
+          {/* Right Side Visual */}
+          <div className="flex-1 w-full max-w-xl lg:max-w-2xl opacity-0 animate-fadeIn" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
+            <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-2 relative z-10 border border-slate-100">
+              <div className="bg-slate-50/50 rounded-xl overflow-hidden border border-slate-100">
                 {/* Mockup Header */}
-                <div className="bg-slate-50 px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-rose-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-amber-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+                <div className="bg-white px-4 py-3 border-b border-slate-100 flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
+                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
+                    <div className="w-3 h-3 rounded-full bg-slate-200"></div>
                   </div>
-                  <div className="text-xs font-medium text-slate-400 bg-white px-2 py-1 rounded shadow-sm border border-slate-100">
-                    dashboard.uniinsight.edu
+                  <div className="bg-slate-50 px-4 py-1.5 rounded-md flex-1 text-center text-[11px] font-semibold text-slate-500 border border-slate-100 truncate">
+                    SUSL MeritMatrix.susl.lk/dashboard
                   </div>
                 </div>
                 
                 {/* Mockup Content */}
-                <div className="p-6">
-                  <div className="flex justify-between items-end mb-6">
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-900">Batch 2021 Overview</h3>
-                      <p className="text-sm text-slate-500">BSc (Hons) Computer Science</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">3.42</div>
-                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Avg GPA</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="p-5 flex flex-col gap-5">
+                  {/* Top Stats Cards */}
+                  <div className="grid grid-cols-3 gap-4">
                     {[
-                      { label: "First Class", val: "45", color: "bg-emerald-50 text-emerald-700 border-emerald-100" },
-                      { label: "Second Upper", val: "82", color: "bg-blue-50 text-blue-700 border-blue-100" },
-                      { label: "Second Lower", val: "40", color: "bg-indigo-50 text-indigo-700 border-indigo-100" }
+                      { label: 'Overall GPA', val: '3.42', icon: Activity, color: 'text-blue-600', bg: 'bg-blue-50' },
+                      { label: 'Total Students', val: '850', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+                      { label: 'Active Courses', val: '42', icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-50' }
                     ].map((stat, i) => (
-                      <div key={i} className={`p-4 rounded-xl border ${stat.color}`}>
-                        <div className="text-2xl font-bold mb-1">{stat.val}</div>
-                        <div className="text-xs font-semibold uppercase">{stat.label}</div>
+                      <div key={i} className="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex flex-col gap-3">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.bg}`}>
+                          <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                        </div>
+                        <div>
+                          <div className="text-xl font-bold text-slate-800">{stat.val}</div>
+                          <div className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide">{stat.label}</div>
+                        </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Chart Mockup */}
-                  <div className="relative h-40 bg-slate-50 rounded-xl border border-slate-100 p-4 flex items-end justify-between gap-2 overflow-hidden">
-                    <div className="absolute top-4 left-4 text-xs font-semibold text-slate-400">GPA Distribution</div>
-                    {[40, 70, 45, 90, 60, 85, 50].map((h, i) => (
-                      <div key={i} className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-md opacity-80 hover:opacity-100 transition-opacity cursor-pointer delay-100 animate-fadeInUp" style={{ height: `${h}%`, animationDelay: `${i * 100}ms` }}></div>
-                    ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                    {/* Line Chart Section */}
+                    <div className="sm:col-span-7 bg-white rounded-xl border border-slate-100 p-4 shrink-0 shadow-sm flex flex-col">
+                      <div className="flex justify-between items-center mb-6">
+                        <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">Performance Trend</span>
+                        <TrendingUp className="w-4 h-4 text-slate-400" />
+                      </div>
+                      {/* Simple CSS-based Line Chart */}
+                      <div className="relative h-28 w-full mt-auto mb-2 flex items-end justify-between px-2">
+                        {/* Connecting Line (Simulated with SVG) */}
+                        <svg className="absolute inset-0 w-full h-full text-blue-200 stroke-current opacity-60" preserveAspectRatio="none">
+                          <path d="M 10,80 L 50,60 L 90,70 L 130,40 L 170,50 L 210,20 L 250,30" fill="none" strokeWidth="3" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        
+                        {/* Data Points */}
+                        {[20, 40, 30, 60, 50, 80, 70].map((h, i) => (
+                          <div key={i} className="relative z-10 w-2.5 h-2.5 rounded-full bg-blue-600 border-2 border-white ring-2 ring-blue-100 shadow-sm transition-transform hover:scale-150" style={{ transform: `translateY(-${h}px)` }}></div>
+                        ))}
+                      </div>
+                      {/* X-axis labels */}
+                      <div className="flex justify-between w-full px-1 text-[9px] font-bold text-slate-400 mt-2">
+                        <span>Y1S1</span><span>Y1S2</span><span>Y2S1</span><span>Y2S2</span><span>Y3S1</span><span>Y3S2</span><span>Y4S1</span>
+                      </div>
+                    </div>
+
+                    {/* Leaderboard Section */}
+                    <div className="sm:col-span-5 bg-white rounded-xl border border-slate-100 p-4 shadow-sm flex flex-col">
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">Top Rankers</span>
+                        <Trophy className="w-4 h-4 text-amber-500" />
+                      </div>
+                      <div className="space-y-4 flex-1 justify-center flex flex-col">
+                        {[
+                          { rank: 1, name: 'John Doe', gpa: '3.98', badge: 'bg-amber-100 text-amber-700' },
+                          { rank: 2, name: 'Alice Smith', gpa: '3.95', badge: 'bg-slate-100 text-slate-600' },
+                          { rank: 3, name: 'Emma Watson', gpa: '3.91', badge: 'bg-orange-100 text-orange-700' }
+                        ].map((student, i) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${student.badge}`}>
+                                {student.rank}
+                              </div>
+                              <span className="text-xs font-semibold text-slate-700">{student.name}</span>
+                            </div>
+                            <span className="text-xs font-bold text-blue-600">{student.gpa}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Floating decoration */}
-            <div className="absolute -right-8 top-12 bg-white p-4 rounded-xl shadow-xl border border-slate-100 animate-float z-20 hidden md:block">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                <div>
-                  <div className="text-sm font-bold text-slate-900">Results Published</div>
-                  <div className="text-xs text-slate-500">Just now</div>
                 </div>
               </div>
             </div>

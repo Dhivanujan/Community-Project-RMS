@@ -1,80 +1,89 @@
+import { CheckCircle2, Clock, AlertOctagon } from 'lucide-react';
+
 export default function DashboardPreview() {
   return (
-    <section className="py-20 bg-background overflow-hidden relative">
+    <section className="py-24 bg-white overflow-hidden relative">
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Comprehensive Analytics</h2>
-          <p className="text-textMuted max-w-2xl mx-auto">Get a bird&apos;s-eye view of academic performance across cohorts.</p>
+        <div className="text-center mb-16 opacity-0 animate-fadeInUp">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Comprehensive Analytics</h2>
+          <p className="text-slate-500 max-w-2xl mx-auto text-lg">Get a bird's-eye view of academic performance across cohorts, track grade distributions, and identify concerning trends instantly.</p>
         </div>
         
-        <div className="bg-surface border border-border rounded-xl shadow-lg mx-auto w-full max-w-5xl">
+        <div className="bg-white border border-slate-200/60 rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] ring-1 ring-slate-900/5 mx-auto w-full max-w-5xl opacity-0 animate-fadeInUp" style={{ animationDelay: '200ms' }}>
           {/* Mockup Window header */}
-          <div className="bg-gray-50 border-b border-border p-3 rounded-t-xl flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-            <div className="mx-auto bg-white border border-gray-200 rounded px-24 py-1 flex items-center justify-center text-xs text-gray-400">
-              uniinsight.edu/dashboard
+          <div className="bg-slate-50/80 backdrop-blur-md border-b border-slate-200 p-4 rounded-t-2xl flex items-center gap-3">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-rose-400"></div>
+              <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+              <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
             </div>
+            <div className="mx-auto bg-white/50 border border-slate-200 shadow-sm rounded-md px-24 py-1.5 flex items-center justify-center text-xs font-medium text-slate-400">
+              admin.uniinsight.edu
+            </div>
+            <div className="w-16"></div> {/* Spacer for centering */}
           </div>
           
           {/* Mockup body */}
-          <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8 bg-surface rounded-b-xl">
+          <div className="p-6 md:p-10 flex flex-col md:flex-row gap-10 bg-white rounded-b-2xl">
             {/* Left Sidebar (Leaderboard) */}
-            <div className="w-full md:w-1/3 border border-border rounded-lg p-5">
-              <h4 className="font-semibold mb-4 text-sm uppercase text-textMuted tracking-wider">Top Performers</h4>
+            <div className="w-full md:w-1/3 bg-slate-50/50 rounded-xl p-6 border border-slate-100">
+              <h4 className="font-bold mb-6 text-sm uppercase text-slate-500 tracking-wider">Top Performers</h4>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors cursor-default">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-primary">1</div>
-                    <div className="text-sm font-medium">Alice Smith</div>
+                {[
+                  { name: "Alice Smith", gpa: "3.98", rank: 1, color: "text-amber-500", bg: "bg-amber-100/50" },
+                  { name: "John Doe", gpa: "3.95", rank: 2, color: "text-slate-400", bg: "bg-slate-100" },
+                  { name: "Emma Watson", gpa: "3.91", rank: 3, color: "text-amber-700", bg: "bg-orange-100/50" }
+                ].map((student, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-100 transition-all cursor-default">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-8 h-8 rounded-full ${student.bg} flex items-center justify-center text-sm font-bold ${student.color}`}>
+                        {student.rank}
+                      </div>
+                      <div className="text-sm font-semibold text-slate-700">{student.name}</div>
+                    </div>
+                    <div className="font-bold text-blue-700">{student.gpa}</div>
                   </div>
-                  <div className="font-bold text-primary">3.98</div>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors cursor-default">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">2</div>
-                    <div className="text-sm font-medium">John Doe</div>
-                  </div>
-                  <div className="font-bold text-textDark">3.95</div>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors cursor-default">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">3</div>
-                    <div className="text-sm font-medium">Emma Watson</div>
-                  </div>
-                  <div className="font-bold text-textDark">3.91</div>
-                </div>
+                ))}
               </div>
             </div>
             
             {/* Right Content (Charts) */}
             <div className="w-full md:w-2/3 flex flex-col gap-6">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gray-50 border border-border rounded-lg p-4">
-                  <div className="text-xs text-textMuted mb-1">Total Verified</div>
-                  <div className="text-xl font-bold">1,880</div>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium mb-2 uppercase tracking-wide">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Total Verified
+                  </div>
+                  <div className="text-3xl font-extrabold text-slate-800">1,880</div>
                 </div>
-                <div className="bg-gray-50 border border-border rounded-lg p-4">
-                  <div className="text-xs text-textMuted mb-1">Pending Approval</div>
-                  <div className="text-xl font-bold text-yellow-600">42</div>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium mb-2 uppercase tracking-wide">
+                    <Clock className="w-4 h-4 text-amber-500" /> Pending Approval
+                  </div>
+                  <div className="text-3xl font-extrabold text-amber-600">42</div>
                 </div>
-                <div className="bg-gray-50 border border-border rounded-lg p-4">
-                  <div className="text-xs text-textMuted mb-1">System Alerts</div>
-                  <div className="text-xl font-bold text-red-500">7</div>
+                <div className="bg-rose-50/30 border border-rose-100 rounded-xl p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs text-rose-500 font-medium mb-2 uppercase tracking-wide">
+                    <AlertOctagon className="w-4 h-4 text-rose-500" /> System Alerts
+                  </div>
+                  <div className="text-3xl font-extrabold text-rose-600">7</div>
                 </div>
               </div>
-              <div className="border border-border rounded-lg p-5 relative min-h-[200px] flex items-center justify-center">
-                <span className="text-textMuted font-medium absolute top-4 left-5 text-sm">Batch GPA Distribution</span>
-                {/* Simplified bars */}
-                <div className="flex items-end gap-2 w-full h-32 mt-8 justify-around px-4">
-                  <div className="w-8 bg-blue-100 rounded-t h-[20%] relative group"><span className="absolute -top-6 text-xs text-gray-400 hidden group-hover:block w-full text-center">2%</span></div>
-                  <div className="w-8 bg-blue-200 rounded-t h-[35%] relative group"><span className="absolute -top-6 text-xs text-gray-400 hidden group-hover:block w-full text-center">15%</span></div>
-                  <div className="w-8 bg-blue-300 rounded-t h-[60%] relative group"><span className="absolute -top-6 text-xs text-gray-400 hidden group-hover:block w-full text-center">38%</span></div>
-                  <div className="w-8 bg-blue-500 rounded-t h-[80%] relative group"><span className="absolute -top-6 text-xs text-gray-400 hidden group-hover:block w-full text-center">25%</span></div>
-                  <div className="w-8 bg-primary rounded-t h-[45%] relative group"><span className="absolute -top-6 text-xs text-gray-400 hidden group-hover:block w-full text-center">20%</span></div>
+              <div className="border border-slate-200 rounded-xl p-6 relative min-h-[220px] flex items-center justify-center bg-slate-50/30">
+                <span className="text-slate-800 font-bold absolute top-5 left-6 text-sm">Batch GPA Distribution</span>
+                {/* Simulated Chart */}
+                <div className="flex items-end gap-3 w-full h-36 mt-10 justify-around px-2">
+                  {[20, 35, 60, 85, 45].map((h, i) => (
+                    <div key={i} className="w-full max-w-[60px] bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-md relative group cursor-pointer transition-all hover:opacity-90" style={{ height: `${h}%` }}>
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs font-bold text-slate-700 opacity-0 group-hover:opacity-100 transition-opacity bg-white px-2 py-1 rounded shadow-md border border-slate-100">
+                        {h}%
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="absolute bottom-2 w-full flex justify-around px-8 text-[10px] text-gray-400 font-medium tracking-wider">
+                <div className="absolute bottom-3 w-full flex justify-around px-8 text-xs text-slate-400 font-bold tracking-wider">
                   <span>&lt; 2.0</span>
                   <span>2.0-2.5</span>
                   <span>2.5-3.0</span>

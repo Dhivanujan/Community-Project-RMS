@@ -21,7 +21,7 @@ export default function Navbar() {
 
             <div className="flex flex-col leading-tight">
               <span className="font-extrabold text-xl text-slate-900">
-                UniInsight<span className="text-blue-600">.</span>
+                SUSL MeritMatrix<span className="text-blue-600">.</span>
               </span>
               <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
                 SUSL – Faculty of Computing

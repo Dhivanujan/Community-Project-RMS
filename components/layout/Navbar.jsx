@@ -38,7 +38,7 @@ export default function Navbar() {
             <div className="h-6 w-px bg-slate-200"></div>
 
             <Link
-              href="#login"
+              href="/login"
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all hover:-translate-y-0.5 hover:shadow-md shadow-blue-600/20"
             >
               <LogIn className="w-4 h-4" />
@@ -64,7 +64,7 @@ export default function Navbar() {
               <Link href="#departments" className="mobile-link">Departments</Link>
 
               <Link
-                href="#login"
+                href="/login"
                 className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium mt-2"
               >
                 <LogIn className="w-4 h-4" />

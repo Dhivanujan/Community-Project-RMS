@@ -1,4 +1,4 @@
-// File: E:\RMS\app\layout.jsx
+// File: C:\commmunity_project\Community-Project-RMS\app\layout.jsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

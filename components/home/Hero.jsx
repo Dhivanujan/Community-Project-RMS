@@ -25,7 +25,7 @@ export default function Hero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link href="#login" className="group flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-0.5 shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30">
+              <Link href="/login" className="group flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-0.5 shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30">
                 Login
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>

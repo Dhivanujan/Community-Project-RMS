@@ -2,26 +2,49 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { GraduationCap, Mail, Lock, Eye, ArrowRight, HelpCircle, User, Hash } from "lucide-react";
 
 export default function Login() {
+  const router = useRouter();
   const [role, setRole] = useState("Student");
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const ADMIN_CREDENTIALS = {
+    email: "admin@computing.com",
+    password: "Admin123"
+  };
+
+  // Handle login routing
+  const handleAuth = (e) => {
+    e.preventDefault();
+
+    // Only Admin redirects
+    if (isLogin && role === "Faculty Admin") {
+      if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+        router.push("/admin"); // Admin dashboard
+      } else {
+        alert("Invalid admin credentials!");
+      }
+    } else {
+      alert("Student login: functionality unchanged (no routing yet).");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 sm:p-8 font-sans relative">
       <div className="max-w-[1000px] w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] transition-all duration-300">
-        
+
         {/* Left Side - Branding */}
         <div className="md:w-1/2 bg-blue-600 p-10 lg:p-12 text-white flex flex-col relative overflow-hidden">
-          {/* Abstract bars background decoration */}
           <div className="absolute bottom-0 right-0 p-8 flex items-end gap-2 opacity-20">
             <div className="w-8 h-16 bg-white rounded-t-lg"></div>
             <div className="w-8 h-24 bg-white rounded-t-lg"></div>
             <div className="w-8 h-32 bg-white rounded-t-lg"></div>
           </div>
 
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-3 relative z-10 inline-flex w-max">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
               <GraduationCap className="text-blue-600 w-6 h-6" />
@@ -29,7 +52,6 @@ export default function Login() {
             <span className="font-bold text-lg tracking-tight">Faculty of Computing</span>
           </Link>
 
-          {/* Main Copy */}
           <div className="mt-16 relative z-10 flex-1">
             <h1 className="text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight">
               Redefining <br /> Academic Success.
@@ -39,13 +61,12 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Quote Card */}
           <div className="bg-white text-slate-800 rounded-2xl p-5 shadow-xl relative z-10 w-full max-w-[320px] mt-12 md:mt-0">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
-                <img 
-                  src="https://api.dicebear.com/7.x/notionists/svg?seed=Arthur&backgroundColor=e2e8f0" 
-                  alt="Dr. Arthur Sterling" 
+                <img
+                  src="https://api.dicebear.com/7.x/notionists/svg?seed=Arthur&backgroundColor=e2e8f0"
+                  alt="Dr. Arthur Sterling"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -67,8 +88,8 @@ export default function Login() {
               {isLogin ? "RMS Dashboard" : "Create Account"}
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              {isLogin 
-                ? "Enter your credentials to manage academic records." 
+              {isLogin
+                ? "Enter your credentials to manage academic records."
                 : "Register for an account to access the dashboard."}
             </p>
           </div>
@@ -78,33 +99,30 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setRole("Student")}
-              className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${
-                role === "Student" 
-                  ? "bg-white text-blue-700 shadow-sm border border-slate-200/50" 
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
+              className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${role === "Student"
+                ? "bg-white text-blue-700 shadow-sm border border-slate-200/50"
+                : "text-slate-500 hover:text-slate-700"
+                }`}
             >
               Student
             </button>
             <button
               type="button"
               onClick={() => setRole("Faculty Admin")}
-              className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${
-                role === "Faculty Admin" 
-                  ? "bg-white text-blue-700 shadow-sm border border-slate-200/50" 
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
+              className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${role === "Faculty Admin"
+                ? "bg-white text-blue-700 shadow-sm border border-slate-200/50"
+                : "text-slate-500 hover:text-slate-700"
+                }`}
             >
               Faculty Admin
             </button>
           </div>
 
           {/* Form */}
-          <form className="flex flex-col flex-1" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex flex-col flex-1" onSubmit={handleAuth}>
             <div className={`space-y-${isLogin ? '5' : '4'}`}>
               {!isLogin && (
                 <>
-                  {/* Name Input */}
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                       Full Name
@@ -121,7 +139,6 @@ export default function Login() {
                     </div>
                   </div>
 
-                  {/* Index Number Input */}
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                       Index Number
@@ -140,7 +157,6 @@ export default function Login() {
                 </>
               )}
 
-              {/* Email Input */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                   Academic Email
@@ -151,13 +167,14 @@ export default function Login() {
                   </div>
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. s.chen@computing.edu"
                     className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium"
                   />
                 </div>
               </div>
 
-              {/* Password Input */}
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
@@ -175,6 +192,8 @@ export default function Login() {
                   </div>
                   <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full pl-10 pr-10 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium tracking-widest"
                   />
@@ -184,29 +203,6 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Confirm Password Input */}
-              {!isLogin && (
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-4 h-4" />
-                    </div>
-                    <input
-                      type="password"
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium tracking-widest"
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer transition-colors">
-                      <Eye className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Checkbox */}
               {isLogin && (
                 <div className="flex items-center gap-2.5 pt-1">
                   <input
@@ -220,7 +216,6 @@ export default function Login() {
                 </div>
               )}
 
-              {/* Submit Button */}
               <div className="pt-2">
                 <button
                   type="submit"
@@ -233,7 +228,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* SSO Divider / Button (Only on Login) */}
             {isLogin && (
               <>
                 <div className="relative mt-8 mb-8">
@@ -255,7 +249,6 @@ export default function Login() {
               </>
             )}
 
-            {/* Toggle Link */}
             <div className="mt-8 text-center text-sm text-slate-600">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
               <button
@@ -268,7 +261,6 @@ export default function Login() {
             </div>
           </form>
 
-          {/* Footer */}
           <div className="mt-8 flex justify-between items-center text-xs font-medium text-slate-500">
             <div>© 2024 Faculty of Computing</div>
             <div className="flex gap-4">
@@ -279,7 +271,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Floating Help Icon */}
       <button className="absolute bottom-6 right-6 w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 shadow-lg border border-slate-100 hover:-translate-y-1 transition-transform">
         <HelpCircle className="w-5 h-5" />
       </button>

@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { GraduationCap, Mail, Lock, Eye, ArrowRight, HelpCircle, User, Hash } from "lucide-react";
 
 export default function Login() {
+  const router = useRouter();
   const [role, setRole] = useState("Student");
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -91,17 +93,15 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 sm:p-8 font-sans relative">
       <div className="max-w-[1000px] w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] transition-all duration-300">
-        
+
         {/* Left Side - Branding */}
         <div className="md:w-1/2 bg-blue-600 p-10 lg:p-12 text-white flex flex-col relative overflow-hidden">
-          {/* Abstract bars background decoration */}
           <div className="absolute bottom-0 right-0 p-8 flex items-end gap-2 opacity-20">
             <div className="w-8 h-16 bg-white rounded-t-lg"></div>
             <div className="w-8 h-24 bg-white rounded-t-lg"></div>
             <div className="w-8 h-32 bg-white rounded-t-lg"></div>
           </div>
 
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-3 relative z-10 inline-flex w-max">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
               <GraduationCap className="text-blue-600 w-6 h-6" />
@@ -109,7 +109,6 @@ export default function Login() {
             <span className="font-bold text-lg tracking-tight">Faculty of Computing</span>
           </Link>
 
-          {/* Main Copy */}
           <div className="mt-16 relative z-10 flex-1">
             <h1 className="text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight">
               Redefining <br /> Academic Success.
@@ -119,7 +118,6 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Quote Card */}
           <div className="bg-white text-slate-800 rounded-2xl p-5 shadow-xl relative z-10 w-full max-w-[320px] mt-12 md:mt-0">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
@@ -194,7 +192,6 @@ export default function Login() {
             <div className={`space-y-${!isLogin && !isForgotPassword ? '4' : '5'}`}>
               {!isLogin && !isForgotPassword && (
                 <>
-                  {/* Name Input */}
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                       Full Name
@@ -238,7 +235,6 @@ export default function Login() {
                 </>
               )}
 
-              {/* Email Input */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                   Academic Email
@@ -332,7 +328,6 @@ export default function Login() {
                 </div>
               )}
 
-              {/* Submit Button */}
               <div className="pt-2">
                 <button
                   type="submit"
@@ -368,7 +363,6 @@ export default function Login() {
               </>
             )}
 
-            {/* Toggle Link */}
             <div className="mt-8 text-center text-sm text-slate-600">
               {isForgotPassword ? (
                 <>
@@ -416,7 +410,6 @@ export default function Login() {
             </div>
           </form>
 
-          {/* Footer */}
           <div className="mt-8 flex justify-between items-center text-xs font-medium text-slate-500">
             <div>© 2024 Faculty of Computing</div>
             <div className="flex gap-4">
@@ -427,7 +420,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Floating Help Icon */}
       <button className="absolute bottom-6 right-6 w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 shadow-lg border border-slate-100 hover:-translate-y-1 transition-transform">
         <HelpCircle className="w-5 h-5" />
       </button>

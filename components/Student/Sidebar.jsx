@@ -65,9 +65,22 @@ export default function Sidebar() {
       <div className="px-4 pb-8">
         <Link
           href="/student/settings"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-500 hover:text-[#3856c4] hover:bg-white/60 transition-all duration-200"
+          className={`
+            flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200
+            ${
+              pathname === "/student/settings"
+                ? "bg-white text-[#3856c4] font-semibold shadow-sm border border-slate-100"
+                : "text-slate-500 hover:text-[#3856c4] hover:bg-white/60"
+            }
+          `}
         >
-          <Settings className="w-[18px] h-[18px] text-slate-400" />
+          <Settings
+            className={`w-[18px] h-[18px] ${
+              pathname === "/student/settings"
+                ? "text-[#3856c4]"
+                : "text-slate-400"
+            }`}
+          />
           <span>Settings</span>
         </Link>
       </div>

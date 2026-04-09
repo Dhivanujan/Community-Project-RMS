@@ -57,7 +57,11 @@ export default function Login() {
         const data = await res.json();
         if (res.ok) {
           setMessage("Logged in successfully!");
-          // redirect to dashboard here...
+          // Route users to the correct dashboard based on role returned by API.
+          const normalizedRole = (data.role || role || "").toLowerCase();
+          const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
+          router.push(targetPath);
+          router.refresh();
         } else {
           setMessage(data.message);
         }

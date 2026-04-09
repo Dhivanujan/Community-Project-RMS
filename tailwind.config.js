@@ -30,13 +30,16 @@ module.exports = {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
-        }
+        },
       },
       animation: {
         fadeInUp: 'fadeInUp 0.6s ease-out forwards',
         fadeIn: 'fadeIn 0.8s ease-out forwards',
         float: 'float 4s ease-in-out infinite',
-      }
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
     }
   },
   plugins: [],

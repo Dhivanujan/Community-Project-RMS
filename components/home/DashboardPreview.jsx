@@ -4,7 +4,45 @@ import { Trophy, TrendingUp, AlertTriangle } from "lucide-react";
 import AnimateOnScroll from "./AnimateOnScroll";
 import CountUp from "./CountUp";
 
-export default function DashboardPreview() {
+export default function DashboardPreview({ summary }) {
+  const topPerformers = summary?.topPerformers?.length
+    ? summary.topPerformers
+    : [
+        { name: "Student A", gpa: 3.92 },
+        { name: "Student B", gpa: 3.88 },
+        { name: "Student C", gpa: 3.84 },
+      ];
+
+  const medals = ["🥇", "🥈", "🥉"];
+
+  const bars = [
+    {
+      h: Math.max(5, Number(summary?.gpaDistribution?.below2 ?? 25)),
+      label: "<2.0",
+      color: "from-slate-400 to-slate-500",
+    },
+    {
+      h: Math.max(5, Number(summary?.gpaDistribution?.between2And24 ?? 40)),
+      label: "2.0–2.4",
+      color: "from-blue-300 to-blue-400",
+    },
+    {
+      h: Math.max(5, Number(summary?.gpaDistribution?.between25And29 ?? 70)),
+      label: "2.5–2.9",
+      color: "from-blue-400 to-blue-500",
+    },
+    {
+      h: Math.max(5, Number(summary?.gpaDistribution?.between30And34 ?? 90)),
+      label: "3.0–3.4",
+      color: "from-blue-500 to-indigo-500",
+    },
+    {
+      h: Math.max(5, Number(summary?.gpaDistribution?.above35 ?? 60)),
+      label: "3.5+",
+      color: "from-indigo-500 to-violet-500",
+    },
+  ];
+
   return (
     <section className="py-24 bg-white relative overflow-hidden">
       {/* Subtle background */}
@@ -41,23 +79,19 @@ export default function DashboardPreview() {
                   </h4>
 
                   <div className="space-y-3">
-                    {[
-                      { name: "Student A", gpa: "3.92", rank: 1, medal: "🥇" },
-                      { name: "Student B", gpa: "3.88", rank: 2, medal: "🥈" },
-                      { name: "Student C", gpa: "3.84", rank: 3, medal: "🥉" },
-                    ].map((s, i) => (
+                    {topPerformers.map((s, i) => (
                       <div
                         key={i}
                         className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="text-lg">{s.medal}</span>
+                          <span className="text-lg">{medals[i] || "🏅"}</span>
                           <span className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">
                             {s.name}
                           </span>
                         </div>
                         <span className="font-bold text-blue-600 text-sm bg-blue-50 px-2.5 py-0.5 rounded-lg">
-                          {s.gpa}
+                          {Number(s.gpa || 0).toFixed(2)}
                         </span>
                       </div>
                     ))}
@@ -76,7 +110,7 @@ export default function DashboardPreview() {
                         Avg GPA
                       </div>
                       <CountUp
-                        end={3.42}
+                        end={Number(summary?.overallGpa ?? 3.42)}
                         decimals={2}
                         className="text-3xl font-extrabold text-slate-800"
                       />
@@ -90,7 +124,7 @@ export default function DashboardPreview() {
                         First Class Eligible
                       </div>
                       <CountUp
-                        end={128}
+                        end={Number(summary?.firstClassEligible ?? 128)}
                         className="text-3xl font-extrabold text-amber-600"
                       />
                     </div>
@@ -103,7 +137,7 @@ export default function DashboardPreview() {
                         At Risk
                       </div>
                       <CountUp
-                        end={34}
+                        end={Number(summary?.atRisk ?? 34)}
                         className="text-3xl font-extrabold text-rose-600"
                       />
                     </div>
@@ -118,13 +152,7 @@ export default function DashboardPreview() {
                     </h5>
 
                     <div className="flex items-end gap-3 h-40">
-                      {[
-                        { h: 25, label: "<2.0", color: "from-slate-400 to-slate-500" },
-                        { h: 40, label: "2.0–2.4", color: "from-blue-300 to-blue-400" },
-                        { h: 70, label: "2.5–2.9", color: "from-blue-400 to-blue-500" },
-                        { h: 90, label: "3.0–3.4", color: "from-blue-500 to-indigo-500" },
-                        { h: 60, label: "3.5+", color: "from-indigo-500 to-violet-500" },
-                      ].map((bar, i) => (
+                      {bars.map((bar, i) => (
                         <div key={i} className="flex-1 flex flex-col items-center gap-0">
                           <div
                             className={`w-full bg-gradient-to-t ${bar.color} rounded-t-lg hover:opacity-80 transition-all duration-300 animate-grow-up cursor-pointer relative group`}

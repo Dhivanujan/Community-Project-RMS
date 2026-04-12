@@ -4,7 +4,42 @@ import Link from "next/link";
 import { ArrowRight, Activity, TrendingUp, Trophy, Users, BookOpen, Sparkles } from "lucide-react";
 import AnimateOnScroll from "./AnimateOnScroll";
 
-export default function Hero() {
+export default function Hero({ summary }) {
+  const topPerformers = summary?.topPerformers?.length
+    ? summary.topPerformers
+    : [
+        { name: "N/A", gpa: 0 },
+        { name: "N/A", gpa: 0 },
+        { name: "N/A", gpa: 0 },
+      ];
+
+  const stats = [
+    {
+      label: "Overall GPA",
+      val: Number(summary?.overallGpa ?? 0).toFixed(2),
+      icon: Activity,
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+      border: "border-blue-100",
+    },
+    {
+      label: "Total Students",
+      val: String(summary?.totalStudents ?? 0),
+      icon: Users,
+      color: "text-indigo-600",
+      bg: "bg-indigo-50",
+      border: "border-indigo-100",
+    },
+    {
+      label: "Active Courses",
+      val: String(summary?.activeCourses ?? 0),
+      icon: BookOpen,
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-100",
+    },
+  ];
+
   return (
     <section id="home" className="relative bg-white overflow-hidden pt-16 pb-28 lg:pt-24 lg:pb-36">
       {/* ── Animated background blobs ── */}
@@ -106,32 +141,7 @@ export default function Hero() {
                     <div className="p-5 flex flex-col gap-5">
                       {/* Top Stats Cards */}
                       <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                        {[
-                          {
-                            label: "Overall GPA",
-                            val: "3.42",
-                            icon: Activity,
-                            color: "text-blue-600",
-                            bg: "bg-blue-50",
-                            border: "border-blue-100",
-                          },
-                          {
-                            label: "Total Students",
-                            val: "850",
-                            icon: Users,
-                            color: "text-indigo-600",
-                            bg: "bg-indigo-50",
-                            border: "border-indigo-100",
-                          },
-                          {
-                            label: "Active Courses",
-                            val: "42",
-                            icon: BookOpen,
-                            color: "text-emerald-600",
-                            bg: "bg-emerald-50",
-                            border: "border-emerald-100",
-                          },
-                        ].map((stat, i) => (
+                        {stats.map((stat, i) => (
                           <div
                             key={i}
                             className={`p-3 sm:p-4 rounded-xl bg-white border ${stat.border} shadow-sm flex flex-col gap-2 sm:gap-3 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5`}
@@ -209,45 +219,35 @@ export default function Hero() {
                             <Trophy className="w-4 h-4 text-amber-400" />
                           </div>
                           <div className="space-y-3 flex-1 justify-center flex flex-col">
-                            {[
-                              {
-                                rank: 1,
-                                name: "John Doe",
-                                gpa: "3.98",
-                                badge: "bg-amber-50 text-amber-600 border-amber-200",
-                              },
-                              {
-                                rank: 2,
-                                name: "Alice Smith",
-                                gpa: "3.95",
-                                badge: "bg-slate-50 text-slate-500 border-slate-200",
-                              },
-                              {
-                                rank: 3,
-                                name: "Emma Watson",
-                                gpa: "3.91",
-                                badge: "bg-orange-50 text-orange-600 border-orange-200",
-                              },
-                            ].map((student, i) => (
+                            {topPerformers.map((student, i) => {
+                              const badge =
+                                i === 0
+                                  ? "bg-amber-50 text-amber-600 border-amber-200"
+                                  : i === 1
+                                  ? "bg-slate-50 text-slate-500 border-slate-200"
+                                  : "bg-orange-50 text-orange-600 border-orange-200";
+
+                              return (
                               <div
                                 key={i}
                                 className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors"
                               >
                                 <div className="flex items-center gap-2.5">
                                   <div
-                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border ${student.badge}`}
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border ${badge}`}
                                   >
-                                    {student.rank}
+                                    {i + 1}
                                   </div>
                                   <span className="text-xs font-semibold text-slate-600">
                                     {student.name}
                                   </span>
                                 </div>
                                 <span className="text-xs font-bold text-blue-600">
-                                  {student.gpa}
+                                  {Number(student.gpa || 0).toFixed(2)}
                                 </span>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       </div>

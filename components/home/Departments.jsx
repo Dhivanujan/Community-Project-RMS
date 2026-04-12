@@ -3,11 +3,10 @@
 import { Code2, Network, Database } from "lucide-react";
 import AnimateOnScroll from "./AnimateOnScroll";
 
-export default function Departments() {
-  const departments = [
+export default function Departments({ departmentStats }) {
+  const fallbackDepartments = [
     {
       title: "Software Engineering",
-      icon: <Code2 className="w-5 h-5" />,
       students: 850,
       gpa: 3.45,
       gpaPercent: 86,
@@ -42,6 +41,39 @@ export default function Departments() {
       barBg: "bg-emerald-100",
     },
   ];
+
+  const palette = [
+    {
+      icon: <Code2 className="w-5 h-5" />,
+      bg: "bg-blue-50",
+      text: "text-blue-600",
+      border: "border-blue-100",
+      gradient: "from-blue-500 to-blue-600",
+      barBg: "bg-blue-100",
+    },
+    {
+      icon: <Network className="w-5 h-5" />,
+      bg: "bg-indigo-50",
+      text: "text-indigo-600",
+      border: "border-indigo-100",
+      gradient: "from-indigo-500 to-indigo-600",
+      barBg: "bg-indigo-100",
+    },
+    {
+      icon: <Database className="w-5 h-5" />,
+      bg: "bg-emerald-50",
+      text: "text-emerald-600",
+      border: "border-emerald-100",
+      gradient: "from-emerald-500 to-emerald-600",
+      barBg: "bg-emerald-100",
+    },
+  ];
+
+  const source = departmentStats?.length ? departmentStats : fallbackDepartments;
+  const departments = source.map((dept, index) => ({
+    ...dept,
+    ...palette[index % palette.length],
+  }));
 
   return (
     <section
@@ -110,7 +142,7 @@ export default function Departments() {
                         Avg GPA
                       </span>
                       <span className={`font-bold ${dept.text} text-lg`}>
-                        {dept.gpa}
+                        {Number(dept.gpa || 0).toFixed(2)}
                       </span>
                     </div>
                   </div>

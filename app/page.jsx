@@ -1,21 +1,13 @@
 ﻿import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import Hero from '@/components/home/Hero';
-import Features from '@/components/home/Features';
-import Departments from '@/components/home/Departments';
-import DashboardPreview from '@/components/home/DashboardPreview';
-import CTA from '@/components/home/CTA';
+import HomepageContent from '@/components/home/HomepageContent';
 
 export default function Home() {
   return (
     <>
       <Navbar />
       <main>
-        <Hero />
-        <Features />
-        <Departments />
-        <DashboardPreview />
-        <CTA />
+        <HomepageContent />
       </main>
       <Footer />
     </>

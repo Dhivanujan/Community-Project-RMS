@@ -3,16 +3,29 @@
 import { useState } from 'react';
 import StudentTable from './StudentTable';
 import AddStudentModal from './AddStudentModal';
+import EditStudentModal from './EditStudentModal';
 import { Plus } from 'lucide-react';
 
 export default function StudentManager({ initialStudents }) {
     const [students, setStudents] = useState(initialStudents);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingStudent, setEditingStudent] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleStudentAdded = (newStudent) => {
         setStudents(prev => [newStudent, ...prev]);
         setIsAddModalOpen(false);
+    };
+
+    const handleStudentUpdated = (updatedStudent) => {
+        setStudents(prev => prev.map(s => s._id === updatedStudent._id ? updatedStudent : s));
+        setIsEditModalOpen(false);
+    };
+
+    const handleEditClick = (student) => {
+        setEditingStudent(student);
+        setIsEditModalOpen(true);
     };
 
     const handleDelete = async (id) => {
@@ -62,6 +75,7 @@ export default function StudentManager({ initialStudents }) {
             <StudentTable 
                 students={filteredStudents} 
                 onDelete={handleDelete}
+                onEdit={handleEditClick}
             />
 
             {/* Add Student Modal Component */}
@@ -69,6 +83,14 @@ export default function StudentManager({ initialStudents }) {
                 isOpen={isAddModalOpen} 
                 onClose={() => setIsAddModalOpen(false)} 
                 onSuccess={handleStudentAdded} 
+            />
+
+            {/* Edit Student Modal Component */}
+            <EditStudentModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSuccess={handleStudentUpdated}
+                initialData={editingStudent}
             />
         </div>
     );

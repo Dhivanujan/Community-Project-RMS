@@ -2,7 +2,7 @@
 
 import { Edit3, Trash2, GraduationCap } from 'lucide-react';
 
-export default function StudentTable({ students, onDelete }) {
+export default function StudentTable({ students, onDelete, onEdit }) {
     return (
         <div className="bg-surface rounded-3xl shadow-sm border border-border p-6 overflow-hidden">
             <div className="overflow-x-auto">
@@ -49,6 +49,7 @@ export default function StudentTable({ students, onDelete }) {
                                     <td className="py-4 px-4">
                                         <div className="flex items-center justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                             <button 
+                                                onClick={() => onEdit(student)}
                                                 className="p-2 text-textMuted hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                                 title="Edit Student"
                                             >

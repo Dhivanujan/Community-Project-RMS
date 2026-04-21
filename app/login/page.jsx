@@ -345,27 +345,7 @@ export default function Login() {
               </div>
             </div>
 
-            {/* SSO Divider / Button (Only on Login) */}
-            {isLogin && !isForgotPassword && (
-              <>
-                <div className="relative mt-8 mb-8">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-3 bg-white text-[10px] font-bold tracking-widest uppercase text-slate-400">Identity Provider</span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-3"
-                >
-                  <div className="w-4 h-4 bg-slate-900 rounded-sm"></div>
-                  Continue with Institute SSO
-                </button>
-              </>
-            )}
+           
 
             <div className="mt-8 text-center text-sm text-slate-600">
               {isForgotPassword ? (

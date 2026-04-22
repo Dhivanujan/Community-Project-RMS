@@ -84,8 +84,34 @@ export default function Login() {
           }),
         });
         const data = await res.json();
-        setMessage(res.ok ? "Account created successfully! Please login." : data.message);
-        if (res.ok) setIsLogin(true);
+        
+        if (res.ok) {
+          setMessage("Account created successfully! Logging you in...");
+          
+          // Auto login after signup
+          const loginRes = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+              role,
+            }),
+          });
+          
+          const loginData = await loginRes.json();
+          if (loginRes.ok) {
+            const normalizedRole = (loginData.role || role || "").toLowerCase();
+            const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
+            router.push(targetPath);
+            router.refresh();
+          } else {
+            setIsLogin(true);
+            setMessage("Account created successfully! Please login.");
+          }
+        } else {
+          setMessage(data.message);
+        }
       }
     } catch (err) {
       setMessage("An error occurred. Please try again.");

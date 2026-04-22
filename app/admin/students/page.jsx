@@ -1,4 +1,4 @@
-import StudentManager from '@/components/admin/students/StudentManager';
+import StudentManager from '@/components/admin/student/StudentManager';
 import dbConnect from '@/lib/dbConnect';
 import Student from '@/models/Student';
 import { Users } from 'lucide-react';

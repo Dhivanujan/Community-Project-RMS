@@ -168,3 +168,29 @@ export default function FilterPanel({
                     )}
                 </div>
             </div>
+
+            {/* Auto-fetch students button */}
+            {canFetchStudents && (
+                <div className="pt-2 border-t border-border flex items-center justify-between">
+                    <p className="text-xs text-textMuted font-medium">
+                        {filters.department} • Batch {filters.batch}
+                    </p>
+                    <button
+                        onClick={onFetchStudents}
+                        disabled={isLoadingStudents || disabled}
+                        className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-primaryHover transition-all active:scale-[0.98] shadow-sm shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isLoadingStudents ? (
+                            <>
+                                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                Loading...
+                            </>
+                        ) : (
+                            'Load Students'
+                        )}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}

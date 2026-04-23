@@ -65,3 +65,19 @@ export default function GradeEntryTable({
                     </div>
                 )}
             </div>
+
+            {/* Grade Distribution Summary */}
+            {totalAssigned > 0 && (
+                <div className="px-6 py-3 bg-black/[0.015] border-b border-border flex flex-wrap gap-2">
+                    {Object.entries(gradeDistribution)
+                        .sort(([a], [b]) => VALID_GRADES.indexOf(a) - VALID_GRADES.indexOf(b))
+                        .map(([grade, count]) => (
+                            <span
+                                key={grade}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/5 text-primary text-xs font-bold rounded-lg"
+                            >
+                                {grade}: {count}
+                            </span>
+                        ))}
+                </div>
+            )}

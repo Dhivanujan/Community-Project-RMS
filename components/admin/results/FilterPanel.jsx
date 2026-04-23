@@ -133,3 +133,38 @@ export default function FilterPanel({
                         <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
                 </div>
+
+                {/* Subject */}
+                <div className="space-y-1.5 sm:col-span-2 lg:col-span-2">
+                    <label className="text-xs font-bold text-textMuted uppercase tracking-wider">
+                        Subject
+                    </label>
+                    <div className="relative">
+                        <select
+                            disabled={disabled || !filters.department || !filters.semester}
+                            value={filters.subjectCode}
+                            onChange={(e) => handleSubjectChange(e.target.value)}
+                            className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-textDark disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <option value="">
+                                {!filters.department || !filters.semester
+                                    ? 'Select department & semester first'
+                                    : filteredSubjects.length === 0
+                                        ? 'No subjects available'
+                                        : 'Select Subject'}
+                            </option>
+                            {filteredSubjects.map((sub) => (
+                                <option key={sub.code} value={sub.code}>
+                                    {sub.code} — {sub.name} ({sub.credits} credits)
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                    {selectedSubject && (
+                        <p className="text-xs text-textMuted font-medium mt-1">
+                            Credits: <span className="text-textDark font-bold">{selectedSubject.credits}</span>
+                        </p>
+                    )}
+                </div>
+            </div>

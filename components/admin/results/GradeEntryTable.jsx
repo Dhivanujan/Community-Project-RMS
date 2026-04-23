@@ -17,3 +17,7 @@ export default function GradeEntryTable({
     Object.values(grades).forEach((g) => {
         if (g) gradeDistribution[g] = (gradeDistribution[g] || 0) + 1;
     });
+
+    const totalAssigned = Object.values(grades).filter(Boolean).length;
+    const totalStudents = students.length;
+    const allAssigned = totalAssigned === totalStudents && totalStudents > 0;

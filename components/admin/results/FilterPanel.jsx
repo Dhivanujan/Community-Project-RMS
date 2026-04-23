@@ -91,3 +91,45 @@ export default function FilterPanel({
                         <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
                 </div>
+
+                {/* Batch */}
+                <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-textMuted uppercase tracking-wider">
+                        Batch
+                    </label>
+                    <div className="relative">
+                        <select
+                            disabled={disabled}
+                            value={filters.batch}
+                            onChange={(e) => onFilterChange('batch', e.target.value)}
+                            className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-textDark disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <option value="">Select Batch</option>
+                            {batches.map((b) => (
+                                <option key={b} value={b}>{b}</option>
+                            ))}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                </div>
+
+                {/* Semester */}
+                <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-textMuted uppercase tracking-wider">
+                        Semester
+                    </label>
+                    <div className="relative">
+                        <select
+                            disabled={disabled}
+                            value={filters.semester}
+                            onChange={(e) => onFilterChange('semester', e.target.value)}
+                            className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-textDark disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <option value="">Select Semester</option>
+                            {semesters.map((sem) => (
+                                <option key={sem} value={sem}>{sem}</option>
+                            ))}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                </div>

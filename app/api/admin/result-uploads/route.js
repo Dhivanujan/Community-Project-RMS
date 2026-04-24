@@ -22,4 +22,25 @@ export async function GET(request) {
     if (academicYear) query.academicYear = academicYear;
     if (batch) query.batch = batch;
 
-   
+    const uploads = await ResultUpload.find(query)
+      .sort({ updatedAt: -1 })
+      .select('-entries -auditLog')
+      .lean();
+
+    const serialized = uploads.map((u) => ({
+      ...u,
+      _id: u._id.toString(),
+      createdAt: u.createdAt?.toISOString(),
+      updatedAt: u.updatedAt?.toISOString(),
+      publishedAt: u.publishedAt?.toISOString() || null,
+    }));
+
+    return NextResponse.json({ success: true, data: serialized }, { status: 200 });
+  } catch (error) {
+    console.error('Result uploads GET error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Unable to fetch result uploads.' },
+      { status: 500 }
+    );
+  }
+}

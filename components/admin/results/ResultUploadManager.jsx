@@ -62,3 +62,23 @@ export default function ResultUploadManager() {
         }
         loadConfig();
     }, []);
+
+    // ── Fetch uploads list ──
+    const loadUploads = useCallback(async () => {
+        setIsLoadingUploads(true);
+        try {
+            const res = await fetch('/api/admin/result-uploads');
+            const json = await res.json();
+            if (json.success) {
+                setUploads(json.data);
+            }
+        } catch (err) {
+            console.error('Failed to load uploads:', err);
+        } finally {
+            setIsLoadingUploads(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        loadUploads();
+    }, [loadUploads]);

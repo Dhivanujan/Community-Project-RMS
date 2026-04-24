@@ -45,4 +45,20 @@ export default function ResultUploadManager() {
         setTimeout(() => setToast(null), 4000);
     }, []);
 
-    
+    // ── Fetch config on mount ──
+    useEffect(() => {
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/admin/result-uploads/config');
+                const json = await res.json();
+                if (json.success) {
+                    setConfig(json.data);
+                }
+            } catch (err) {
+                console.error('Failed to load config:', err);
+            } finally {
+                setIsLoadingConfig(false);
+            }
+        }
+        loadConfig();
+    }, []);

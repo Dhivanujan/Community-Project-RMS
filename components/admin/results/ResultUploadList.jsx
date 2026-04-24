@@ -11,4 +11,12 @@ export default function ResultUploadList({
     onDelete,
     isDeleting,
 }) {
-   
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+
+    const filteredUploads = uploads.filter((upload) => {
+        const matchesSearch =
+            searchQuery === '' ||
+            upload.subjectCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            upload.subjectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            upload.department.toLowerCase().includes(searchQuery.toLowerCase());

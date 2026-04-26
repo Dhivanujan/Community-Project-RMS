@@ -258,3 +258,93 @@ export default function ResultUploadManager() {
             setIsSaving(false);
         }
     };
+
+    // ── Publish ──
+    const handlePublish = async () => {
+        if (!editingUploadId) {
+            // Need to save first before publishing
+            if (!validate()) return;
+
+            setIsSaving(true);
+            try {
+                const entries = students.map((s) => ({
+                    student: s._id,
+                    grade: grades[s._id],
+                }));
+
+                const payload = {
+                    academicYear: filters.academicYear,
+                    department: filters.department,
+                    batch: filters.batch,
+                    semester: filters.semester,
+                    subjectCode: filters.subjectCode,
+                    subjectName: filters.subjectName,
+                    credits: filters.credits,
+                    entries,
+                };
+
+                const createRes = await fetch('/api/admin/result-uploads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                const createJson = await createRes.json();
+                if (!createRes.ok) throw new Error(createJson.message);
+
+                setEditingUploadId(createJson.data._id);
+                setIsSaving(false);
+
+                // Now publish
+                await publishUpload(createJson.data._id);
+            } catch (err) {
+                showToast(err.message || 'Failed to save before publish.', 'error');
+                setIsSaving(false);
+            }
+            return;
+        }
+
+        // If editing, update first then publish
+        if (editingUploadStatus === 'draft') {
+            try {
+                const entries = students.map((s) => ({
+                    student: s._id,
+                    grade: grades[s._id],
+                }));
+
+                await fetch(`/api/admin/result-uploads/${editingUploadId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ entries }),
+                });
+            } catch (err) {
+                // Continue to publish even if update fails
+            }
+        }
+
+        await publishUpload(editingUploadId);
+    };
+
+    const publishUpload = async (uploadId) => {
+        setIsPublishing(true);
+        try {
+            const res = await fetch(`/api/admin/result-uploads/${uploadId}/publish`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            const json = await res.json();
+
+            if (!res.ok) throw new Error(json.message);
+
+            showToast(json.message || 'Results published successfully!');
+            setIsPublishModalOpen(false);
+            resetForm();
+            setView('list');
+            loadUploads();
+        } catch (err) {
+            showToast(err.message || 'Failed to publish. Please try again.', 'error');
+        } finally {
+            setIsPublishing(false);
+        }
+    };

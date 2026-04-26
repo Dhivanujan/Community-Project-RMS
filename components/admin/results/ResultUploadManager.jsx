@@ -153,3 +153,23 @@ export default function ResultUploadManager() {
             setIsLoadingStudents(false);
         }
     };
+
+    // ── Handle grade change ──
+    const handleGradeChange = (studentId, grade) => {
+        setGrades((prev) => ({ ...prev, [studentId]: grade }));
+        setValidationErrors((prev) => {
+            const updated = { ...prev };
+            delete updated[studentId];
+            return updated;
+        });
+    };
+
+    // ── Handle batch grade ──
+    const handleBatchGrade = (grade) => {
+        const updated = {};
+        students.forEach((s) => {
+            updated[s._id] = grade;
+        });
+        setGrades(updated);
+        setValidationErrors({});
+    };

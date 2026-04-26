@@ -348,3 +348,25 @@ export default function ResultUploadManager() {
             setIsPublishing(false);
         }
     };
+
+    // ── Delete upload ──
+    const handleDelete = async (id) => {
+        if (!confirm('Are you sure you want to delete this draft?')) return;
+
+        setIsDeleting(true);
+        try {
+            const res = await fetch(`/api/admin/result-uploads/${id}`, {
+                method: 'DELETE',
+            });
+
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.message);
+
+            showToast('Draft deleted successfully.');
+            loadUploads();
+        } catch (err) {
+            showToast(err.message || 'Failed to delete.', 'error');
+        } finally {
+            setIsDeleting(false);
+        }
+    };

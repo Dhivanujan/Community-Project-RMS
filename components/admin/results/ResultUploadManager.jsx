@@ -370,3 +370,54 @@ export default function ResultUploadManager() {
             setIsDeleting(false);
         }
     };
+
+    // ── View/Edit existing upload ──
+    const handleViewOrEdit = async (id, mode = 'edit') => {
+        try {
+            const res = await fetch(`/api/admin/result-uploads/${id}`);
+            const json = await res.json();
+
+            if (!json.success) throw new Error(json.message);
+
+            const data = json.data;
+
+            // Set filters
+            setFilters({
+                academicYear: data.academicYear,
+                department: data.department,
+                batch: data.batch,
+                semester: data.semester,
+                subjectCode: data.subjectCode,
+                subjectName: data.subjectName,
+                credits: data.credits,
+            });
+
+            // Set students and grades from entries
+            const loadedStudents = data.entries
+                .filter((e) => e.student)
+                .map((e) => ({
+                    _id: e.student._id,
+                    name: e.student.name,
+                    rollNumber: e.student.rollNumber,
+                    email: e.student.email,
+                    department: e.student.department,
+                    enrollmentYear: e.student.enrollmentYear,
+                }));
+
+            const loadedGrades = {};
+            data.entries.forEach((e) => {
+                if (e.student) {
+                    loadedGrades[e.student._id] = e.grade;
+                }
+            });
+
+            setStudents(loadedStudents);
+            setGrades(loadedGrades);
+            setEditingUploadId(id);
+            setEditingUploadStatus(data.status);
+            setValidationErrors({});
+            setView('edit');
+        } catch (err) {
+            showToast('Failed to load upload details.', 'error');
+        }
+    };

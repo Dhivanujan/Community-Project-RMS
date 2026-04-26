@@ -421,3 +421,53 @@ export default function ResultUploadManager() {
             showToast('Failed to load upload details.', 'error');
         }
     };
+
+    // ── Reset form ──
+    const resetForm = () => {
+        setFilters(INITIAL_FILTERS);
+        setStudents([]);
+        setGrades({});
+        setValidationErrors({});
+        setEditingUploadId(null);
+        setEditingUploadStatus('draft');
+    };
+
+    // ── Start new upload ──
+    const startNewUpload = () => {
+        resetForm();
+        setView('new');
+    };
+
+    // ── Compute grade distribution for publish modal ──
+    const gradeDistribution = {};
+    Object.values(grades).forEach((g) => {
+        if (g) gradeDistribution[g] = (gradeDistribution[g] || 0) + 1;
+    });
+
+    const allGradesAssigned = students.length > 0 && students.every((s) => grades[s._id]);
+
+    // ── Loading State ──
+    if (isLoadingConfig) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6 animate-fadeInUp">
+            {/* Toast Notification */}
+            {toast && (
+                <div
+                    className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border animate-fadeInUp text-sm font-semibold ${
+                        toast.type === 'error'
+                            ? 'bg-red-50 border-red-200 text-red-700'
+                            : toast.type === 'warning'
+                                ? 'bg-amber-50 border-amber-200 text-amber-700'
+                                : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                    }`}
+                >
+                    {toast.message}
+                </div>
+            )}

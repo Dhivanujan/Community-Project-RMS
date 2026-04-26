@@ -82,3 +82,25 @@ export default function ResultUploadManager() {
     useEffect(() => {
         loadUploads();
     }, [loadUploads]);
+
+    // ── Handle filter changes ──
+    const handleFilterChange = (field, value) => {
+        setFilters((prev) => {
+            const updated = { ...prev, [field]: value };
+
+            // Reset dependent fields
+            if (field === 'department' || field === 'semester') {
+                updated.subjectCode = '';
+                updated.subjectName = '';
+                updated.credits = 0;
+            }
+            if (field === 'department' || field === 'batch') {
+                // Reset students when key filter changes
+                setStudents([]);
+                setGrades({});
+                setValidationErrors({});
+            }
+
+            return updated;
+        });
+    };

@@ -471,3 +471,134 @@ export default function ResultUploadManager() {
                     {toast.message}
                 </div>
             )}
+
+            {/* ═══════════ LIST VIEW ═══════════ */}
+            {view === 'list' && (
+                <>
+                    {/* Top Action Bar */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface p-4 rounded-2xl shadow-sm border border-border">
+                        <p className="text-sm text-textMuted font-medium">
+                            {uploads.length} result upload(s) total
+                        </p>
+                        <button
+                            onClick={startNewUpload}
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primaryHover transition-all active:scale-[0.98] shadow-sm shadow-primary/20"
+                        >
+                            <Plus className="w-5 h-5" />
+                            <span>New Upload</span>
+                        </button>
+                    </div>
+
+                    {/* Upload List */}
+                    {isLoadingUploads ? (
+                        <div className="flex items-center justify-center py-16">
+                            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                        </div>
+                    ) : (
+                        <ResultUploadList
+                            uploads={uploads}
+                            onView={(id) => handleViewOrEdit(id, 'view')}
+                            onEdit={(id) => handleViewOrEdit(id, 'edit')}
+                            onDelete={handleDelete}
+                            isDeleting={isDeleting}
+                        />
+                    )}
+                </>
+            )}
+
+            {/* ═══════════ NEW / EDIT VIEW ═══════════ */}
+            {(view === 'new' || view === 'edit') && (
+                <>
+                    {/* Back + Action Buttons */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-4 rounded-2xl shadow-sm border border-border">
+                        <button
+                            onClick={() => {
+                                resetForm();
+                                setView('list');
+                            }}
+                            className="flex items-center gap-2 text-sm font-semibold text-textMuted hover:text-textDark transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Back to Uploads
+                        </button>
+
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                            {/* Save Draft */}
+                            <button
+                                onClick={handleSave}
+                                disabled={isSaving || students.length === 0}
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-background border border-border text-textDark px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-border transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSaving ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <Save className="w-4 h-4" />
+                                )}
+                                {editingUploadId ? 'Update' : 'Save Draft'}
+                            </button>
+
+                            {/* Publish */}
+                            {editingUploadStatus !== 'published' && (
+                                <button
+                                    onClick={() => {
+                                        if (!validate()) return;
+                                        setIsPublishModalOpen(true);
+                                    }}
+                                    disabled={!allGradesAssigned || isSaving}
+                                    className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-emerald-700 transition-all shadow-sm shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Send className="w-4 h-4" />
+                                    Publish Results
+                                </button>
+                            )}
+
+                            {editingUploadStatus === 'published' && (
+                                <span className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-500/10 text-emerald-600 text-sm font-bold rounded-xl">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Filter Panel */}
+                    <FilterPanel
+                        config={config}
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        onFetchStudents={fetchStudents}
+                        isLoadingStudents={isLoadingStudents}
+                        disabled={view === 'edit'}
+                    />
+
+                    {/* Grade Entry Table */}
+                    <GradeEntryTable
+                        students={students}
+                        grades={grades}
+                        onGradeChange={handleGradeChange}
+                        onBatchGrade={handleBatchGrade}
+                        validationErrors={validationErrors}
+                        disabled={false}
+                        isPublished={editingUploadStatus === 'published'}
+                    />
+
+                    {/* Publish Confirmation Modal */}
+                    <PublishConfirmModal
+                        isOpen={isPublishModalOpen}
+                        onClose={() => setIsPublishModalOpen(false)}
+                        onConfirm={handlePublish}
+                        isPublishing={isPublishing}
+                        uploadData={{
+                            subjectCode: filters.subjectCode,
+                            subjectName: filters.subjectName,
+                            semester: filters.semester,
+                            department: filters.department,
+                            studentCount: students.length,
+                            gradeDistribution,
+                        }}
+                    />
+                </>
+            )}
+        </div>
+    );
+}

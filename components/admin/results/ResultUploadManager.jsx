@@ -173,3 +173,88 @@ export default function ResultUploadManager() {
         setGrades(updated);
         setValidationErrors({});
     };
+
+    // ── Validate before save/publish ──
+    const validate = () => {
+        const errors = {};
+        let hasErrors = false;
+
+        // Check filters
+        if (!filters.academicYear || !filters.department || !filters.batch || !filters.semester || !filters.subjectCode) {
+            showToast('Please select all filter fields before saving.', 'error');
+            return false;
+        }
+
+        // Check grades
+        students.forEach((s) => {
+            if (!grades[s._id]) {
+                errors[s._id] = true;
+                hasErrors = true;
+            }
+        });
+
+        setValidationErrors(errors);
+
+        if (hasErrors) {
+            showToast('Please assign grades to all students.', 'error');
+            return false;
+        }
+
+        return true;
+    };
+
+    // ── Save as draft ──
+    const handleSave = async () => {
+        if (!validate()) return;
+
+        setIsSaving(true);
+        try {
+            const entries = students.map((s) => ({
+                student: s._id,
+                grade: grades[s._id],
+            }));
+
+            const payload = {
+                academicYear: filters.academicYear,
+                department: filters.department,
+                batch: filters.batch,
+                semester: filters.semester,
+                subjectCode: filters.subjectCode,
+                subjectName: filters.subjectName,
+                credits: filters.credits,
+                entries,
+            };
+
+            let res;
+            if (editingUploadId) {
+                // Update existing
+                res = await fetch(`/api/admin/result-uploads/${editingUploadId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ entries }),
+                });
+            } else {
+                // Create new
+                res = await fetch('/api/admin/result-uploads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+            }
+
+            const json = await res.json();
+
+            if (!res.ok) {
+                throw new Error(json.message || 'Save failed');
+            }
+
+            showToast(json.message || 'Saved successfully!');
+            resetForm();
+            setView('list');
+            loadUploads();
+        } catch (err) {
+            showToast(err.message || 'Failed to save. Please try again.', 'error');
+        } finally {
+            setIsSaving(false);
+        }
+    };

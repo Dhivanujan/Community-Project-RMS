@@ -104,3 +104,52 @@ export default function ResultUploadManager() {
             return updated;
         });
     };
+
+    // ── Fetch students based on department + batch ──
+    const fetchStudents = async () => {
+        if (!filters.department || !filters.batch) return;
+
+        setIsLoadingStudents(true);
+        setValidationErrors({});
+
+        try {
+            const res = await fetch('/api/students');
+            const data = await res.json();
+
+            // Filter locally by department and batch (enrollmentYear)
+            const studentsArray = Array.isArray(data) ? data : data.data || [];
+            const filtered = studentsArray.filter((s) => {
+                const matchesDept = s.department === filters.department;
+                const matchesBatch = s.enrollmentYear === filters.batch;
+                return matchesDept && matchesBatch;
+            });
+
+            // Serialize _id
+            const serialized = filtered.map((s) => ({
+                ...s,
+                _id: s._id?.toString ? s._id.toString() : s._id,
+            }));
+
+            setStudents(serialized);
+
+            // Initialize grades (empty for new, or preserve existing)
+            if (view === 'new') {
+                const initialGrades = {};
+                serialized.forEach((s) => {
+                    initialGrades[s._id] = '';
+                });
+                setGrades(initialGrades);
+            }
+
+            if (serialized.length === 0) {
+                showToast('No students found for the selected department and batch.', 'warning');
+            } else {
+                showToast(`${serialized.length} student(s) loaded successfully.`);
+            }
+        } catch (err) {
+            console.error('Failed to fetch students:', err);
+            showToast('Failed to load students. Please try again.', 'error');
+        } finally {
+            setIsLoadingStudents(false);
+        }
+    };

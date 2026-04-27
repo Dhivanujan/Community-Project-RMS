@@ -71,11 +71,11 @@ export default function Hero({ summary }) {
             </AnimateOnScroll>
 
             <AnimateOnScroll variant="fadeUp" delay={100} duration={800}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
                 Smart Results{" "}
-                <br className="hidden lg:block" />
+                <br className="hidden md:block" />
                 Management for{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent whitespace-nowrap">
                   SUSL
                 </span>
               </h1>
@@ -98,17 +98,17 @@ export default function Hero({ summary }) {
             </AnimateOnScroll>
 
             <AnimateOnScroll variant="fadeUp" delay={400} duration={800}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto px-4 sm:px-0">
                 <Link
                   href="/login"
-                  className="group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 animate-pulse-glow"
+                  className="group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 sm:py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 animate-pulse-glow w-full sm:w-max active:scale-[0.98]"
                 >
                   Login Portal
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
                 <Link
                   href="#features"
-                  className="flex items-center justify-center bg-white border-2 border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                  className="flex items-center justify-center bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 px-8 py-4 sm:py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg w-full sm:w-max active:scale-[0.98]"
                 >
                   Explore Features
                 </Link>

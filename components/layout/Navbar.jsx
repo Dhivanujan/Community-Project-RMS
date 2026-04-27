@@ -31,11 +31,11 @@ export default function Navbar() {
             </div>
 
             <div className="flex flex-col leading-tight">
-              <span className="font-extrabold text-xl text-slate-900 tracking-tight">
+              <span className="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">
                 SUSL MeritMatrix
                 <span className="text-blue-600">.</span>
               </span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.2em]">
+              <span className="text-[9px] sm:text-[10px] font-semibold text-slate-500 uppercase tracking-[0.2em]">
                 Faculty of Computing
               </span>
             </div>
@@ -87,24 +87,26 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {open && (
-          <div className="md:hidden pb-6 animate-slideDown">
-            <div className="flex flex-col gap-1 mt-2">
-              <Link href="#home" className="mobile-link" onClick={() => setOpen(false)}>
+          <div className="md:hidden pb-6 animate-slideDown shadow-xl rounded-b-2xl border-t border-slate-100 bg-white/95 backdrop-blur-xl absolute left-0 right-0 px-4 z-40">
+            <div className="flex flex-col gap-2 mt-4">
+              <Link href="#home" className="py-3 px-4 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-medium transition-colors" onClick={() => setOpen(false)}>
                 Home
               </Link>
-              <Link href="#features" className="mobile-link" onClick={() => setOpen(false)}>
+              <Link href="#features" className="py-3 px-4 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-medium transition-colors" onClick={() => setOpen(false)}>
                 Features
               </Link>
-              <Link href="#departments" className="mobile-link" onClick={() => setOpen(false)}>
+              <Link href="#departments" className="py-3 px-4 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-medium transition-colors" onClick={() => setOpen(false)}>
                 Departments
               </Link>
 
+              <div className="h-px w-full bg-slate-100 my-2"></div>
+
               <Link
                 href="/login"
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold mt-3 shadow-lg shadow-blue-600/20"
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white px-6 py-3.5 rounded-xl font-semibold mt-1 shadow-lg shadow-blue-600/20 transition-all"
                 onClick={() => setOpen(false)}
               >
-                <LogIn className="w-4 h-4" />
+                <LogIn className="w-5 h-5" />
                 Login Portal
               </Link>
             </div>

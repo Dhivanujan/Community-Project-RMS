@@ -34,12 +34,12 @@ export default function DashboardPreview({ summary }) {
     {
       h: Math.max(5, Number(summary?.gpaDistribution?.between30And34 ?? 90)),
       label: "3.0–3.4",
-      color: "from-blue-500 to-indigo-500",
+      color: "from-rose-400 to-rose-500",
     },
     {
       h: Math.max(5, Number(summary?.gpaDistribution?.above35 ?? 60)),
       label: "3.5+",
-      color: "from-indigo-500 to-violet-500",
+      color: "from-amber-400 to-yellow-500",
     },
   ];
 

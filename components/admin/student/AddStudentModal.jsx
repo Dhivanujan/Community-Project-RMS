@@ -158,7 +158,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-dark rounded-xl transition-all shadow-sm shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primaryHover hover-lift rounded-xl transition-all shadow-md shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:transform-none"
                         >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Student'}
                         </button>

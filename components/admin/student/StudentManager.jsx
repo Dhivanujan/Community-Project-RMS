@@ -54,17 +54,17 @@ export default function StudentManager({ initialStudents }) {
     return (
         <div className="space-y-6 animate-fadeInUp">
             {/* Top Bar for Manager: Search & Add Button */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface p-4 rounded-2xl shadow-sm border border-border">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface/80 glass-card p-4 rounded-2xl shadow-sm border border-border">
                 <input
                     type="text"
                     placeholder="Search by name, roll number, or email..."
-                    className="w-full sm:max-w-md bg-background border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all text-textDark placeholder:text-textMuted"
+                    className="w-full sm:max-w-md bg-background/50 border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all text-textDark placeholder:text-textMuted"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primary-dark transition-all active:scale-[0.98] shadow-sm shadow-primary/20"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primaryHover hover-lift transition-all active:scale-[0.98] shadow-md shadow-primary/30"
                 >
                     <Plus className="w-5 h-5" />
                     <span>Add Student</span>

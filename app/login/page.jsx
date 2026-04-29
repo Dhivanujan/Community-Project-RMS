@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GraduationCap, Mail, Lock, Eye, ArrowRight, HelpCircle, User, Hash } from "lucide-react";
+import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowRight, HelpCircle, User, Hash } from "lucide-react";
 
 export default function Login() {
   const router = useRouter();
   const [role, setRole] = useState("Student");
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   // Form states
   const [formData, setFormData] = useState({
@@ -132,7 +133,7 @@ export default function Login() {
             <div className="w-8 h-32 bg-white rounded-t-lg"></div>
           </div>
 
-          <Link href="/" className="flex items-center gap-3 relative z-10 inline-flex w-max">
+          <Link href="/" className="items-center gap-3 relative z-10 inline-flex w-max">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
               <GraduationCap className="text-blue-600 w-6 h-6" />
             </div>
@@ -303,7 +304,7 @@ export default function Login() {
                       <Lock className="w-4 h-4" />
                     </div>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       required
                       value={formData.password}
@@ -311,9 +312,14 @@ export default function Login() {
                       placeholder="••••••••"
                       className="w-full pl-10 pr-10 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium tracking-widest"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer transition-colors">
-                      <Eye className="w-4 h-4" />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((currentValue) => !currentValue)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
               )}
@@ -329,7 +335,7 @@ export default function Login() {
                       <Lock className="w-4 h-4" />
                     </div>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="confirmPassword"
                       required
                       value={formData.confirmPassword}
@@ -337,9 +343,14 @@ export default function Login() {
                       placeholder="••••••••"
                       className="w-full pl-10 pr-10 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium tracking-widest"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer transition-colors">
-                      <Eye className="w-4 h-4" />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((currentValue) => !currentValue)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
               )}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Activity, TrendingUp, Trophy, Users, BookOpen, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowDown, Activity, TrendingUp, Trophy, Users, BookOpen, Sparkles } from "lucide-react";
 import AnimateOnScroll from "./AnimateOnScroll";
 
 export default function Hero({ summary }) {
@@ -44,9 +44,9 @@ export default function Hero({ summary }) {
     <section id="home" className="relative bg-white overflow-hidden pt-16 pb-28 lg:pt-24 lg:pb-36">
       {/* ── Animated background blobs ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-br from-blue-100 via-indigo-50 to-transparent rounded-full blur-3xl opacity-70 animate-float-slow"></div>
-        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-100 via-blue-50 to-transparent rounded-full blur-3xl opacity-50 animate-float"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-50/50 to-transparent rounded-full"></div>
+        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-br from-rose-100 via-amber-50 to-transparent rounded-full blur-3xl opacity-60 animate-float-slow"></div>
+        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-amber-100 via-rose-50 to-transparent rounded-full blur-3xl opacity-40 animate-float"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-rose-50/50 to-transparent rounded-full"></div>
 
         {/* Decorative geometric shapes */}
         <div className="absolute top-20 left-[15%] w-3 h-3 rounded-full bg-blue-300/40 animate-float-fast"></div>
@@ -64,18 +64,18 @@ export default function Hero({ summary }) {
           {/* Left Side Content */}
           <div className="flex-1 text-center lg:text-left">
             <AnimateOnScroll variant="fadeUp" delay={0} duration={800}>
-              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
-                <Sparkles className="w-4 h-4" />
+              <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
+                <Sparkles className="w-4 h-4 text-amber-500" />
                 Sabaragamuwa University of Sri Lanka
               </div>
             </AnimateOnScroll>
 
             <AnimateOnScroll variant="fadeUp" delay={100} duration={800}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
                 Smart Results{" "}
-                <br className="hidden lg:block" />
+                <br className="hidden md:block" />
                 Management for{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent whitespace-nowrap">
                   SUSL
                 </span>
               </h1>
@@ -98,19 +98,20 @@ export default function Hero({ summary }) {
             </AnimateOnScroll>
 
             <AnimateOnScroll variant="fadeUp" delay={400} duration={800}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto px-4 sm:px-0">
                 <Link
                   href="/login"
-                  className="group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 animate-pulse-glow"
+                  className="group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 sm:py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 animate-pulse-glow w-full sm:w-max active:scale-[0.98]"
                 >
                   Login Portal
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
                 <Link
                   href="#features"
-                  className="flex items-center justify-center bg-white border-2 border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                  className="group flex items-center justify-center gap-2 bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 px-8 py-4 sm:py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg w-full sm:w-max active:scale-[0.98]"
                 >
                   Explore Features
+                  <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
                 </Link>
               </div>
             </AnimateOnScroll>
@@ -121,7 +122,7 @@ export default function Hero({ summary }) {
             <AnimateOnScroll variant="fadeLeft" delay={200} duration={1000}>
               <div className="relative">
                 {/* Glow behind card */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-100 rounded-3xl blur-2xl opacity-60 animate-float-slow"></div>
+                <div className="absolute -inset-4 bg-gradient-to-r from-rose-100 via-amber-100 to-rose-100 rounded-3xl blur-2xl opacity-60 animate-float-slow"></div>
 
                 <div className="relative bg-white rounded-2xl shadow-2xl shadow-slate-200/60 p-2 border border-slate-100/80">
                   <div className="bg-gradient-to-b from-slate-50 to-white rounded-xl overflow-hidden border border-slate-100">
@@ -190,7 +191,7 @@ export default function Hero({ summary }) {
                                 className="flex-1 flex flex-col items-center gap-1"
                               >
                                 <div
-                                  className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-md transition-all duration-500 hover:from-blue-700 hover:to-blue-500 animate-grow-up"
+                                  className="w-full bg-gradient-to-t from-rose-600 to-amber-500 rounded-t-md transition-all duration-500 hover:from-rose-700 hover:to-amber-600 animate-grow-up"
                                   style={{
                                     height: `${bar.h}%`,
                                     animationDelay: `${i * 100}ms`,

@@ -84,8 +84,34 @@ export default function Login() {
           }),
         });
         const data = await res.json();
-        setMessage(res.ok ? "Account created successfully! Please login." : data.message);
-        if (res.ok) setIsLogin(true);
+        
+        if (res.ok) {
+          setMessage("Account created successfully! Logging you in...");
+          
+          // Auto login after signup
+          const loginRes = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+              role,
+            }),
+          });
+          
+          const loginData = await loginRes.json();
+          if (loginRes.ok) {
+            const normalizedRole = (loginData.role || role || "").toLowerCase();
+            const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
+            router.push(targetPath);
+            router.refresh();
+          } else {
+            setIsLogin(true);
+            setMessage("Account created successfully! Please login.");
+          }
+        } else {
+          setMessage(data.message);
+        }
       }
     } catch (err) {
       setMessage("An error occurred. Please try again.");
@@ -345,27 +371,7 @@ export default function Login() {
               </div>
             </div>
 
-            {/* SSO Divider / Button (Only on Login) */}
-            {isLogin && !isForgotPassword && (
-              <>
-                <div className="relative mt-8 mb-8">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-3 bg-white text-[10px] font-bold tracking-widest uppercase text-slate-400">Identity Provider</span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-3"
-                >
-                  <div className="w-4 h-4 bg-slate-900 rounded-sm"></div>
-                  Continue with Institute SSO
-                </button>
-              </>
-            )}
+           
 
             <div className="mt-8 text-center text-sm text-slate-600">
               {isForgotPassword ? (

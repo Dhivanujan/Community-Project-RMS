@@ -1,6 +1,19 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
+
 export default function Topbar() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      router.push('/login');
+      router.refresh();
+    }
+  };
+
   return (
     <header className="h-[80px] bg-background/80 backdrop-blur-md border-b border-border flex items-center justify-between px-8 sticky top-0 z-10 font-sans">
       <div className="flex-1">
@@ -20,7 +33,7 @@ export default function Topbar() {
         
         <div className="w-px h-8 bg-border border-l border-dashed"></div>
         
-        <button className="text-sm font-bold text-textMuted hover:text-red-600 border border-transparent hover:border-red-200 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-all flex items-center gap-2">
+        <button onClick={handleLogout} className="text-sm font-bold text-textMuted hover:text-red-600 border border-transparent hover:border-red-200 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-all flex items-center gap-2">
           Logout
         </button>
       </div>

@@ -70,11 +70,11 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-slate-500">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-blue-400" />
-                support@uniinsight.edu
+                computing@susl.lk
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-blue-400" />
-                +1 (555) 123-4567
+                +94 45 228 0014
               </li>
               <li>
                 <Link

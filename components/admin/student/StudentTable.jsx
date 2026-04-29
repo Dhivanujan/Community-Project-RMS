@@ -4,7 +4,7 @@ import { Edit3, Trash2, GraduationCap } from 'lucide-react';
 
 export default function StudentTable({ students, onDelete, onEdit }) {
     return (
-        <div className="bg-surface rounded-3xl shadow-sm border border-border p-6 overflow-hidden">
+        <div className="bg-surface/80 glass-card rounded-3xl shadow-sm border border-border p-6 overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
@@ -18,10 +18,10 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                     <tbody>
                         {students.length > 0 ? (
                             students.map((student) => (
-                                <tr key={student._id} className="border-b border-border/50 hover:bg-black/[0.02] transition-colors group">
+                                <tr key={student._id} className="border-b border-border/50 hover:bg-primary/5 transition-colors group">
                                     <td className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm">
+                                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm group-hover:scale-105 transition-transform">
                                                 {student.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
@@ -50,14 +50,14 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                                         <div className="flex items-center justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                             <button 
                                                 onClick={() => onEdit(student)}
-                                                className="p-2 text-textMuted hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                className="p-2 text-textMuted hover:text-primary hover:bg-primary/10 rounded-lg transition-all hover:scale-110"
                                                 title="Edit Student"
                                             >
                                                 <Edit3 className="w-4 h-4" />
                                             </button>
                                             <button 
                                                 onClick={() => onDelete(student._id)}
-                                                className="p-2 text-textMuted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                                className="p-2 text-textMuted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all hover:scale-110"
                                                 title="Delete Student"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -69,8 +69,10 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                         ) : (
                             <tr>
                                 <td colSpan="4" className="py-12 text-center text-textMuted text-sm font-medium">
-                                    <div className="flex flex-col items-center justify-center gap-3">
-                                        <GraduationCap className="w-12 h-12 text-border" />
+                                    <div className="flex flex-col items-center justify-center gap-4 animate-fadeIn">
+                                        <div className="p-4 bg-primary/5 rounded-full card-glow">
+                                            <GraduationCap className="w-12 h-12 text-primary/40 animate-pulse-glow" />
+                                        </div>
                                         <p>No students found.</p>
                                     </div>
                                 </td>

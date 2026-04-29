@@ -69,8 +69,10 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                         ) : (
                             <tr>
                                 <td colSpan="4" className="py-12 text-center text-textMuted text-sm font-medium">
-                                    <div className="flex flex-col items-center justify-center gap-3">
-                                        <GraduationCap className="w-12 h-12 text-border" />
+                                    <div className="flex flex-col items-center justify-center gap-4 animate-fadeIn">
+                                        <div className="p-4 bg-primary/5 rounded-full card-glow">
+                                            <GraduationCap className="w-12 h-12 text-primary/40 animate-pulse-glow" />
+                                        </div>
                                         <p>No students found.</p>
                                     </div>
                                 </td>

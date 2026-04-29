@@ -23,13 +23,15 @@ export default async function StudentsPage() {
 
     return (
         <div className="w-full h-full space-y-6">
-            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fadeInUp">
                 <div>
-                    <h1 className="text-3xl lg:text-4xl font-bold text-textDark tracking-tight leading-[1.15] flex items-center gap-3">
-                        <Users className="w-8 h-8 text-primary" />
+                    <h1 className="text-3xl lg:text-4xl font-bold text-textDark tracking-tight leading-[1.15] flex items-center gap-4">
+                        <div className="p-3 bg-primary/10 rounded-2xl card-glow">
+                            <Users className="w-8 h-8 text-primary animate-pulse-glow" />
+                        </div>
                         Students
                     </h1>
-                    <p className="mt-2 text-textMuted text-sm font-medium">
+                    <p className="mt-3 text-textMuted text-sm font-medium">
                         Manage university students, enrollments, and academic records.
                     </p>
                 </div>

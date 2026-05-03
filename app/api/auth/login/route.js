@@ -15,6 +15,10 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Invalid credentials or role' }, { status: 401 });
     }
 
+    if (!user.isVerified) {
+      return NextResponse.json({ message: 'Please verify your email before logging in. Sign up again to receive a new OTP.' }, { status: 403 });
+    }
+
     // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {

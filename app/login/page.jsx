@@ -21,7 +21,55 @@ export default function Login() {
     confirmPassword: ""
   });
   const [message, setMessage] = useState("");
+  const [otpRequired, setOtpRequired] = useState(false);
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, otp }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage("Email verified! Logging you in...");
+        
+        // Auto login after verify
+        const loginRes = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: formData.email, password: formData.password, role }),
+        });
+        const loginData = await loginRes.json();
+        
+        if (loginRes.ok) {
+          localStorage.setItem("userName", formData.name);
+          localStorage.setItem("userRole", role);
+          const targetPath = (loginData.role || role).toLowerCase() === "faculty admin" ? "/admin" : "/student/dashboard";
+          router.push(targetPath);
+          router.refresh();
+        } else {
+          setMessage(loginData.message || "Please login manually.");
+          setIsLogin(true);
+          setOtpRequired(false);
+        }
+      } else {
+        setMessage(data.message);
+      }
+    } catch (error) {
+      setMessage("Error verifying OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle Input Changes
   const handleChange = (e) => {

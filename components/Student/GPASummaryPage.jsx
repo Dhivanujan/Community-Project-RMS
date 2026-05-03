@@ -1,74 +1,71 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { TrendingUp, Award, BookOpen, GraduationCap } from "lucide-react";
 
-const semesterData = [
-  { name: "Fall 2022", gpa: 3.65, credits: 12, subjects: 4 },
-  { name: "Spring 2023", gpa: 3.72, credits: 14, subjects: 5 },
-  { name: "Fall 2023", gpa: 3.78, credits: 11, subjects: 4 },
-  { name: "Spring 2024", gpa: 3.85, credits: 12, subjects: 4 },
-  { name: "Fall 2024", gpa: 3.92, credits: 7, subjects: 2 },
-];
-
-const fgpaYearData = [
-  { year: "Year 1", gpa: 3.65, weight: 0.2, credits: 26 },
-  { year: "Year 2", gpa: 3.72, weight: 0.2, credits: 25 },
-  { year: "Year 3", gpa: 3.78, weight: 0.3, credits: 23 },
-  { year: "Year 4", gpa: 3.85, weight: 0.3, credits: 19 },
-];
-
-const fgpa = fgpaYearData.reduce((sum, item) => sum + item.gpa * item.weight, 0);
-const finalGpa = Number(fgpa.toFixed(2));
-
-const gpaScale = [
-  { grade: "A+", range: "4.00", desc: "Exceptional" },
-  { grade: "A", range: "4.00", desc: "Excellent" },
-  { grade: "A-", range: "3.70", desc: "Very Good" },
-  { grade: "B+", range: "3.30", desc: "Good" },
-  { grade: "B", range: "3.00", desc: "Above Average" },
-  { grade: "B-", range: "2.70", desc: "Average" },
-  { grade: "C+", range: "2.30", desc: "Below Average" },
-  { grade: "C", range: "2.00", desc: "Satisfactory" },
-  { grade: "C-", range: "1.70", desc: "Pass with caution" },
-  { grade: "D+", range: "1.30", desc: "Marginal pass" },
-  { grade: "D", range: "1.00", desc: "Minimum pass" },
-  { grade: "E", range: "0.00", desc: "Fail" },
-];
-
-const examCriteria = [
-  "End Semester Examination carries at least 60% of the final marks.",
-  "Continuous assessment can contribute up to 40% through assignments, quizzes, and mid semester work.",
-  "A student must maintain at least 80% attendance for tutorials and practical work.",
-  "Every eligible candidate must sit all relevant subjects for the semester.",
-  "E grades must be improved at the first available opportunity.",
-  "Repeated examinations can be attempted only twice, and the highest repeat grade allowed is C.",
-  "Final degree eligibility requires FGPA >= 2.00 and at least D in all credited GPA courses.",
-];
-
-const classAwardRules = [
-  { label: "First Class", range: "3.70 - 4.00" },
-  { label: "Second Class (Upper Division)", range: "3.30 - 3.69" },
-  { label: "Second Class (Lower Division)", range: "2.70 - 3.29" },
-  { label: "Pass", range: "2.00 - 2.69" },
-];
-
 export default function GPASummaryPage() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/student/gpa-summary', {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            setData(result.data);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch GPA summary", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-8 text-center text-slate-500">Loading GPA Summary...</div>;
+  }
+
+  const overview = data?.overview || {
+    cumulativeGpa: 0,
+    totalCreditsEarned: 0,
+    totalCreditsRequired: 128,
+    deansListCount: 0,
+    academicStanding: "Not Eligible"
+  };
+
+  const semesterBreakdown = data?.semesterBreakdown || [];
+  const gpaScale = data?.gpaScale || [];
+  const finalGpa = overview.cumulativeGpa;
+  const degreeClass = overview.academicStanding;
   const maxGPA = 4.0;
-  const cumulativeGPA = 3.82;
-  const totalCreditsEarned = 56;
-  const totalCreditsRequired = 128;
-  const deansListCount = 3;
-  const degreeClass =
-    finalGpa >= 3.7
-      ? "First Class"
-      : finalGpa >= 3.3
-        ? "Second Class (Upper Division)"
-        : finalGpa >= 2.7
-          ? "Second Class (Lower Division)"
-          : finalGpa >= 2.0
-            ? "Pass"
-            : "Not Eligible";
   const degreeEligible = finalGpa >= 2.0;
+
+  // The exam criteria and class award rules are static faculty policies, so they can remain.
+  const examCriteria = [
+    "End Semester Examination carries at least 60% of the final marks.",
+    "Continuous assessment can contribute up to 40% through assignments, quizzes, and mid semester work.",
+    "A student must maintain at least 80% attendance for tutorials and practical work.",
+    "Every eligible candidate must sit all relevant subjects for the semester.",
+    "E grades must be improved at the first available opportunity.",
+    "Repeated examinations can be attempted only twice, and the highest repeat grade allowed is C.",
+    "Final degree eligibility requires FGPA >= 2.00 and at least D in all credited GPA courses.",
+  ];
+
+  const classAwardRules = [
+    { label: "First Class", range: "3.70 - 4.00" },
+    { label: "Second Class (Upper Division)", range: "3.30 - 3.69" },
+    { label: "Second Class (Lower Division)", range: "2.70 - 3.29" },
+    { label: "Pass", range: "2.00 - 2.69" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -82,47 +79,21 @@ export default function GPASummaryPage() {
         </p>
       </div>
 
-      {/* FGPA Rule and Degree Eligibility */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
           <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
-            Final GPA Rule
+            Final GPA & Academic Standing
           </h3>
           <div className="rounded-xl bg-slate-50/80 border border-slate-200/60 p-5 mb-5">
             <p className="text-sm font-semibold text-slate-700 mb-2">
-              FGPA = 0.2 x GPA(year 1) + 0.2 x GPA(year 2) + 0.3 x GPA(year 3) + 0.3 x GPA(year 4)
+              Your overall standing based on your results so far.
             </p>
-            <p className="text-xs text-slate-400">
-              The final GPA is rounded to two decimal places after applying the year weights.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            {fgpaYearData.map((item) => (
-              <div
-                key={item.year}
-                className="rounded-lg border border-slate-200/70 bg-white p-4"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-bold text-slate-700">{item.year}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1e3a5f] bg-[#1e3a5f]/5 px-2 py-0.5 rounded-full">
-                    {Math.round(item.weight * 100)}%
-                  </span>
-                </div>
-                <div className="text-2xl font-extrabold text-slate-800 tracking-tight">
-                  {item.gpa.toFixed(2)}
-                </div>
-                <div className="mt-1 text-[11px] text-slate-400 font-medium">
-                  {item.credits} credits weighted into FGPA
-                </div>
-              </div>
-            ))}
           </div>
 
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div className="rounded-lg bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 p-4">
               <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-1">
-                Final GPA
+                Cumulative GPA
               </div>
               <div className="text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
                 {finalGpa.toFixed(2)}
@@ -130,13 +101,10 @@ export default function GPASummaryPage() {
             </div>
             <div className="rounded-lg bg-emerald-50 border border-emerald-100 p-4">
               <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-600 mb-1">
-                Degree Class
+                Standing
               </div>
               <div className="text-xl font-extrabold text-emerald-700 tracking-tight">
                 {degreeClass}
-              </div>
-              <div className="text-[11px] text-emerald-600/80 font-medium mt-1">
-                {degreeEligible ? "Meets the minimum FGPA requirement" : "Below the minimum FGPA requirement"}
               </div>
             </div>
           </div>
@@ -182,7 +150,7 @@ export default function GPASummaryPage() {
               <TrendingUp className="w-3.5 h-3.5" />
               Cumulative GPA
             </div>
-            <h2 className="text-4xl font-extrabold tracking-tight">{cumulativeGPA}</h2>
+            <h2 className="text-4xl font-extrabold tracking-tight">{finalGpa.toFixed(2)}</h2>
             <p className="text-white/40 text-xs mt-1.5 font-medium">out of 4.00</p>
           </div>
         </div>
@@ -193,10 +161,10 @@ export default function GPASummaryPage() {
             Total Credits
           </div>
           <h2 className="text-4xl font-extrabold text-slate-800 tracking-tight">
-            {totalCreditsEarned}
+            {overview.totalCreditsEarned}
           </h2>
           <p className="text-slate-400 text-xs mt-1.5 font-medium">
-            of {totalCreditsRequired} required
+            of {overview.totalCreditsRequired} required
           </p>
         </div>
 
@@ -219,7 +187,7 @@ export default function GPASummaryPage() {
             Dean&apos;s List
           </div>
           <h2 className="text-4xl font-extrabold text-[#d4a843] tracking-tight">
-            {deansListCount}
+            {overview.deansListCount}
           </h2>
           <p className="text-slate-400 text-xs mt-1.5 font-medium">
             semesters achieved
@@ -235,33 +203,39 @@ export default function GPASummaryPage() {
             GPA Trend by Semester
           </h3>
           <div className="flex items-end gap-4 h-44">
-            {semesterData.map((sem, i) => {
-              const heightPct = ((sem.gpa - 3.0) / (maxGPA - 3.0)) * 100;
-              return (
-                <div
-                  key={i}
-                  className="flex-1 flex flex-col items-center gap-2 group"
-                >
-                  <span className="text-xs font-bold text-[#1e3a5f] opacity-0 group-hover:opacity-100 transition-opacity">
-                    {sem.gpa.toFixed(2)}
-                  </span>
+            {semesterBreakdown.length === 0 ? (
+               <div className="text-center text-sm text-slate-500 py-10 w-full flex-1">
+                 No semester results found to display GPA trend.
+               </div>
+            ) : (
+              semesterBreakdown.map((sem, i) => {
+                const heightPct = ((sem.gpa - 3.0) / (maxGPA - 3.0)) * 100;
+                return (
                   <div
-                    className="w-full bg-gradient-to-t from-[#1e3a5f] to-[#3d6a99] rounded-t-lg transition-all duration-500 cursor-pointer hover:from-[#163050] hover:to-[#2d5a8e] relative"
-                    style={{ height: `${heightPct}%`, minHeight: "12px" }}
+                    key={i}
+                    className="flex-1 flex flex-col items-center gap-2 group"
                   >
-                    {/* Tooltip */}
-                    <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold pointer-events-none">
-                      {sem.gpa.toFixed(2)} • {sem.credits}cr
+                    <span className="text-xs font-bold text-[#1e3a5f] opacity-0 group-hover:opacity-100 transition-opacity">
+                      {sem.gpa.toFixed(2)}
+                    </span>
+                    <div
+                      className="w-full bg-gradient-to-t from-[#1e3a5f] to-[#3d6a99] rounded-t-lg transition-all duration-500 cursor-pointer hover:from-[#163050] hover:to-[#2d5a8e] relative"
+                      style={{ height: `${Math.max(heightPct, 5)}%`, minHeight: "12px" }}
+                    >
+                      {/* Tooltip */}
+                      <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold pointer-events-none">
+                        {sem.gpa.toFixed(2)} • {sem.credits}cr
+                      </div>
                     </div>
+                    <span className="text-[10px] font-semibold text-slate-400 text-center leading-tight">
+                      {sem.semester.split(" ")[0]}
+                      <br />
+                      {sem.semester.split(" ")[1]}
+                    </span>
                   </div>
-                  <span className="text-[10px] font-semibold text-slate-400 text-center leading-tight">
-                    {sem.name.split(" ")[0]}
-                    <br />
-                    {sem.name.split(" ")[1]}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
 
           {/* Legend */}
@@ -275,7 +249,7 @@ export default function GPASummaryPage() {
             <div className="flex items-center gap-1.5">
               <div className="w-6 h-[2px] bg-emerald-400/80 rounded" />
               <span className="text-[11px] text-slate-400 font-medium">
-                Cumulative: {cumulativeGPA}
+                Cumulative: {finalGpa.toFixed(2)}
               </span>
             </div>
           </div>
@@ -321,7 +295,7 @@ export default function GPASummaryPage() {
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-2xl font-extrabold text-slate-800 tracking-tight">
                   {Math.round(
-                    (totalCreditsEarned / totalCreditsRequired) * 100
+                    (overview.totalCreditsEarned / overview.totalCreditsRequired) * 100
                   )}
                   %
                 </span>
@@ -334,9 +308,9 @@ export default function GPASummaryPage() {
 
           <div className="space-y-2.5">
             {[
-              { label: "Earned", value: `${totalCreditsEarned} credits` },
-              { label: "Remaining", value: `${totalCreditsRequired - totalCreditsEarned} credits` },
-              { label: "Required", value: `${totalCreditsRequired} credits` },
+              { label: "Earned", value: `${overview.totalCreditsEarned} credits` },
+              { label: "Remaining", value: `${overview.totalCreditsRequired - overview.totalCreditsEarned} credits` },
+              { label: "Required", value: `${overview.totalCreditsRequired} credits` },
             ].map((item) => (
               <div key={item.label} className="flex justify-between text-[13px]">
                 <span className="text-slate-400 font-medium">{item.label}</span>
@@ -353,23 +327,28 @@ export default function GPASummaryPage() {
           Semester Breakdown
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {semesterData.map((sem, i) => (
+          {semesterBreakdown.length === 0 && (
+            <div className="col-span-full text-center text-sm text-slate-500 py-6">
+              No breakdown data available.
+            </div>
+          )}
+          {semesterBreakdown.map((sem, i) => (
             <div
               key={i}
               className="bg-white rounded-xl border border-slate-200/60 p-5 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-bold text-slate-700 group-hover:text-[#1e3a5f] transition-colors">
-                  {sem.name}
+                  {sem.semester}
                 </h4>
                 <span
                   className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-md ${
-                    sem.gpa >= 3.7
+                    sem.deansList
                       ? "bg-[#d4a843]/10 text-[#b8912e] border border-[#d4a843]/20"
                       : "bg-blue-50 text-blue-600 border border-blue-200/60"
                   }`}
                 >
-                  {sem.gpa >= 3.7 ? "Dean's List" : "Good Standing"}
+                  {sem.deansList ? "Dean's List" : "Good Standing"}
                 </span>
               </div>
               <div className="flex items-baseline gap-1 mb-2.5">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   User,
   Lock,
@@ -15,6 +15,43 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
+  const [student, setStudent] = useState({
+    name: "Loading...",
+    rollNumber: "...",
+    email: "...",
+    department: "...",
+    enrollmentYear: "...",
+    initials: "??"
+  });
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const response = await fetch('/api/student/dashboard', {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data?.student) {
+            const s = result.data.student;
+            setStudent({
+              name: s.name,
+              rollNumber: s.rollNumber || "N/A",
+              email: s.email,
+              department: s.department || "Faculty of Computing",
+              enrollmentYear: s.enrollmentYear || "N/A",
+              initials: s.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data for settings", error);
+      }
+    };
+    fetchStudentData();
+  }, []);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -50,12 +87,12 @@ export default function SettingsPage() {
         <div className="p-5">
           {/* Avatar + Name */}
           <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100/60">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center text-white font-bold text-lg shadow-md shadow-[#1e3a5f]/15">
-              AT
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center text-white font-bold text-lg shadow-md shadow-[#1e3a5f]/15 uppercase">
+              {student.initials}
             </div>
             <div>
               <h4 className="text-base font-bold text-slate-800">
-                Alex Thompson
+                {student.name}
               </h4>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <GraduationCap className="w-3 h-3 text-slate-400" />
@@ -69,12 +106,11 @@ export default function SettingsPage() {
           {/* Info Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { label: "Full Name", value: "Alex Thompson" },
-              { label: "Student ID", value: "CS-2024-089" },
-              { label: "Email Address", value: "alex.thompson@foc.sab.ac.lk" },
-              { label: "Department", value: "Computer Science" },
-              { label: "Batch", value: "2022/2023" },
-              { label: "Academic Year", value: "3rd Year" },
+              { label: "Full Name", value: student.name },
+              { label: "Student ID", value: student.rollNumber },
+              { label: "Email Address", value: student.email },
+              { label: "Department", value: student.department },
+              { label: "Enrollment Year", value: student.enrollmentYear },
             ].map((field) => (
               <div key={field.label}>
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em]">

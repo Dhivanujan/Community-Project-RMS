@@ -1,36 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Filter, Download, ChevronDown, FileText } from "lucide-react";
-
-const semesters = [
-  "Fall 2024",
-  "Spring 2024",
-  "Fall 2023",
-  "Spring 2023",
-  "Fall 2022",
-];
-
-const allResults = {
-  "Fall 2024": [
-    { code: "CS102", title: "Intro to Algorithms", credits: 4, grade: "A+", gpa: 4.0, status: "Published" },
-    { code: "CS204", title: "Database Management", credits: 3, grade: "A", gpa: 4.0, status: "Published" },
-    { code: "MT101", title: "Discrete Mathematics", credits: 3, grade: "—", gpa: null, status: "Evaluating" },
-    { code: "CS208", title: "Computer Networks", credits: 3, grade: "—", gpa: null, status: "In Progress" },
-  ],
-  "Spring 2024": [
-    { code: "CS101", title: "Programming Fundamentals", credits: 4, grade: "A+", gpa: 4.0, status: "Published" },
-    { code: "CS103", title: "Data Structures", credits: 3, grade: "A", gpa: 4.0, status: "Published" },
-    { code: "MT100", title: "Calculus I", credits: 3, grade: "A-", gpa: 3.7, status: "Published" },
-    { code: "EN101", title: "Technical English", credits: 2, grade: "B+", gpa: 3.3, status: "Published" },
-  ],
-  "Fall 2023": [
-    { code: "CS100", title: "Intro to Computing", credits: 3, grade: "A", gpa: 4.0, status: "Published" },
-    { code: "MT099", title: "Pre-Calculus", credits: 3, grade: "A-", gpa: 3.7, status: "Published" },
-    { code: "PH101", title: "Physics I", credits: 3, grade: "B+", gpa: 3.3, status: "Published" },
-    { code: "EN100", title: "English Composition", credits: 2, grade: "A", gpa: 4.0, status: "Published" },
-  ],
-};
+import { useState, useEffect } from "react";
+import { Search, Filter, Download, ChevronDown, FileText, Loader2 } from "lucide-react";
 
 const gradeColors = {
   "A+": "bg-emerald-50 text-emerald-700 border-emerald-200/60",
@@ -65,32 +36,69 @@ const statusConfig = {
 };
 
 export default function ResultsPage() {
-  const [selectedSemester, setSelectedSemester] = useState("Fall 2024");
+  const [selectedSemester, setSelectedSemester] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const results = allResults[selectedSemester] || [];
-  const filteredResults = results.filter(
-    (r) =>
-      r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.code.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchResults = async () => {
+      setLoading(true);
+      try {
+        const url = new URL('/api/student/results', window.location.origin);
+        if (selectedSemester) {
+          url.searchParams.append('semester', selectedSemester);
+        }
+        if (searchQuery) {
+          url.searchParams.append('search', searchQuery);
+        }
 
-  const publishedResults = results.filter((r) => r.grade !== "—");
-  const semesterGPA =
-    publishedResults.length > 0
-      ? (
-          publishedResults.reduce((sum, r) => sum + (r.gpa || 0) * r.credits, 0) /
-          publishedResults.reduce((sum, r) => sum + r.credits, 0)
-        ).toFixed(2)
-      : "—";
-  const totalCredits = results.reduce((sum, r) => sum + r.credits, 0);
-  const earnedCredits = publishedResults.reduce((sum, r) => sum + r.credits, 0);
+        const response = await fetch(url.toString(), {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          },
+        });
 
-  const gradeCounts = {};
-  publishedResults.forEach((r) => {
-    gradeCounts[r.grade] = (gradeCounts[r.grade] || 0) + 1;
-  });
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            setData(result.data);
+            if (!selectedSemester && result.data.selectedSemester) {
+              setSelectedSemester(result.data.selectedSemester);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch results", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Use a small debounce for search query to avoid too many requests
+    const timeoutId = setTimeout(() => {
+      fetchResults();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [selectedSemester, searchQuery]);
+
+  const semesters = data?.semesters || [];
+  const results = data?.results || [];
+  const stats = data?.stats || {
+    semesterGpa: "—",
+    totalSubjects: 0,
+    totalCredits: 0,
+    earnedCredits: 0,
+    publishedCount: 0
+  };
+  const gradeCounts = data?.gradeDistribution || {};
+
+  const semesterGPA = stats.semesterGpa !== null ? stats.semesterGpa : "—";
+  const totalCredits = stats.totalCredits;
+  const earnedCredits = stats.earnedCredits;
+  const publishedCount = stats.publishedCount;
 
   return (
     <div className="space-y-6">
@@ -142,9 +150,9 @@ export default function ResultsPage() {
             Published
           </p>
           <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-            {publishedResults.length}{" "}
+            {publishedCount}{" "}
             <span className="text-lg text-slate-400 font-medium">
-              / {results.length}
+              / {stats.totalSubjects}
             </span>
           </h2>
         </div>
@@ -159,7 +167,7 @@ export default function ResultsPage() {
             className="inline-flex items-center gap-2 bg-white border border-slate-200/80 text-sm font-semibold text-slate-700 px-3.5 py-2 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
           >
             <Filter className="w-3.5 h-3.5 text-slate-400" />
-            {selectedSemester}
+            {selectedSemester || "Select Semester"}
             <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showDropdown ? "rotate-180" : ""}`} />
           </button>
           {showDropdown && (
@@ -223,14 +231,33 @@ export default function ResultsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredResults.map((r, i) => {
-              const status = statusConfig[r.status];
+            {loading ? (
+              <tr>
+                <td colSpan="6" className="px-5 py-12 text-center text-slate-500">
+                  <div className="flex flex-col items-center gap-3">
+                    <Loader2 className="w-6 h-6 animate-spin text-[#1e3a5f]" />
+                    <span className="text-sm font-medium">Loading results...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : results.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="px-5 py-12 text-center text-slate-500">
+                  <div className="flex flex-col items-center gap-3">
+                    <FileText className="w-8 h-8 text-slate-300" />
+                    <span className="text-sm font-medium text-slate-400">No results found for this semester.</span>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              results.map((r, i) => {
+                const status = statusConfig[r.status] || statusConfig["In Progress"];
               return (
                 <tr
                   key={r.code}
                   className={`group hover:bg-slate-50/60 transition-colors ${
                     i % 2 === 0 ? "bg-white" : "bg-slate-50/30"
-                  } ${i < filteredResults.length - 1 ? "border-b border-slate-100/60" : ""}`}
+                  } ${i < results.length - 1 ? "border-b border-slate-100/60" : ""}`}
                 >
                   <td className="px-5 py-3.5">
                     <span className="text-[13px] font-bold text-[#1e3a5f]">
@@ -265,7 +292,8 @@ export default function ResultsPage() {
                   </td>
                 </tr>
               );
-            })}
+              })
+            )}
           </tbody>
         </table>
       </div>

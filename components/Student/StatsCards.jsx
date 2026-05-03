@@ -2,7 +2,13 @@
 
 import { TrendingUp, CheckCircle, ClipboardList, ArrowUpRight } from "lucide-react";
 
-export default function StatsCards() {
+export default function StatsCards({ data }) {
+  const gpa = data?.cumulativeGpa || 0;
+  const completed = data?.publishedResults || 0;
+  const total = data?.totalSubjects || 0;
+  const pending = data?.pendingResults || 0;
+  const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
       {/* Academic Standing — GPA Card */}
@@ -22,7 +28,7 @@ export default function StatsCards() {
           </p>
           <div className="flex items-baseline gap-2 mb-3">
             <h2 className="text-[48px] font-extrabold leading-none tracking-tight">
-              3.82
+              {gpa.toFixed(2)}
             </h2>
             <span className="text-white/40 text-sm font-semibold">/ 4.00</span>
           </div>
@@ -48,18 +54,18 @@ export default function StatsCards() {
         </div>
         <div className="flex items-baseline gap-1.5 mb-3">
           <h2 className="text-[38px] font-extrabold text-slate-800 leading-none tracking-tight">
-            24
+            {completed}
           </h2>
-          <span className="text-base text-slate-400 font-medium">/ 32</span>
+          <span className="text-base text-slate-400 font-medium">/ {total}</span>
         </div>
         {/* Progress Bar */}
         <div className="w-full bg-slate-100 rounded-full h-1.5 mb-2">
           <div
             className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] h-1.5 rounded-full transition-all duration-1000"
-            style={{ width: "75%" }}
+            style={{ width: `${completionPercentage}%` }}
           />
         </div>
-        <p className="text-[11px] text-slate-400 font-medium">75% program completion</p>
+        <p className="text-[11px] text-slate-400 font-medium">{completionPercentage}% program completion</p>
       </div>
 
       {/* Pending Results */}
@@ -73,7 +79,7 @@ export default function StatsCards() {
           </div>
         </div>
         <h2 className="text-[38px] font-extrabold text-slate-800 leading-none tracking-tight mb-3">
-          03
+          {pending < 10 && pending > 0 ? `0${pending}` : pending}
         </h2>
         <a
           href="/student/results"

@@ -135,28 +135,32 @@ export default function Login() {
         const data = await res.json();
         
         if (res.ok) {
-          setMessage("Account created successfully! Logging you in...");
-          
-          // Auto login after signup
-          const loginRes = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: formData.email,
-              password: formData.password,
-              role,
-            }),
-          });
-          
-          const loginData = await loginRes.json();
-          if (loginRes.ok) {
-            const normalizedRole = (loginData.role || role || "").toLowerCase();
-            const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
-            router.push(targetPath);
-            router.refresh();
+          if (data.otpSent) {
+            setMessage("Account created successfully! Please check your email for the OTP.");
+            setOtpRequired(true);
+            setIsLogin(false);
           } else {
-            setIsLogin(true);
-            setMessage("Account created successfully! Please login.");
+            // Auto login after signup if no OTP required
+            const loginRes = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: formData.email,
+                password: formData.password,
+                role,
+              }),
+            });
+            
+            const loginData = await loginRes.json();
+            if (loginRes.ok) {
+              const normalizedRole = (loginData.role || role || "").toLowerCase();
+              const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
+              router.push(targetPath);
+              router.refresh();
+            } else {
+              setIsLogin(true);
+              setMessage("Account created successfully! Please login.");
+            }
           }
         } else {
           setMessage(data.message);
@@ -221,10 +225,12 @@ export default function Login() {
         <div className="md:w-1/2 p-10 lg:p-12 flex flex-col justify-center">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-              {isForgotPassword ? "Reset Password" : isLogin ? "RMS Dashboard" : "Create Account"}
+              {otpRequired ? "Verify Email" : isForgotPassword ? "Reset Password" : isLogin ? "RMS Dashboard" : "Create Account"}
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              {isForgotPassword 
+              {otpRequired
+                ? "Enter the 6-digit OTP sent to your email."
+                : isForgotPassword 
                 ? "Enter your email to receive a reset link." 
                 : isLogin 
                   ? "Enter your credentials to manage academic records." 
@@ -239,7 +245,7 @@ export default function Login() {
           )}
 
           {/* Role Toggle */}
-          {!isForgotPassword && (
+          {!isForgotPassword && !otpRequired && (
             <div className="bg-slate-50/80 p-1.5 rounded-xl border border-slate-100 flex mb-8 shrink-0">
               <button
                 type="button"
@@ -267,9 +273,30 @@ export default function Login() {
           )}
 
           {/* Form */}
-          <form className="flex flex-col flex-1" onSubmit={handleSubmit}>
-            <div className={`space-y-${!isLogin && !isForgotPassword ? '4' : '5'}`}>
-              {!isLogin && !isForgotPassword && (
+          <form className="flex flex-col flex-1" onSubmit={otpRequired ? handleVerifyOtp : handleSubmit}>
+            <div className={`space-y-${!isLogin && !isForgotPassword && !otpRequired ? '4' : '5'}`}>
+              {otpRequired ? (
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    6-Digit OTP
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      placeholder="Enter OTP"
+                      className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {!isLogin && !isForgotPassword && (
                 <>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
@@ -402,9 +429,11 @@ export default function Login() {
                   </div>
                 </div>
               )}
+              </>
+              )}
 
               {/* Checkbox */}
-              {isLogin && !isForgotPassword && (
+              {isLogin && !isForgotPassword && !otpRequired && (
                 <div className="flex items-center gap-2.5 pt-1">
                   <input
                     type="checkbox"
@@ -424,7 +453,7 @@ export default function Login() {
                   className="w-full relative group bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <div className="absolute -inset-1 rounded-[14px] border border-dashed border-blue-400 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                  {loading ? "Processing..." : isForgotPassword ? "Send Reset Link" : isLogin ? "Sign In to Dashboard" : "Create Account"}
+                  {loading ? "Processing..." : otpRequired ? "Verify Email" : isForgotPassword ? "Send Reset Link" : isLogin ? "Sign In to Dashboard" : "Create Account"}
                   {!loading && <ArrowRight className="w-4 h-4" />}
                 </button>
               </div>
@@ -433,7 +462,22 @@ export default function Login() {
            
 
             <div className="mt-8 text-center text-sm text-slate-600">
-              {isForgotPassword ? (
+              {otpRequired ? (
+                 <>
+                 Entered the wrong email?{" "}
+                 <button
+                   type="button"
+                   onClick={() => {
+                     setOtpRequired(false);
+                     setIsLogin(false);
+                     setMessage("");
+                   }}
+                   className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                 >
+                   Back to sign up
+                 </button>
+               </>
+              ) : isForgotPassword ? (
                 <>
                   Remember your password?{" "}
                   <button

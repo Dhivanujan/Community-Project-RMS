@@ -8,12 +8,17 @@ export async function POST(req) {
   try {
     const { email } = await req.json();
 
+    if (!email) {
+      // Return generic message to prevent email enumeration
+      return NextResponse.json({ message: 'If an account exists with this email, a password reset link will be sent' }, { status: 200 });
+    }
+
     await connectDB();
     const user = await User.findOne({ email });
 
     if (!user) {
-      // You might want to return 200 anyway to prevent email enumeration
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      // Return generic message to prevent email enumeration
+      return NextResponse.json({ message: 'If an account exists with this email, a password reset link will be sent' }, { status: 200 });
     }
 
     // Generate reset token

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
+import { requireStudent } from '@/lib/auth';
 import Result from '@/models/Result';
 import {
   hasStudentIdentifier,
@@ -23,6 +24,10 @@ const GPA_SCALE = [
 
 export async function GET(request) {
   try {
+    // Require authentication
+    const { authorized, response: authResponse, user } = await requireStudent(request);
+    if (!authorized) return authResponse;
+
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
@@ -35,6 +40,17 @@ export async function GET(request) {
           message: 'Provide one identifier: studentId, rollNumber, or email.',
         },
         { status: 400 }
+      );
+    }
+
+    // Prevent students from viewing other students' data
+    if (user.role === 'Student' && identifiers.email !== user.email) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized: Cannot view other students\' data.',
+        },
+        { status: 403 }
       );
     }
 

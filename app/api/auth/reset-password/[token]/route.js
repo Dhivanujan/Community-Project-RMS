@@ -4,10 +4,27 @@ import bcrypt from 'bcryptjs';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 
+// Validate password strength
+function validatePassword(password) {
+  const errors = [];
+  if (password.length < 8) errors.push('Password must be at least 8 characters');
+  if (!/[A-Z]/.test(password)) errors.push('Password must contain uppercase letter');
+  if (!/[a-z]/.test(password)) errors.push('Password must contain lowercase letter');
+  if (!/[0-9]/.test(password)) errors.push('Password must contain number');
+  if (!/[^A-Za-z0-9]/.test(password)) errors.push('Password must contain special character');
+  return { valid: errors.length === 0, errors };
+}
+
 export async function PUT(req, { params }) {
   try {
     const { token } = params;
     const { password } = await req.json();
+
+    // Validate password strength
+    const validation = validatePassword(password);
+    if (!validation.valid) {
+      return NextResponse.json({ message: 'Password requirements not met', errors: validation.errors }, { status: 400 });
+    }
 
     await connectDB();
 

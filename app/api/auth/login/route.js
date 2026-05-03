@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 
 export async function POST(req) {
   try {
-    await connectDB();
+    await dbConnect();
     const { email, password, role } = await req.json();
 
     // Find user
@@ -21,10 +21,16 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Generate JWT
+    // Generate JWT - JWT_SECRET must be set, no fallback
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('JWT_SECRET not configured');
+      return NextResponse.json({ message: 'Server configuration error' }, { status: 500 });
+    }
+
     const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      process.env.JWT_SECRET || 'fallback_secret_key',
+      { userId: user._id, role: user.role, email: user.email },
+      jwtSecret,
       { expiresIn: '1d' }
     );
 

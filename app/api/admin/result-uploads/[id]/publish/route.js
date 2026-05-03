@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
+import { requireAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import ResultUpload from '@/models/ResultUpload';
 import Result from '@/models/Result';
@@ -9,6 +10,10 @@ import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
 // ── POST: Publish a result upload ──
 export async function POST(request, { params }) {
   try {
+    // Require admin authentication
+    const { authorized, response: authResponse, user } = await requireAdmin(request);
+    if (!authorized) return authResponse;
+
     await dbConnect();
 
     const { id } = params;

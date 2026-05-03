@@ -133,10 +133,9 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                                 onChange={e => setFormData({...formData, department: e.target.value})}
                             >
                                 <option value="" disabled>Select Dept</option>
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Software Engineering">Software Engineering</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Data Science">Data Science</option>
+                                <option value="Software Engineering">Software Engineering (SE)</option>
+                                <option value="Computer Information Systems">Computer Information Systems (CIS)</option>
+                                <option value="Data Science">Data Science (DS)</option>
                             </select>
                         </div>
                         <div className="space-y-1">

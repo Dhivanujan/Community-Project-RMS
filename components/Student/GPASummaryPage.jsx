@@ -10,6 +10,16 @@ const semesterData = [
   { name: "Fall 2024", gpa: 3.92, credits: 7, subjects: 2 },
 ];
 
+const fgpaYearData = [
+  { year: "Year 1", gpa: 3.65, weight: 0.2, credits: 26 },
+  { year: "Year 2", gpa: 3.72, weight: 0.2, credits: 25 },
+  { year: "Year 3", gpa: 3.78, weight: 0.3, credits: 23 },
+  { year: "Year 4", gpa: 3.85, weight: 0.3, credits: 19 },
+];
+
+const fgpa = fgpaYearData.reduce((sum, item) => sum + item.gpa * item.weight, 0);
+const finalGpa = Number(fgpa.toFixed(2));
+
 const gpaScale = [
   { grade: "A+", range: "4.00", desc: "Exceptional" },
   { grade: "A", range: "4.00", desc: "Excellent" },
@@ -19,6 +29,27 @@ const gpaScale = [
   { grade: "B-", range: "2.70", desc: "Average" },
   { grade: "C+", range: "2.30", desc: "Below Average" },
   { grade: "C", range: "2.00", desc: "Satisfactory" },
+  { grade: "C-", range: "1.70", desc: "Pass with caution" },
+  { grade: "D+", range: "1.30", desc: "Marginal pass" },
+  { grade: "D", range: "1.00", desc: "Minimum pass" },
+  { grade: "E", range: "0.00", desc: "Fail" },
+];
+
+const examCriteria = [
+  "End Semester Examination carries at least 60% of the final marks.",
+  "Continuous assessment can contribute up to 40% through assignments, quizzes, and mid semester work.",
+  "A student must maintain at least 80% attendance for tutorials and practical work.",
+  "Every eligible candidate must sit all relevant subjects for the semester.",
+  "E grades must be improved at the first available opportunity.",
+  "Repeated examinations can be attempted only twice, and the highest repeat grade allowed is C.",
+  "Final degree eligibility requires FGPA >= 2.00 and at least D in all credited GPA courses.",
+];
+
+const classAwardRules = [
+  { label: "First Class", range: "3.70 - 4.00" },
+  { label: "Second Class (Upper Division)", range: "3.30 - 3.69" },
+  { label: "Second Class (Lower Division)", range: "2.70 - 3.29" },
+  { label: "Pass", range: "2.00 - 2.69" },
 ];
 
 export default function GPASummaryPage() {
@@ -27,6 +58,17 @@ export default function GPASummaryPage() {
   const totalCreditsEarned = 56;
   const totalCreditsRequired = 128;
   const deansListCount = 3;
+  const degreeClass =
+    finalGpa >= 3.7
+      ? "First Class"
+      : finalGpa >= 3.3
+        ? "Second Class (Upper Division)"
+        : finalGpa >= 2.7
+          ? "Second Class (Lower Division)"
+          : finalGpa >= 2.0
+            ? "Pass"
+            : "Not Eligible";
+  const degreeEligible = finalGpa >= 2.0;
 
   return (
     <div className="space-y-6">
@@ -38,6 +80,97 @@ export default function GPASummaryPage() {
         <p className="text-slate-400 text-sm mt-1">
           Track your academic progress and GPA trends across semesters.
         </p>
+      </div>
+
+      {/* FGPA Rule and Degree Eligibility */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
+          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
+            Final GPA Rule
+          </h3>
+          <div className="rounded-xl bg-slate-50/80 border border-slate-200/60 p-5 mb-5">
+            <p className="text-sm font-semibold text-slate-700 mb-2">
+              FGPA = 0.2 x GPA(year 1) + 0.2 x GPA(year 2) + 0.3 x GPA(year 3) + 0.3 x GPA(year 4)
+            </p>
+            <p className="text-xs text-slate-400">
+              The final GPA is rounded to two decimal places after applying the year weights.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            {fgpaYearData.map((item) => (
+              <div
+                key={item.year}
+                className="rounded-lg border border-slate-200/70 bg-white p-4"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-bold text-slate-700">{item.year}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1e3a5f] bg-[#1e3a5f]/5 px-2 py-0.5 rounded-full">
+                    {Math.round(item.weight * 100)}%
+                  </span>
+                </div>
+                <div className="text-2xl font-extrabold text-slate-800 tracking-tight">
+                  {item.gpa.toFixed(2)}
+                </div>
+                <div className="mt-1 text-[11px] text-slate-400 font-medium">
+                  {item.credits} credits weighted into FGPA
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div className="rounded-lg bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-1">
+                Final GPA
+              </div>
+              <div className="text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
+                {finalGpa.toFixed(2)}
+              </div>
+            </div>
+            <div className="rounded-lg bg-emerald-50 border border-emerald-100 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-600 mb-1">
+                Degree Class
+              </div>
+              <div className="text-xl font-extrabold text-emerald-700 tracking-tight">
+                {degreeClass}
+              </div>
+              <div className="text-[11px] text-emerald-600/80 font-medium mt-1">
+                {degreeEligible ? "Meets the minimum FGPA requirement" : "Below the minimum FGPA requirement"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
+          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
+            Examination Criteria
+          </h3>
+          <div className="space-y-3">
+            {examCriteria.map((item) => (
+              <div key={item} className="rounded-lg bg-slate-50/80 border border-slate-100/80 p-3">
+                <p className="text-xs text-slate-600 leading-relaxed">{item}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5">
+            <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-2">
+              Awarded Classes
+            </div>
+            <div className="space-y-2">
+              {classAwardRules.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center justify-between rounded-lg border border-slate-100 bg-white px-3 py-2 text-xs"
+                >
+                  <span className="font-semibold text-slate-700">{item.label}</span>
+                  <span className="text-slate-400 font-medium">{item.range}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Overview Stats */}
@@ -70,13 +203,13 @@ export default function GPASummaryPage() {
         <div className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm">
           <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
             <GraduationCap className="w-3.5 h-3.5" />
-            Standing
+            Final Standing
           </div>
           <h2 className="text-2xl font-extrabold text-emerald-600 tracking-tight">
-            First Class
+            {degreeClass}
           </h2>
           <p className="text-slate-400 text-xs mt-1.5 font-medium">
-            Top 5% of Faculty
+            FGPA {finalGpa.toFixed(2)} / 4.00
           </p>
         </div>
 

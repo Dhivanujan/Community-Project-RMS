@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,43 +9,50 @@ import SemesterTable from "@/components/Student/SemesterTable";
 
 export default function DashboardPage() {
   const [userName, setUserName] = useState('Student');
+  const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch logged-in user's name from localStorage or API
-    const fetchUserName = async () => {
+    const fetchDashboardData = async () => {
       try {
-        // Try to get from localStorage first (set during login)
         const storedName = localStorage.getItem('userName');
         if (storedName) {
           setUserName(storedName);
-          setIsLoading(false);
-          return;
         }
 
-        // Or fetch from user profile API
-        const response = await fetch('/api/student/profile', {
+        const response = await fetch('/api/student/dashboard', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           },
         });
+        
         if (response.ok) {
-          const data = await response.json();
-          setUserName(data.firstName || 'Student');
+          const result = await response.json();
+          if (result.success) {
+             setDashboardData(result.data);
+             if (result.data.student?.name) {
+                 setUserName(result.data.student.name);
+             }
+          } else {
+             setError(result.message || 'Failed to load dashboard.');
+          }
+        } else {
+          setError('Authentication failed. Please login again.');
         }
       } catch (error) {
-        console.error('Failed to fetch user name:', error);
+        console.error('Failed to fetch dashboard data:', error);
+        setError('Error loading dashboard data.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUserName();
+    fetchDashboardData();
   }, []);
 
   return (
     <StudentDashboardLayout>
-      {/* Welcome Section */}
       <section className="mb-7">
         <div className="flex items-center gap-2 mb-1">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -53,19 +61,18 @@ export default function DashboardPage() {
           <span className="text-xl">👋</span>
         </div>
         <p className="text-slate-400 text-sm">
-          Here&apos;s the latest snapshot of your academic performance.
+          Here is the latest snapshot of your academic performance.
         </p>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </section>
 
-      {/* Stats Cards */}
       <section className="mb-8">
-        <StatsCards />
+        <StatsCards data={dashboardData?.cards || null} />
       </section>
 
-      {/* Bottom Section: Recent Updates + Semester Table */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RecentUpdates />
-        <SemesterTable />
+        <RecentUpdates updates={dashboardData?.recentUpdates || []} />
+        <SemesterTable currentSemester={dashboardData?.currentSemester || null} />
       </section>
     </StudentDashboardLayout>
   );

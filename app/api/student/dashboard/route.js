@@ -12,16 +12,20 @@ export async function GET(request) {
 
     const studentId = searchParams.get('studentId')?.trim() || '';
     const rollNumber = searchParams.get('rollNumber')?.trim() || '';
-    const email = searchParams.get('email')?.trim() || '';
+    let email = searchParams.get('email')?.trim() || '';
 
     if (!studentId && !rollNumber && !email) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Provide one identifier: studentId, rollNumber, or email.',
-        },
-        { status: 400 }
-      );
+      if (user.role === 'Student') {
+        email = user.email;
+      } else {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Provide one identifier: studentId, rollNumber, or email.',
+          },
+          { status: 400 }
+        );
+      }
     }
 
     // Prevent students from viewing other students' data

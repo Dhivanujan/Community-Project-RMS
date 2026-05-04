@@ -282,7 +282,7 @@ export default function GPASummaryPage() {
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeDasharray={`${
-                    (totalCreditsEarned / totalCreditsRequired) * 314
+                    (overview.totalCreditsEarned / overview.totalCreditsRequired) * 314
                   } 314`}
                 />
                 <defs>

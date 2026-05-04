@@ -86,7 +86,7 @@ export default async function AdminDashboard() {
                     title="Result Entries"
                     value={totalResults.toString()}
                     icon={<FileText className="w-5 h-5" />}
-                    bgColor="bg-blue-500/80"
+                    bgColor="bg-primary-500/80"
                 />
                 <DashboardCard
                     title="Average GPA"

@@ -6,9 +6,9 @@ import { Search, Filter, Download, ChevronDown, FileText, Loader2 } from "lucide
 const gradeColors = {
   "A+": "bg-emerald-50 text-emerald-700 border-emerald-200/60",
   "A": "bg-emerald-50 text-emerald-600 border-emerald-200/60",
-  "A-": "bg-blue-50 text-blue-600 border-blue-200/60",
+  "A-": "bg-primary-50 text-primary-600 border-blue-200/60",
   "B+": "bg-sky-50 text-sky-600 border-sky-200/60",
-  "B": "bg-indigo-50 text-indigo-600 border-indigo-200/60",
+  "B": "bg-indigo-50 text-primary-600 border-indigo-200/60",
   "B-": "bg-violet-50 text-violet-600 border-violet-200/60",
   "C+": "bg-amber-50 text-amber-600 border-amber-200/60",
   "—": "bg-slate-50 text-slate-400 border-slate-200/60",
@@ -24,7 +24,7 @@ const statusConfig = {
   Evaluating: {
     bg: "bg-amber-50",
     text: "text-amber-700",
-    dot: "bg-amber-500",
+    dot: "bg-secondary-500",
     border: "border-amber-200/60",
   },
   "In Progress": {
@@ -112,7 +112,7 @@ export default function ResultsPage() {
             View your academic results across all semesters.
           </p>
         </div>
-        <button className="inline-flex items-center gap-2 bg-[#1e3a5f] text-white text-xs font-semibold px-4 py-2.5 rounded-lg hover:bg-[#163050] transition-colors shadow-sm shadow-[#1e3a5f]/15">
+        <button className="inline-flex items-center gap-2 bg-primary-900 text-white text-xs font-semibold px-4 py-2.5 rounded-lg hover:bg-[#163050] transition-colors shadow-sm shadow-[primary-900]/15">
           <Download className="w-3.5 h-3.5" />
           Export Transcript
         </button>
@@ -120,7 +120,7 @@ export default function ResultsPage() {
 
       {/* Semester Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-[#1e3a5f] to-[#163050] text-white rounded-xl p-5 shadow-sm shadow-[#1e3a5f]/10">
+        <div className="bg-gradient-to-br from-primary-900 to-[#163050] text-white rounded-xl p-5 shadow-sm shadow-[primary-900]/10">
           <p className="text-white/50 text-[10px] font-bold uppercase tracking-[0.12em] mb-1">
             Semester GPA
           </p>
@@ -181,7 +181,7 @@ export default function ResultsPage() {
                   }}
                   className={`w-full text-left px-3.5 py-2 text-[13px] font-medium transition-colors ${
                     sem === selectedSemester
-                      ? "bg-[#1e3a5f]/[0.05] text-[#1e3a5f] font-semibold"
+                      ? "bg-primary-900/[0.05] text-primary-900 font-semibold"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -200,7 +200,7 @@ export default function ResultsPage() {
             placeholder="Search subjects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white border border-slate-200/80 rounded-lg py-2 pl-9 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/15 focus:border-[#1e3a5f]/30 transition-all shadow-sm"
+            className="w-full bg-white border border-slate-200/80 rounded-lg py-2 pl-9 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 transition-all shadow-sm"
           />
         </div>
       </div>
@@ -235,7 +235,7 @@ export default function ResultsPage() {
               <tr>
                 <td colSpan="6" className="px-5 py-12 text-center text-slate-500">
                   <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-6 h-6 animate-spin text-[#1e3a5f]" />
+                    <Loader2 className="w-6 h-6 animate-spin text-primary-900" />
                     <span className="text-sm font-medium">Loading results...</span>
                   </div>
                 </td>
@@ -260,7 +260,7 @@ export default function ResultsPage() {
                   } ${i < results.length - 1 ? "border-b border-slate-100/60" : ""}`}
                 >
                   <td className="px-5 py-3.5">
-                    <span className="text-[13px] font-bold text-[#1e3a5f]">
+                    <span className="text-[13px] font-bold text-primary-900">
                       {r.code}
                     </span>
                   </td>
@@ -315,11 +315,11 @@ export default function ResultsPage() {
                     key={grade}
                     className="flex-1 flex flex-col items-center gap-2 group"
                   >
-                    <span className="text-xs font-bold text-[#1e3a5f] opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs font-bold text-primary-900 opacity-0 group-hover:opacity-100 transition-opacity">
                       {count}
                     </span>
                     <div
-                      className="w-full bg-gradient-to-t from-[#1e3a5f] to-[#3d6a99] rounded-t-lg transition-all duration-500 cursor-pointer hover:from-[#163050] hover:to-[#2d5a8e]"
+                      className="w-full bg-gradient-to-t from-primary-900 to-[#3d6a99] rounded-t-lg transition-all duration-500 cursor-pointer hover:from-[#163050] hover:to-primary-600"
                       style={{ height: `${heightPct}%`, minHeight: "8px" }}
                     />
                     <span className="text-[11px] font-bold text-slate-500">

@@ -68,7 +68,7 @@ export async function GET(request) {
       );
     }
 
-    const [user, preferences] = await Promise.all([
+    const [studentUser, preferences] = await Promise.all([
       resolveUserForStudent(student),
       StudentPreference.findOne({ student: student._id }).lean(),
     ]);
@@ -87,7 +87,7 @@ export async function GET(request) {
         department: student.department || null,
         batch: student.enrollmentYear ? `${student.enrollmentYear}/${Number(student.enrollmentYear) + 1}` : null,
         academicYear: buildAcademicYearLabel(student.enrollmentYear),
-        role: user?.role || 'Student',
+        role: studentUser?.role || 'Student',
       },
       preferences: {
         emailNotifications: preferenceData.emailNotifications,

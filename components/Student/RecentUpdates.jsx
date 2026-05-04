@@ -11,7 +11,7 @@ export default function RecentUpdates({ updates = [] }) {
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
           Recent Updates
         </h3>
-        <button className="text-[11px] font-semibold text-slate-400 hover:text-[#1e3a5f] uppercase tracking-wider transition-colors">
+        <button className="text-[11px] font-semibold text-slate-400 hover:text-primary-900 uppercase tracking-wider transition-colors">
           View All
         </button>
       </div>
@@ -31,8 +31,8 @@ export default function RecentUpdates({ updates = [] }) {
               // Map API payload to UI configs
               // For now, API only returns type: 'results'
               let Icon = CheckCircle;
-              let iconBg = "bg-[#1e3a5f]/[0.07]";
-              let iconColor = "text-[#1e3a5f]";
+              let iconBg = "bg-primary-900/[0.07]";
+              let iconColor = "text-primary-900";
 
               if (update.type === "gpa") {
                 Icon = Calculator;
@@ -65,7 +65,7 @@ export default function RecentUpdates({ updates = [] }) {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <h4 className="text-[13px] font-semibold text-slate-700 group-hover:text-[#1e3a5f] transition-colors leading-tight">
+                    <h4 className="text-[13px] font-semibold text-slate-700 group-hover:text-primary-900 transition-colors leading-tight">
                       {update.title}
                     </h4>
                     <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">

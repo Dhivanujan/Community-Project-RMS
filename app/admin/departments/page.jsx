@@ -3,12 +3,12 @@ import { FACULTY_INFO, SUBJECTS } from '@/lib/resultUpload/config';
 
 const colorMap = {
   'Software Engineering': {
-    badge: 'bg-blue-500/10 text-blue-600 border-blue-200',
-    icon: 'bg-blue-500/10 text-blue-600',
+    badge: 'bg-primary-500/10 text-primary-600 border-blue-200',
+    icon: 'bg-primary-500/10 text-primary-600',
     accent: 'border-l-blue-500',
-    dot: 'bg-blue-500',
-    yearBg: 'bg-blue-50 border-blue-100',
-    yearText: 'text-blue-700',
+    dot: 'bg-primary-500',
+    yearBg: 'bg-primary-50 border-blue-100',
+    yearText: 'text-primary-700',
   },
   'Computer Information Systems': {
     badge: 'bg-violet-500/10 text-violet-600 border-violet-200',
@@ -174,8 +174,8 @@ export default function DepartmentsPage() {
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'First Class', range: 'FGPA ≥ 3.70', color: 'bg-amber-500/10 text-amber-700 border-amber-200' },
-            { label: 'Second Class (Upper)', range: '3.30 – 3.69', color: 'bg-blue-500/10 text-blue-700 border-blue-200' },
+            { label: 'First Class', range: 'FGPA ≥ 3.70', color: 'bg-secondary-500/10 text-amber-700 border-amber-200' },
+            { label: 'Second Class (Upper)', range: '3.30 – 3.69', color: 'bg-primary-500/10 text-primary-700 border-blue-200' },
             { label: 'Second Class (Lower)', range: '2.70 – 3.29', color: 'bg-violet-500/10 text-violet-700 border-violet-200' },
             { label: 'Pass', range: '2.00 – 2.69', color: 'bg-emerald-500/10 text-emerald-700 border-emerald-200' },
           ].map((cls) => (

@@ -11,7 +11,7 @@ const statusConfig = {
   Evaluating: {
     bg: "bg-amber-50",
     text: "text-amber-700",
-    dot: "bg-amber-500",
+    dot: "bg-secondary-500",
     border: "border-amber-200/60",
   },
   "In Progress": {
@@ -25,7 +25,7 @@ const statusConfig = {
 const gradeColors = {
   "A+": "text-emerald-600 bg-emerald-50",
   "A": "text-emerald-600 bg-emerald-50",
-  "A-": "text-blue-600 bg-blue-50",
+  "A-": "text-primary-600 bg-primary-50",
   "B+": "text-sky-600 bg-sky-50",
   "—": "text-slate-400 bg-slate-50",
 };
@@ -41,7 +41,7 @@ export default function SemesterTable({ currentSemester }) {
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
           Current Semester
         </h3>
-        <span className="text-[11px] font-semibold text-[#1e3a5f] bg-[#1e3a5f]/[0.06] px-2.5 py-1 rounded-md border border-[#1e3a5f]/10">
+        <span className="text-[11px] font-semibold text-primary-900 bg-primary-900/[0.06] px-2.5 py-1 rounded-md border border-primary-900/10">
           {semesterName}
         </span>
       </div>
@@ -86,7 +86,7 @@ export default function SemesterTable({ currentSemester }) {
                     <td className="px-4 py-3.5">
                       <a
                         href={`/student/results/${subject.code.toLowerCase()}`}
-                        className="text-[13px] font-bold text-[#1e3a5f] hover:text-[#2d5a8e] hover:underline transition-colors"
+                        className="text-[13px] font-bold text-primary-900 hover:text-primary-600 hover:underline transition-colors"
                       >
                         {subject.code}
                       </a>

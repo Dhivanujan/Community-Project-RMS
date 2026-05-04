@@ -10,8 +10,8 @@ export default function Features() {
       title: "GPA Automation",
       desc: "Instantly calculate semester and cumulative GPAs with precision, eliminating manual spreadsheet errors.",
       gradient: "from-blue-500 to-indigo-500",
-      bg: "bg-blue-50",
-      text: "text-blue-600",
+      bg: "bg-primary-50",
+      text: "text-primary-600",
       border: "border-blue-100",
       glow: "group-hover:shadow-blue-500/20",
     },
@@ -21,7 +21,7 @@ export default function Features() {
       desc: "Automated batch ranking systems to identify top performers across different computing disciplines.",
       gradient: "from-indigo-500 to-violet-500",
       bg: "bg-indigo-50",
-      text: "text-indigo-600",
+      text: "text-primary-600",
       border: "border-indigo-100",
       glow: "group-hover:shadow-indigo-500/20",
     },
@@ -55,7 +55,7 @@ export default function Features() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <AnimateOnScroll variant="fadeUp" className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 bg-primary-50 border border-blue-100 text-primary-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
             Capabilities
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">

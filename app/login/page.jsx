@@ -178,7 +178,7 @@ export default function Login() {
       <div className="max-w-[1000px] w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] transition-all duration-300">
 
         {/* Left Side - Branding */}
-        <div className="md:w-1/2 bg-blue-600 p-10 lg:p-12 text-white flex flex-col relative overflow-hidden">
+        <div className="md:w-1/2 bg-primary-600 p-10 lg:p-12 text-white flex flex-col relative overflow-hidden">
           <div className="absolute bottom-0 right-0 p-8 flex items-end gap-2 opacity-20">
             <div className="w-8 h-16 bg-white rounded-t-lg"></div>
             <div className="w-8 h-24 bg-white rounded-t-lg"></div>
@@ -187,7 +187,7 @@ export default function Login() {
 
           <Link href="/" className="items-center gap-3 relative z-10 inline-flex w-max">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-              <GraduationCap className="text-blue-600 w-6 h-6" />
+              <GraduationCap className="text-primary-600 w-6 h-6" />
             </div>
             <span className="font-bold text-lg tracking-tight">Faculty of Computing</span>
           </Link>
@@ -252,7 +252,7 @@ export default function Login() {
                 onClick={() => setRole("Student")}
                 className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${
                   role === "Student" 
-                    ? "bg-white text-blue-700 shadow-sm border border-slate-200/50" 
+                    ? "bg-white text-primary-700 shadow-sm border border-slate-200/50" 
                     : "text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -263,7 +263,7 @@ export default function Login() {
                 onClick={() => setRole("Faculty Admin")}
                 className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${
                   role === "Faculty Admin" 
-                    ? "bg-white text-blue-700 shadow-sm border border-slate-200/50" 
+                    ? "bg-white text-primary-700 shadow-sm border border-slate-200/50" 
                     : "text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -369,7 +369,7 @@ export default function Login() {
                       Password
                     </label>
                     {isLogin && (
-                      <button type="button" onClick={() => setIsForgotPassword(true)} className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                      <button type="button" onClick={() => setIsForgotPassword(true)} className="text-xs font-semibold text-primary-600 hover:text-primary-700 transition-colors">
                         Forgot?
                       </button>
                     )}
@@ -438,7 +438,7 @@ export default function Login() {
                   <input
                     type="checkbox"
                     id="remember"
-                    className="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500/20"
+                    className="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-blue-500/20"
                   />
                   <label htmlFor="remember" className="text-xs font-medium text-slate-600 cursor-pointer select-none">
                     Keep me signed in for 30 days
@@ -450,7 +450,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full relative group bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full relative group bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <div className="absolute -inset-1 rounded-[14px] border border-dashed border-blue-400 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                   {loading ? "Processing..." : otpRequired ? "Verify Email" : isForgotPassword ? "Send Reset Link" : isLogin ? "Sign In to Dashboard" : "Create Account"}
@@ -472,7 +472,7 @@ export default function Login() {
                      setIsLogin(false);
                      setMessage("");
                    }}
-                   className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                   className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                  >
                    Back to sign up
                  </button>
@@ -486,7 +486,7 @@ export default function Login() {
                       setIsForgotPassword(false);
                       setMessage("");
                     }}
-                    className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                    className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     Back to log in
                   </button>
@@ -500,7 +500,7 @@ export default function Login() {
                       setIsLogin(false);
                       setMessage("");
                     }}
-                    className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                    className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     Sign up
                   </button>
@@ -514,7 +514,7 @@ export default function Login() {
                       setIsLogin(true);
                       setMessage("");
                     }}
-                    className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                    className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     Log in
                   </button>
@@ -533,7 +533,7 @@ export default function Login() {
         </div>
       </div>
 
-      <button className="absolute bottom-6 right-6 w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 shadow-lg border border-slate-100 hover:-translate-y-1 transition-transform">
+      <button className="absolute bottom-6 right-6 w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-600 shadow-lg border border-slate-100 hover:-translate-y-1 transition-transform">
         <HelpCircle className="w-5 h-5" />
       </button>
     </div>

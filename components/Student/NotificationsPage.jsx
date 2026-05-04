@@ -34,7 +34,7 @@ const getIconColorForCategory = (category) => {
 const tabs = ["All", "Results", "Academic", "General"];
 
 const categoryColors = {
-  Results: "bg-[#1e3a5f]/[0.06] text-[#1e3a5f] border-[#1e3a5f]/10",
+  Results: "bg-primary-900/[0.06] text-primary-900 border-primary-900/10",
   Academic: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
   General: "bg-slate-50 text-slate-600 border-slate-200/60",
 };
@@ -128,7 +128,7 @@ export default function NotificationsPage() {
               Notifications
             </h1>
             {unreadCount > 0 && (
-              <span className="bg-[#1e3a5f] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+              <span className="bg-primary-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                 {unreadCount} new
               </span>
             )}
@@ -161,7 +161,7 @@ export default function NotificationsPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
                 activeTab === tab
-                  ? "bg-[#1e3a5f] text-white shadow-sm"
+                  ? "bg-primary-900 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
               }`}
             >
@@ -211,13 +211,13 @@ export default function NotificationsPage() {
                 className={`flex gap-3.5 p-4 rounded-xl border transition-all duration-200 cursor-pointer group ${
                   notification.read
                     ? "bg-white border-slate-200/60 hover:border-slate-200 hover:shadow-sm"
-                    : "bg-[#1e3a5f]/[0.015] border-[#1e3a5f]/15 hover:border-[#1e3a5f]/25 shadow-sm"
+                    : "bg-primary-900/[0.015] border-primary-900/15 hover:border-primary-900/25 shadow-sm"
                 }`}
               >
                 {/* Icon with unread dot */}
                 <div className="flex items-start gap-2 pt-0.5">
                   {!notification.read && (
-                    <div className="w-2 h-2 bg-[#1e3a5f] rounded-full mt-2.5 flex-shrink-0" />
+                    <div className="w-2 h-2 bg-primary-900 rounded-full mt-2.5 flex-shrink-0" />
                   )}
                   <div
                     className={`w-9 h-9 rounded-lg ${iconColors.bg} flex items-center justify-center flex-shrink-0`}
@@ -233,7 +233,7 @@ export default function NotificationsPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h4
-                        className={`text-[13px] font-semibold group-hover:text-[#1e3a5f] transition-colors ${
+                        className={`text-[13px] font-semibold group-hover:text-primary-900 transition-colors ${
                           notification.read
                             ? "text-slate-600"
                             : "text-slate-800"

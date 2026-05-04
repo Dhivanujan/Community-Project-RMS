@@ -74,7 +74,7 @@ export default function DashboardPreview({ summary }) {
               <AnimateOnScroll variant="fadeRight" delay={200} className="w-full md:w-1/3">
                 <div className="bg-gradient-to-b from-slate-50 to-white rounded-xl p-6 border border-slate-100 h-full">
                   <h4 className="font-bold mb-6 text-sm uppercase text-slate-500 tracking-wider flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-amber-500" />
+                    <Trophy className="w-4 h-4 text-secondary-500" />
                     Batch Top Performers
                   </h4>
 
@@ -86,11 +86,11 @@ export default function DashboardPreview({ summary }) {
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-lg">{medals[i] || "🏅"}</span>
-                          <span className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">
+                          <span className="text-sm font-semibold text-slate-700 group-hover:text-primary-600 transition-colors">
                             {s.name}
                           </span>
                         </div>
-                        <span className="font-bold text-blue-600 text-sm bg-blue-50 px-2.5 py-0.5 rounded-lg">
+                        <span className="font-bold text-primary-600 text-sm bg-primary-50 px-2.5 py-0.5 rounded-lg">
                           {Number(s.gpa || 0).toFixed(2)}
                         </span>
                       </div>
@@ -106,7 +106,7 @@ export default function DashboardPreview({ summary }) {
                   <AnimateOnScroll variant="fadeUp" delay={100}>
                     <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-xl p-5 hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300">
                       <div className="flex items-center gap-2 text-xs text-slate-500 mb-3 uppercase font-semibold tracking-wider">
-                        <TrendingUp className="w-4 h-4 text-blue-600" />
+                        <TrendingUp className="w-4 h-4 text-primary-600" />
                         Avg GPA
                       </div>
                       <CountUp
@@ -120,7 +120,7 @@ export default function DashboardPreview({ summary }) {
                   <AnimateOnScroll variant="fadeUp" delay={200}>
                     <div className="bg-gradient-to-br from-amber-50 to-white border border-amber-100 rounded-xl p-5 hover:shadow-lg hover:shadow-amber-100/50 transition-all duration-300">
                       <div className="flex items-center gap-2 text-xs text-slate-500 mb-3 uppercase font-semibold tracking-wider">
-                        <Trophy className="w-4 h-4 text-amber-500" />
+                        <Trophy className="w-4 h-4 text-secondary-500" />
                         First Class Eligible
                       </div>
                       <CountUp

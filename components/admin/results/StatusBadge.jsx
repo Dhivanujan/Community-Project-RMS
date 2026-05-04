@@ -1,7 +1,7 @@
 "use client";
 
 const STATUS_STYLES = {
-    draft: 'bg-amber-500/10 text-amber-700 border border-amber-500/20',
+    draft: 'bg-secondary-500/10 text-amber-700 border border-amber-500/20',
     published: 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/20',
 };
 

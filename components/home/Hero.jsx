@@ -18,15 +18,15 @@ export default function Hero({ summary }) {
       label: "Overall GPA",
       val: Number(summary?.overallGpa ?? 0).toFixed(2),
       icon: Activity,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
+      color: "text-primary-600",
+      bg: "bg-primary-50",
       border: "border-blue-100",
     },
     {
       label: "Total Students",
       val: String(summary?.totalStudents ?? 0),
       icon: Users,
-      color: "text-indigo-600",
+      color: "text-primary-600",
       bg: "bg-indigo-50",
       border: "border-indigo-100",
     },
@@ -65,7 +65,7 @@ export default function Hero({ summary }) {
           <div className="flex-1 text-center lg:text-left">
             <AnimateOnScroll variant="fadeUp" delay={0} duration={800}>
               <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
-                <Sparkles className="w-4 h-4 text-amber-500" />
+                <Sparkles className="w-4 h-4 text-secondary-500" />
                 Sabaragamuwa University of Sri Lanka
               </div>
             </AnimateOnScroll>
@@ -243,7 +243,7 @@ export default function Hero({ summary }) {
                                     {student.name}
                                   </span>
                                 </div>
-                                <span className="text-xs font-bold text-blue-600">
+                                <span className="text-xs font-bold text-primary-600">
                                   {Number(student.gpa || 0).toFixed(2)}
                                 </span>
                               </div>

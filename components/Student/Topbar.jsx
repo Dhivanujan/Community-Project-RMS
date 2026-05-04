@@ -57,7 +57,7 @@ export default function Topbar() {
           <input
             type="text"
             placeholder="Search subjects, results, reports..."
-            className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/15 focus:border-[#1e3a5f]/30 focus:bg-white transition-all duration-200"
+            className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all duration-200"
           />
         </div>
 
@@ -79,7 +79,7 @@ export default function Topbar() {
 
           {/* User Profile */}
           <button className="flex items-center gap-2.5 pl-1 pr-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center text-white font-bold text-xs shadow-sm uppercase">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-900 to-primary-600 flex items-center justify-center text-white font-bold text-xs shadow-sm uppercase">
               {student.initials}
             </div>
             <div className="text-left hidden sm:block">

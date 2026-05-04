@@ -161,7 +161,7 @@ export default function GradeEntryTable({
                                                     <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex w-6 h-6 items-center justify-center bg-amber-500/10 text-amber-500 rounded-full">
+                                                <span className="inline-flex w-6 h-6 items-center justify-center bg-secondary-500/10 text-secondary-500 rounded-full">
                                                     <span className="w-2 h-2 rounded-full bg-amber-400"></span>
                                                 </span>
                                             )}

@@ -37,7 +37,7 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                                     </td>
                                     <td className="py-4 px-4">
                                         <div className="flex flex-col gap-1">
-                                            <span className="w-fit px-3 py-1 bg-blue-500/10 text-blue-600 text-xs font-bold rounded-md">
+                                            <span className="w-fit px-3 py-1 bg-primary-500/10 text-primary-600 text-xs font-bold rounded-md">
                                                 {student.department || 'N/A'}
                                             </span>
                                             <span className="flex items-center gap-1 text-textMuted text-xs font-medium">

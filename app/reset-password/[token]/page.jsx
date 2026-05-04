@@ -54,7 +54,7 @@ export default function ResetPassword() {
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 sm:p-8 font-sans">
       <div className="max-w-[500px] w-full bg-white rounded-3xl shadow-xl overflow-hidden p-8 sm:p-12 relative">
         <Link href="/" className="flex items-center gap-3 justify-center mb-10 w-max mx-auto">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+          <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-sm">
             <GraduationCap className="text-white w-6 h-6" />
           </div>
           <span className="font-bold text-lg tracking-tight text-slate-900">Faculty of Computing</span>
@@ -69,7 +69,7 @@ export default function ResetPassword() {
             <p className="text-sm text-slate-500 mb-8">
               Your password has been successfully reset. You will be redirected to login shortly...
             </p>
-            <Link href="/login" className="text-blue-600 font-semibold hover:text-blue-700 transition">
+            <Link href="/login" className="text-primary-600 font-semibold hover:text-primary-700 transition">
               Go to login
             </Link>
           </div>
@@ -137,7 +137,7 @@ export default function ResetPassword() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full relative group bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full relative group bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {loading ? "Resetting..." : "Reset Password"}
                   {!loading && <ArrowRight className="w-4 h-4" />}

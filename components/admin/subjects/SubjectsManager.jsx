@@ -6,8 +6,8 @@ import { SUBJECTS, DEPARTMENTS, SEMESTERS } from '@/lib/resultUpload/config';
 
 const DEPT_COLORS = {
   'Software Engineering': {
-    badge: 'bg-blue-500/10 text-blue-600 border-blue-100',
-    code: 'bg-blue-500 text-white',
+    badge: 'bg-primary-500/10 text-primary-600 border-blue-100',
+    code: 'bg-primary-500 text-white',
   },
   'Computer Information Systems': {
     badge: 'bg-violet-500/10 text-violet-600 border-violet-100',
@@ -20,7 +20,7 @@ const DEPT_COLORS = {
 };
 
 const CREDIT_COLORS = {
-  3: 'bg-blue-50 text-blue-600',
+  3: 'bg-primary-50 text-primary-600',
   4: 'bg-amber-50 text-amber-600',
   6: 'bg-rose-50 text-rose-600',
 };
@@ -225,7 +225,7 @@ export default function SubjectsManager() {
       {/* Legend */}
       <div className="flex items-center gap-6 text-xs text-textMuted font-medium">
         <div className="flex items-center gap-2">
-          <Award className="w-3.5 h-3.5 text-amber-500" />
+          <Award className="w-3.5 h-3.5 text-secondary-500" />
           <span>6 credits = Research Project</span>
         </div>
         <div className="flex items-center gap-2">
@@ -233,7 +233,7 @@ export default function SubjectsManager() {
           <span>4 credit subjects</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-blue-100" />
+          <div className="w-3 h-3 rounded bg-primary-100" />
           <span>3 credit subjects</span>
         </div>
       </div>

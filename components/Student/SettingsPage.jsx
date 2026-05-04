@@ -76,8 +76,8 @@ export default function SettingsPage() {
       <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-[#1e3a5f]/[0.07] flex items-center justify-center">
-              <User className="w-3.5 h-3.5 text-[#1e3a5f]" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
+              <User className="w-3.5 h-3.5 text-primary-900" />
             </div>
             <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
               Profile Information
@@ -87,7 +87,7 @@ export default function SettingsPage() {
         <div className="p-5">
           {/* Avatar + Name */}
           <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100/60">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center text-white font-bold text-lg shadow-md shadow-[#1e3a5f]/15 uppercase">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-900 to-primary-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-[primary-900]/15 uppercase">
               {student.initials}
             </div>
             <div>
@@ -129,8 +129,8 @@ export default function SettingsPage() {
       <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-[#1e3a5f]/[0.07] flex items-center justify-center">
-              <Lock className="w-3.5 h-3.5 text-[#1e3a5f]" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
+              <Lock className="w-3.5 h-3.5 text-primary-900" />
             </div>
             <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
               Change Password
@@ -146,7 +146,7 @@ export default function SettingsPage() {
               <input
                 type={showCurrentPassword ? "text" : "password"}
                 placeholder="Enter current password"
-                className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/15 focus:border-[#1e3a5f]/30 focus:bg-white transition-all"
+                className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
               />
               <button
                 type="button"
@@ -171,7 +171,7 @@ export default function SettingsPage() {
                 <input
                   type={showNewPassword ? "text" : "password"}
                   placeholder="Enter new password"
-                  className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/15 focus:border-[#1e3a5f]/30 focus:bg-white transition-all"
+                  className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
                 />
                 <button
                   type="button"
@@ -193,12 +193,12 @@ export default function SettingsPage() {
               <input
                 type="password"
                 placeholder="Confirm new password"
-                className="w-full mt-1 bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/15 focus:border-[#1e3a5f]/30 focus:bg-white transition-all"
+                className="w-full mt-1 bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
               />
             </div>
           </div>
 
-          <button className="bg-[#1e3a5f] text-white text-xs font-semibold px-5 py-2.5 rounded-lg hover:bg-[#163050] transition-colors shadow-sm shadow-[#1e3a5f]/15 mt-1">
+          <button className="bg-primary-900 text-white text-xs font-semibold px-5 py-2.5 rounded-lg hover:bg-[#163050] transition-colors shadow-sm shadow-[primary-900]/15 mt-1">
             Update Password
           </button>
         </div>
@@ -208,8 +208,8 @@ export default function SettingsPage() {
       <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-[#1e3a5f]/[0.07] flex items-center justify-center">
-              <Bell className="w-3.5 h-3.5 text-[#1e3a5f]" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
+              <Bell className="w-3.5 h-3.5 text-primary-900" />
             </div>
             <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
               Notification Preferences
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => item.setState(!item.state)}
                   className={`relative w-10 h-[22px] rounded-full transition-colors duration-200 flex-shrink-0 ${
-                    item.state ? "bg-[#1e3a5f]" : "bg-slate-200"
+                    item.state ? "bg-primary-900" : "bg-slate-200"
                   }`}
                 >
                   <span
@@ -294,8 +294,8 @@ export default function SettingsPage() {
       <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-[#1e3a5f]/[0.07] flex items-center justify-center">
-              <Palette className="w-3.5 h-3.5 text-[#1e3a5f]" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
+              <Palette className="w-3.5 h-3.5 text-primary-900" />
             </div>
             <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
               Appearance
@@ -316,7 +316,7 @@ export default function SettingsPage() {
                 key={theme.name}
                 className={`flex flex-col items-center gap-2 p-3.5 rounded-lg border-2 transition-all duration-200 ${
                   theme.active
-                    ? "border-[#1e3a5f] bg-[#1e3a5f]/[0.03]"
+                    ? "border-primary-900 bg-primary-900/[0.03]"
                     : "border-slate-200/60 hover:border-slate-300"
                 }`}
               >
@@ -325,7 +325,7 @@ export default function SettingsPage() {
                 />
                 <span
                   className={`text-[11px] font-semibold ${
-                    theme.active ? "text-[#1e3a5f]" : "text-slate-500"
+                    theme.active ? "text-primary-900" : "text-slate-500"
                   }`}
                 >
                   {theme.name}

@@ -25,7 +25,7 @@ const GRADE_PIE_COLORS = [
 function StatCard({ icon: Icon, label, value, sub, color = 'primary' }) {
   const colors = {
     primary: 'bg-primary text-white shadow-primary/20',
-    blue: 'bg-blue-500/80 text-white shadow-blue-500/20',
+    blue: 'bg-primary-500/80 text-white shadow-blue-500/20',
     green: 'bg-emerald-500/80 text-white shadow-emerald-500/20',
     purple: 'bg-violet-500/80 text-white shadow-violet-500/20',
   };
@@ -55,7 +55,7 @@ function EmptyState({ message = 'No data available yet.' }) {
 }
 
 function RankIcon({ rank }) {
-  if (rank === 1) return <Trophy className="w-5 h-5 text-amber-500" />;
+  if (rank === 1) return <Trophy className="w-5 h-5 text-secondary-500" />;
   if (rank === 2) return <Medal className="w-5 h-5 text-slate-400" />;
   if (rank === 3) return <Award className="w-5 h-5 text-amber-700" />;
   return <span className="w-5 h-5 flex items-center justify-center text-xs font-bold text-textMuted">#{rank}</span>;
@@ -64,7 +64,7 @@ function RankIcon({ rank }) {
 function GpaTag({ gpa }) {
   const color =
     gpa >= 3.7 ? 'bg-emerald-100 text-emerald-700'
-    : gpa >= 3.3 ? 'bg-blue-100 text-blue-700'
+    : gpa >= 3.3 ? 'bg-primary-100 text-primary-700'
     : gpa >= 2.7 ? 'bg-violet-100 text-violet-700'
     : gpa >= 2.0 ? 'bg-amber-100 text-amber-700'
     : 'bg-red-100 text-red-700';
@@ -276,7 +276,7 @@ export default function GPAReportsManager() {
             {/* Top 10 Performers */}
             <div className="bg-surface rounded-3xl border border-border shadow-sm p-6 overflow-hidden">
               <h3 className="text-textDark font-bold text-base mb-4 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-amber-500" />
+                <Trophy className="w-4 h-4 text-secondary-500" />
                 Top Performers
               </h3>
               {data.topPerformers.length > 0 ? (

@@ -48,7 +48,7 @@ export default function NotificationsPage() {
     try {
       const response = await fetch('/api/student/notifications', {
         headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
         },
       });
       if (response.ok) {
@@ -86,10 +86,10 @@ export default function NotificationsPage() {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'), // Passing an identifier just in case
           markAllRead: true 
         })
       });
+      window.dispatchEvent(new Event('notificationsUpdated'));
     } catch (error) {
       console.error("Failed to mark all as read", error);
     }
@@ -108,11 +108,11 @@ export default function NotificationsPage() {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'),
           notificationId: id,
           read: !currentStatus
         })
       });
+      window.dispatchEvent(new Event('notificationsUpdated'));
     } catch (error) {
       console.error("Failed to toggle read status", error);
     }

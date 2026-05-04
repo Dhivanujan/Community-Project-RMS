@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Star,
@@ -22,6 +23,39 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch('/api/student/notifications', {
+          headers: {
+            'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            setUnreadCount(result.data.unreadCount || 0);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch unread count for sidebar", error);
+      }
+    };
+    
+    fetchUnreadCount();
+    
+    // Optional: Listen for custom events if notifications are updated from other components
+    const handleNotificationUpdate = () => {
+      fetchUnreadCount();
+    };
+    window.addEventListener('notificationsUpdated', handleNotificationUpdate);
+    
+    return () => {
+      window.removeEventListener('notificationsUpdated', handleNotificationUpdate);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -82,9 +116,9 @@ export default function Sidebar() {
                 }`}
               />
               <span>{item.name}</span>
-              {item.name === "Notifications" && (
+              {item.name === "Notifications" && unreadCount > 0 && (
                 <span className="ml-auto w-5 h-5 rounded-full bg-rose-500/90 text-[10px] font-bold text-white flex items-center justify-center">
-                  2
+                  {unreadCount}
                 </span>
               )}
             </Link>

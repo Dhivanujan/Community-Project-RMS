@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
+import { requireStudent } from '@/lib/auth';
 import Result from '@/models/Result';
 import {
   hasStudentIdentifier,

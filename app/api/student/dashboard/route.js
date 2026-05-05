@@ -1,21 +1,42 @@
 import { NextResponse } from 'next/server';
+import { requireStudent } from '@/lib/auth';
 import { getStudentDashboardData } from '@/lib/student/dashboard';
 
 export async function GET(request) {
   try {
+    // Require authentication
+    const { authorized, response: authResponse, user } = await requireStudent(request);
+    if (!authorized) return authResponse;
+
     const { searchParams } = new URL(request.url);
 
     const studentId = searchParams.get('studentId')?.trim() || '';
     const rollNumber = searchParams.get('rollNumber')?.trim() || '';
-    const email = searchParams.get('email')?.trim() || '';
+    let email = searchParams.get('email')?.trim() || '';
 
     if (!studentId && !rollNumber && !email) {
+      if (user.role === 'Student') {
+        email = user.email;
+      } else {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Provide one identifier: studentId, rollNumber, or email.',
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Prevent students from viewing other students' data
+    // (allow admin to view any student, but students can only view their own)
+    if (user.role === 'Student' && user.email !== email && email) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Provide one identifier: studentId, rollNumber, or email.',
+          message: 'Unauthorized: Cannot view other students\' data.',
         },
-        { status: 400 }
+        { status: 403 }
       );
     }
 

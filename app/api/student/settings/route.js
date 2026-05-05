@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { requireStudent } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import Student from '@/models/Student';
 import StudentPreference from '@/models/StudentPreference';
@@ -37,6 +38,10 @@ function buildAcademicYearLabel(enrollmentYear) {
 
 export async function GET(request) {
   try {
+    // Require authentication
+    const { authorized, response: authResponse, user } = await requireStudent(request);
+    if (!authorized) return authResponse;
+
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
@@ -63,7 +68,7 @@ export async function GET(request) {
       );
     }
 
-    const [user, preferences] = await Promise.all([
+    const [studentUser, preferences] = await Promise.all([
       resolveUserForStudent(student),
       StudentPreference.findOne({ student: student._id }).lean(),
     ]);
@@ -82,7 +87,7 @@ export async function GET(request) {
         department: student.department || null,
         batch: student.enrollmentYear ? `${student.enrollmentYear}/${Number(student.enrollmentYear) + 1}` : null,
         academicYear: buildAcademicYearLabel(student.enrollmentYear),
-        role: user?.role || 'Student',
+        role: studentUser?.role || 'Student',
       },
       preferences: {
         emailNotifications: preferenceData.emailNotifications,
@@ -109,6 +114,10 @@ export async function GET(request) {
 
 export async function PATCH(request) {
   try {
+    // Require authentication
+    const { authorized, response: authResponse, user } = await requireStudent(request);
+    if (!authorized) return authResponse;
+
     await dbConnect();
 
     const body = await request.json();

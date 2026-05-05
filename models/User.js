@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: function() { return this.role === 'Student'; }
     },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    otp: String,
+    otpExpires: Date,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

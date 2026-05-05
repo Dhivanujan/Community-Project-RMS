@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CheckCircle,
   Calculator,
@@ -12,104 +12,61 @@ import {
   CheckCheck,
 } from "lucide-react";
 
-const allNotifications = [
-  {
-    id: 1,
-    icon: CheckCircle,
-    iconBg: "bg-[#1e3a5f]/[0.07]",
-    iconColor: "text-[#1e3a5f]",
-    title: "CS102 Results Published",
-    description:
-      "Introduction to Algorithms final grades are now available in your results portal.",
-    time: "2 hours ago",
-    category: "Results",
-    read: false,
-  },
-  {
-    id: 2,
-    icon: Calculator,
-    iconBg: "bg-amber-50",
-    iconColor: "text-amber-600",
-    title: "GPA Calculation Updated",
-    description:
-      "Semester 1 summary has been refreshed with new transfer credits.",
-    time: "Yesterday",
-    category: "Academic",
-    read: false,
-  },
-  {
-    id: 3,
-    icon: Mail,
-    iconBg: "bg-emerald-50",
-    iconColor: "text-emerald-600",
-    title: "Dean's List Nomination",
-    description:
-      "Congratulations! You have been nominated for the Faculty Excellence Award.",
-    time: "Oct 12, 2023",
-    category: "Academic",
-    read: true,
-  },
-  {
-    id: 4,
-    icon: AlertCircle,
-    iconBg: "bg-rose-50",
-    iconColor: "text-rose-500",
-    title: "Registration Deadline Approaching",
-    description:
-      "Spring 2025 course registration closes on November 15, 2024. Complete your enrollment.",
-    time: "Oct 10, 2023",
-    category: "General",
-    read: true,
-  },
-  {
-    id: 5,
-    icon: Star,
-    iconBg: "bg-[#d4a843]/10",
-    iconColor: "text-[#b8912e]",
-    title: "CS204 Results Published",
-    description:
-      "Database Management final grades have been released. Check your results now.",
-    time: "Oct 8, 2023",
-    category: "Results",
-    read: true,
-  },
-  {
-    id: 6,
-    icon: Info,
-    iconBg: "bg-sky-50",
-    iconColor: "text-sky-500",
-    title: "System Maintenance Notice",
-    description:
-      "The results portal will undergo scheduled maintenance on October 20, 2023 from 2:00 AM to 6:00 AM.",
-    time: "Oct 5, 2023",
-    category: "General",
-    read: true,
-  },
-  {
-    id: 7,
-    icon: CheckCircle,
-    iconBg: "bg-[#1e3a5f]/[0.07]",
-    iconColor: "text-[#1e3a5f]",
-    title: "MT100 Results Published",
-    description:
-      "Calculus I final grades are available. You scored an A- in this subject.",
-    time: "Sep 25, 2023",
-    category: "Results",
-    read: true,
-  },
-];
+// Helper function to pick an icon based on category or type
+const getIconForCategory = (category) => {
+  switch (category?.toLowerCase()) {
+    case 'results': return Star;
+    case 'academic': return Calculator;
+    case 'general': return Info;
+    default: return Bell;
+  }
+};
+
+const getIconColorForCategory = (category) => {
+  switch (category?.toLowerCase()) {
+    case 'results': return { bg: "bg-[#d4a843]/10", text: "text-[#b8912e]" };
+    case 'academic': return { bg: "bg-emerald-50", text: "text-emerald-600" };
+    case 'general': return { bg: "bg-sky-50", text: "text-sky-500" };
+    default: return { bg: "bg-slate-50", text: "text-slate-500" };
+  }
+};
 
 const tabs = ["All", "Results", "Academic", "General"];
 
 const categoryColors = {
-  Results: "bg-[#1e3a5f]/[0.06] text-[#1e3a5f] border-[#1e3a5f]/10",
+  Results: "bg-primary-900/[0.06] text-primary-900 border-primary-900/10",
   Academic: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
   General: "bg-slate-50 text-slate-600 border-slate-200/60",
 };
 
 export default function NotificationsPage() {
   const [activeTab, setActiveTab] = useState("All");
-  const [notifications, setNotifications] = useState(allNotifications);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch('/api/student/notifications', {
+        headers: {
+          'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
+        },
+      });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setNotifications(result.data.notifications);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   const filtered =
     activeTab === "All"
@@ -118,14 +75,47 @@ export default function NotificationsPage() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAllRead = () => {
+  const markAllRead = async () => {
+    // Optimistic UI update
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    try {
+      await fetch('/api/student/notifications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        },
+        body: JSON.stringify({
+          markAllRead: true 
+        })
+      });
+      window.dispatchEvent(new Event('notificationsUpdated'));
+    } catch (error) {
+      console.error("Failed to mark all as read", error);
+    }
   };
 
-  const toggleRead = (id) => {
+  const toggleRead = async (id, currentStatus) => {
+    // Optimistic UI update
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n))
+      prev.map((n) => (n.id === id ? { ...n, read: !currentStatus } : n))
     );
+    try {
+      await fetch('/api/student/notifications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        },
+        body: JSON.stringify({
+          notificationId: id,
+          read: !currentStatus
+        })
+      });
+      window.dispatchEvent(new Event('notificationsUpdated'));
+    } catch (error) {
+      console.error("Failed to toggle read status", error);
+    }
   };
 
   return (
@@ -138,7 +128,7 @@ export default function NotificationsPage() {
               Notifications
             </h1>
             {unreadCount > 0 && (
-              <span className="bg-[#1e3a5f] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+              <span className="bg-primary-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                 {unreadCount} new
               </span>
             )}
@@ -171,7 +161,7 @@ export default function NotificationsPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
                 activeTab === tab
-                  ? "bg-[#1e3a5f] text-white shadow-sm"
+                  ? "bg-primary-900 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
               }`}
             >
@@ -190,7 +180,11 @@ export default function NotificationsPage() {
 
       {/* Notifications List */}
       <div className="space-y-2.5">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-xl border border-slate-200/60 p-12 text-center shadow-sm">
+            <h3 className="text-base font-bold text-slate-400">Loading notifications...</h3>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="bg-white rounded-xl border border-slate-200/60 p-12 text-center shadow-sm">
             <Bell className="w-10 h-10 text-slate-200 mx-auto mb-3" />
             <h3 className="text-base font-bold text-slate-400">
@@ -202,28 +196,34 @@ export default function NotificationsPage() {
           </div>
         ) : (
           filtered.map((notification) => {
-            const Icon = notification.icon;
+            const Icon = getIconForCategory(notification.category);
+            const iconColors = getIconColorForCategory(notification.category);
             const catColor = categoryColors[notification.category] || categoryColors["General"];
+            
+            // Format time simply
+            const notifDate = new Date(notification.createdAt);
+            const timeStr = notifDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
             return (
               <div
                 key={notification.id}
-                onClick={() => toggleRead(notification.id)}
+                onClick={() => toggleRead(notification.id, notification.read)}
                 className={`flex gap-3.5 p-4 rounded-xl border transition-all duration-200 cursor-pointer group ${
                   notification.read
                     ? "bg-white border-slate-200/60 hover:border-slate-200 hover:shadow-sm"
-                    : "bg-[#1e3a5f]/[0.015] border-[#1e3a5f]/15 hover:border-[#1e3a5f]/25 shadow-sm"
+                    : "bg-primary-900/[0.015] border-primary-900/15 hover:border-primary-900/25 shadow-sm"
                 }`}
               >
                 {/* Icon with unread dot */}
                 <div className="flex items-start gap-2 pt-0.5">
                   {!notification.read && (
-                    <div className="w-2 h-2 bg-[#1e3a5f] rounded-full mt-2.5 flex-shrink-0" />
+                    <div className="w-2 h-2 bg-primary-900 rounded-full mt-2.5 flex-shrink-0" />
                   )}
                   <div
-                    className={`w-9 h-9 rounded-lg ${notification.iconBg} flex items-center justify-center flex-shrink-0`}
+                    className={`w-9 h-9 rounded-lg ${iconColors.bg} flex items-center justify-center flex-shrink-0`}
                   >
                     <Icon
-                      className={`w-4 h-4 ${notification.iconColor}`}
+                      className={`w-4 h-4 ${iconColors.text}`}
                     />
                   </div>
                 </div>
@@ -233,7 +233,7 @@ export default function NotificationsPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h4
-                        className={`text-[13px] font-semibold group-hover:text-[#1e3a5f] transition-colors ${
+                        className={`text-[13px] font-semibold group-hover:text-primary-900 transition-colors ${
                           notification.read
                             ? "text-slate-600"
                             : "text-slate-800"
@@ -246,7 +246,7 @@ export default function NotificationsPage() {
                       </p>
                     </div>
                     <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap mt-0.5">
-                      {notification.time}
+                      {timeStr}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mt-2">

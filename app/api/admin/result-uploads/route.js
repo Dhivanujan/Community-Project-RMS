@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import ResultUpload from '@/models/ResultUpload';
 import Student from '@/models/Student';
@@ -6,6 +7,10 @@ import Student from '@/models/Student';
 // ── GET: List all result uploads with optional filters ──
 export async function GET(request) {
   try {
+    // Require admin authentication
+    const { authorized, response: authResponse } = await requireAdmin(request);
+    if (!authorized) return authResponse;
+
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
@@ -48,6 +53,10 @@ export async function GET(request) {
 // ── POST: Create a new result upload (draft) ──
 export async function POST(request) {
   try {
+    // Require admin authentication
+    const { authorized, response: authResponse } = await requireAdmin(request);
+    if (!authorized) return authResponse;
+
     await dbConnect();
 
     const body = await request.json();

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import Result from '@/models/Result';
 import StudentNotification from '@/models/StudentNotification';
+import { requireStudent } from '@/lib/auth';
 import {
   hasStudentIdentifier,
   normalizeStudentIdentifier,
@@ -41,8 +42,19 @@ export async function GET(request) {
   try {
     await dbConnect();
 
-    const { searchParams } = new URL(request.url);
-    const identifiers = normalizeStudentIdentifier(searchParams);
+    // Try API auth, bypass error if not found? No, let's just try auth to get the user email if there are no search params.
+    let identifiers;
+    try {
+      const { searchParams } = new URL(request.url);
+      identifiers = normalizeStudentIdentifier(searchParams);
+
+      if (!hasStudentIdentifier(identifiers)) {
+        const { authorized, user } = await requireStudent(request);
+        if (authorized && user?.email) {
+          identifiers.email = user.email;
+        }
+      }
+    } catch(e) {}
 
     if (!hasStudentIdentifier(identifiers)) {
       return NextResponse.json(
@@ -65,7 +77,8 @@ export async function GET(request) {
       );
     }
 
-    await seedResultNotifications(student._id);
+    // NOTE: seedResultNotifications is now called via POST endpoint, not GET
+    // This ensures GET operations remain idempotent and don't have side effects
 
     const category = searchParams.get('category')?.trim() || 'All';
     const query = { student: student._id };
@@ -113,7 +126,17 @@ export async function PATCH(request) {
     await dbConnect();
 
     const body = await request.json();
-    const { studentId, rollNumber, email, notificationId, read, markAllRead } = body || {};
+    const { notificationId, read, markAllRead } = body || {};
+    let { studentId, rollNumber, email } = body || {};
+
+    if (!studentId && !rollNumber && !email) {
+      try {
+        const { authorized, user } = await requireStudent(request);
+        if (authorized && user?.email) {
+          email = user.email;
+        }
+      } catch(e) {}
+    }
 
     if (!studentId && !rollNumber && !email) {
       return NextResponse.json(
@@ -184,6 +207,57 @@ export async function PATCH(request) {
       {
         success: false,
         message: 'Unable to update notification state.',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// POST: Seed/generate notifications from latest results
+export async function POST(request) {
+  try {
+    await dbConnect();
+
+    const body = await request.json();
+    const { studentId, rollNumber, email } = body || {};
+
+    if (!studentId && !rollNumber && !email) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Provide one identifier: studentId, rollNumber, or email.',
+        },
+        { status: 400 }
+      );
+    }
+
+    const student = await resolveStudent({ studentId, rollNumber, email });
+    if (!student) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Student not found.',
+        },
+        { status: 404 }
+      );
+    }
+
+    // Seed/refresh notifications from recent results
+    await seedResultNotifications(student._id);
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Notifications synced with latest results.',
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Student notifications API POST error:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Unable to seed notifications.',
       },
       { status: 500 }
     );

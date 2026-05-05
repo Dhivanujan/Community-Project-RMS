@@ -10,11 +10,11 @@ export default function Departments({ departmentStats }) {
       students: 850,
       gpa: 3.45,
       gpaPercent: 86,
-      bg: "bg-blue-50",
-      text: "text-blue-600",
+      bg: "bg-primary-50",
+      text: "text-primary-600",
       border: "border-blue-100",
       gradient: "from-blue-500 to-blue-600",
-      barBg: "bg-blue-100",
+      barBg: "bg-primary-100",
     },
     {
       title: "Computing & Info Systems",
@@ -23,7 +23,7 @@ export default function Departments({ departmentStats }) {
       gpa: 3.38,
       gpaPercent: 84,
       bg: "bg-indigo-50",
-      text: "text-indigo-600",
+      text: "text-primary-600",
       border: "border-indigo-100",
       gradient: "from-indigo-500 to-indigo-600",
       barBg: "bg-indigo-100",
@@ -45,16 +45,16 @@ export default function Departments({ departmentStats }) {
   const palette = [
     {
       icon: <Code2 className="w-5 h-5" />,
-      bg: "bg-blue-50",
-      text: "text-blue-600",
+      bg: "bg-primary-50",
+      text: "text-primary-600",
       border: "border-blue-100",
       gradient: "from-blue-500 to-blue-600",
-      barBg: "bg-blue-100",
+      barBg: "bg-primary-100",
     },
     {
       icon: <Network className="w-5 h-5" />,
       bg: "bg-indigo-50",
-      text: "text-indigo-600",
+      text: "text-primary-600",
       border: "border-indigo-100",
       gradient: "from-indigo-500 to-indigo-600",
       barBg: "bg-indigo-100",
@@ -81,13 +81,13 @@ export default function Departments({ departmentStats }) {
       className="py-24 bg-gradient-to-b from-slate-50 to-white border-y border-slate-100 relative overflow-hidden"
     >
       {/* Decorative blobs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/3"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary-50 rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/3"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-50 rounded-full blur-3xl opacity-30 translate-y-1/3 -translate-x-1/4"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <AnimateOnScroll variant="fadeUp" className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-primary-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
             Academic Departments
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">

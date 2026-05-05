@@ -90,7 +90,7 @@ export default function ResultUploadList({
                                         </div>
                                     </td>
                                     <td className="py-4 px-4">
-                                        <span className="w-fit px-3 py-1 bg-blue-500/10 text-blue-600 text-xs font-bold rounded-md">
+                                        <span className="w-fit px-3 py-1 bg-primary-500/10 text-primary-600 text-xs font-bold rounded-md">
                                             {upload.department}
                                         </span>
                                     </td>

@@ -128,10 +128,9 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
                                 onChange={e => setFormData({...formData, department: e.target.value})}
                             >
                                 <option value="" disabled>Select Dept</option>
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Software Engineering">Software Engineering</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Data Science">Data Science</option>
+                                <option value="Software Engineering">Software Engineering (SE)</option>
+                                <option value="Computer Information Systems">Computer Information Systems (CIS)</option>
+                                <option value="Data Science">Data Science (DS)</option>
                             </select>
                         </div>
                         <div className="space-y-1">
@@ -158,7 +157,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-dark rounded-xl transition-all shadow-sm shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primaryHover hover-lift rounded-xl transition-all shadow-md shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:transform-none"
                         >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Student'}
                         </button>

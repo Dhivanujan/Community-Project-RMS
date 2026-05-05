@@ -1,14 +1,23 @@
 import dbConnect from '@/lib/dbConnect';
+import { requireAdmin } from '@/lib/auth';
 import Student from '@/models/Student';
 import Result from '@/models/Result';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request, { params }) {
     try {
+        // Require admin authentication
+        const { authorized, response: authResponse } = await requireAdmin(request);
+        if (!authorized) return authResponse;
+
         await dbConnect();
         
         const { id } = params;
         const body = await request.json();
+        
+        // Prevent updates to sensitive fields
+        delete body.rollNumber; // rollNumber should not be changed
+        delete body._id;
         
         const student = await Student.findByIdAndUpdate(
             id,
@@ -28,6 +37,10 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
+        // Require admin authentication
+        const { authorized, response: authResponse } = await requireAdmin(request);
+        if (!authorized) return authResponse;
+
         await dbConnect();
         
         const { id } = params;

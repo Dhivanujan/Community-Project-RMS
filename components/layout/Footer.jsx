@@ -16,7 +16,7 @@ export default function Footer() {
                 <GraduationCap className="text-white w-5 h-5" />
               </div>
               <span className="font-extrabold text-xl tracking-tight text-slate-900">
-                SUSL MeritMatrix<span className="text-blue-600">.</span>
+                SUSL MeritMatrix<span className="text-primary-600">.</span>
               </span>
             </div>
             <p className="text-sm text-slate-500 mb-6 max-w-sm leading-relaxed">
@@ -35,28 +35,28 @@ export default function Footer() {
               <li>
                 <Link
                   href="#departments"
-                  className="hover:text-blue-600 transition-colors duration-300 relative group inline-block"
+                  className="hover:text-primary-600 transition-colors duration-300 relative group inline-block"
                 >
                   Software Engineering
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="#departments"
-                  className="hover:text-blue-600 transition-colors duration-300 relative group inline-block"
+                  className="hover:text-primary-600 transition-colors duration-300 relative group inline-block"
                 >
                   Computing & Info Systems
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="#departments"
-                  className="hover:text-blue-600 transition-colors duration-300 relative group inline-block"
+                  className="hover:text-primary-600 transition-colors duration-300 relative group inline-block"
                 >
                   Data Science
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </li>
             </ul>
@@ -70,28 +70,28 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-slate-500">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-blue-400" />
-                support@uniinsight.edu
+                computing@susl.lk
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-blue-400" />
-                +1 (555) 123-4567
+                +94 45 228 0014
               </li>
               <li>
                 <Link
                   href="#"
-                  className="hover:text-blue-600 transition-colors duration-300 relative group inline-block"
+                  className="hover:text-primary-600 transition-colors duration-300 relative group inline-block"
                 >
                   Faculty Guidelines
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="hover:text-blue-600 transition-colors duration-300 relative group inline-block"
+                  className="hover:text-primary-600 transition-colors duration-300 relative group inline-block"
                 >
                   Privacy Policy
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </li>
             </ul>

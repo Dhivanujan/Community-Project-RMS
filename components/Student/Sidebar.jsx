@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Star,
@@ -21,6 +22,49 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch('/api/student/notifications', {
+          headers: {
+            'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            setUnreadCount(result.data.unreadCount || 0);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch unread count for sidebar", error);
+      }
+    };
+    
+    fetchUnreadCount();
+    
+    // Optional: Listen for custom events if notifications are updated from other components
+    const handleNotificationUpdate = () => {
+      fetchUnreadCount();
+    };
+    window.addEventListener('notificationsUpdated', handleNotificationUpdate);
+    
+    return () => {
+      window.removeEventListener('notificationsUpdated', handleNotificationUpdate);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      router.push('/login');
+      router.refresh();
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 w-64 h-screen bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] flex flex-col z-30">
@@ -72,9 +116,9 @@ export default function Sidebar() {
                 }`}
               />
               <span>{item.name}</span>
-              {item.name === "Notifications" && (
+              {item.name === "Notifications" && unreadCount > 0 && (
                 <span className="ml-auto w-5 h-5 rounded-full bg-rose-500/90 text-[10px] font-bold text-white flex items-center justify-center">
-                  2
+                  {unreadCount}
                 </span>
               )}
             </Link>
@@ -108,7 +152,7 @@ export default function Sidebar() {
           />
           <span>Settings</span>
         </Link>
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-500 hover:text-rose-400 hover:bg-rose-500/[0.06] transition-all duration-200">
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-500 hover:text-rose-400 hover:bg-rose-500/[0.06] transition-all duration-200">
           <LogOut className="w-[18px] h-[18px]" />
           <span>Sign Out</span>
         </button>

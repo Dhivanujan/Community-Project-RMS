@@ -10,13 +10,42 @@ module.exports = {
         sans: ['Inter', 'sans-serif'],
       },
       colors: {
-        primary: '#2563EB',
-        primaryHover: '#1D4ED8',
-        background: '#F9FAFB',
+        // Deep Navy (Primary)
+        primary: {
+          50: '#f0f4f8',
+          100: '#d9e2ec',
+          200: '#bcccdc',
+          300: '#9fb3c8',
+          400: '#829ab1',
+          500: '#627d98',
+          600: '#486581',
+          700: '#334e68',
+          800: '#243b53',
+          900: '#1e3a5f', // Core Navy
+          950: '#102a43',
+        },
+        // Gold/Amber (Secondary)
+        secondary: {
+          50: '#fdf8ec',
+          100: '#faefd0',
+          200: '#f5dfa2',
+          300: '#eecb6d',
+          400: '#e7b53e',
+          500: '#d4af37', // Core Gold
+          600: '#c27e12',
+          700: '#9b5a12',
+          800: '#7e4616',
+          900: '#663a15',
+          950: '#3b1e07',
+        },
+        // Standard semantic colors
+        background: '#F8FAFC',
         surface: '#FFFFFF',
-        textDark: '#111827',
-        textMuted: '#6B7280',
-        border: '#E5E7EB'
+        textDark: '#0F172A',
+        textMuted: '#64748B',
+        border: '#E2E8F0',
+        // Legacy colors to maintain compatibility during refactor
+        primaryHover: '#102a43',
       },
       keyframes: {
         fadeInUp: {

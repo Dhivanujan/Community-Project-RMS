@@ -43,11 +43,6 @@ const ResultUploadSchema = new mongoose.Schema(
       required: [true, 'Department is required.'],
       trim: true,
     },
-    batch: {
-      type: String,
-      required: [true, 'Batch is required.'],
-      trim: true,
-    },
     semester: {
       type: String,
       required: [true, 'Semester is required.'],
@@ -89,7 +84,7 @@ const ResultUploadSchema = new mongoose.Schema(
 
 // Prevent duplicate uploads for the same subject in a given context
 ResultUploadSchema.index(
-  { academicYear: 1, department: 1, batch: 1, semester: 1, subjectCode: 1 },
+  { academicYear: 1, department: 1, semester: 1, subjectCode: 1 },
   { unique: true }
 );
 

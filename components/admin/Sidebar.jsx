@@ -1,8 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Building2, BookOpen, FileText, BarChart3 } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { LayoutDashboard, Users, Building2, BookOpen, FileText, BarChart3, LogOut, GraduationCap } from 'lucide-react';
 
 const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
@@ -15,16 +15,40 @@ const menuItems = [
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+        } finally {
+            router.push('/login');
+            router.refresh();
+        }
+    };
 
     return (
-        <aside className="fixed left-0 top-0 w-64 h-screen bg-surface/80 backdrop-blur-xl border-r border-border flex flex-col shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] font-sans z-50">
-            <div className="p-6 border-b border-border flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm card-glow">
-                    <BarChart3 className="text-white w-5 h-5 animate-pulse-glow" />
+        <aside className="fixed left-0 top-0 w-64 h-screen bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] flex flex-col z-50">
+            {/* University Branding */}
+            <div className="px-6 pt-7 pb-6 border-b border-white/[0.06]">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4a843] to-[#b8912e] flex items-center justify-center shadow-lg shadow-[#d4a843]/20">
+                        <GraduationCap className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                        <h1 className="text-[14px] font-bold text-white leading-tight tracking-wide">
+                            RMS Admin
+                        </h1>
+                        <p className="text-[10px] text-[#d4a843] mt-0.5 font-semibold tracking-widest uppercase">
+                            Faculty of Computing
+                        </p>
+                    </div>
                 </div>
-                <h2 className="text-xl font-bold text-textDark tracking-tight">RMS Admin</h2>
             </div>
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+
+            <nav className="flex-1 px-3 pt-6 space-y-1 overflow-y-auto">
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] px-3 mb-3">
+                    Menu
+                </p>
                 {menuItems.map((item) => {
                     const Icon = item.icon;
                     // For exact match on dashboard, or prefix match for sub-pages
@@ -34,15 +58,22 @@ export default function Sidebar() {
                         <Link
                             key={item.name}
                             href={item.path}
-                            className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm ${
-                                isActive
-                                    ? 'bg-primary text-white shadow-md shadow-primary/20'
-                                    : 'text-textMuted hover:bg-primary/10 hover:text-primary hover:translate-x-1'
-                            }`}
+                            className={`
+                                relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200
+                                ${
+                                  isActive
+                                    ? "bg-white/[0.08] text-white shadow-sm"
+                                    : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+                                }
+                            `}
                         >
+                            {/* Active indicator bar */}
+                            {isActive && (
+                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#d4a843] rounded-r-full" />
+                            )}
                             <Icon 
-                                className={`w-5 h-5 transition-colors duration-300 ${
-                                    isActive ? 'text-white' : 'text-textMuted group-hover:text-primary'
+                                className={`w-[18px] h-[18px] ${
+                                    isActive ? 'text-[#d4a843]' : 'text-slate-500'
                                 }`} 
                             />
                             <span>{item.name}</span>
@@ -50,9 +81,13 @@ export default function Sidebar() {
                     );
                 })}
             </nav>
-            {/* Sidebar Footer element matching your login footer logic */}
-            <div className="p-6 border-t border-border mt-auto backdrop-blur-md">
-                <p className="text-xs text-textMuted text-center font-medium">© 2024 Faculty of Computing</p>
+            {/* Bottom Section */}
+            <div className="px-3 pb-4 space-y-1">
+                <div className="border-t border-white/[0.06] mb-3" />
+                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-500 hover:text-rose-400 hover:bg-rose-500/[0.06] transition-all duration-200">
+                    <LogOut className="w-[18px] h-[18px]" />
+                    <span>Sign Out</span>
+                </button>
             </div>
         </aside>
     );

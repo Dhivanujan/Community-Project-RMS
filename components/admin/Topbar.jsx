@@ -1,10 +1,9 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Search, Bell, HelpCircle, ChevronDown } from "lucide-react";
 
 export default function Topbar() {
-  const router = useRouter();
   const [greeting, setGreeting] = useState('Welcome');
 
   useEffect(() => {
@@ -14,37 +13,56 @@ export default function Topbar() {
     else setGreeting('Good Evening');
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-    } finally {
-      router.push('/login');
-      router.refresh();
-    }
-  };
-
   return (
-    <header className="h-[80px] bg-background/60 backdrop-blur-xl border-b border-border flex items-center justify-between px-8 sticky top-0 z-10 font-sans">
-      <div className="flex-1">
-        <h2 className="text-xl font-bold text-textDark tracking-tight animate-fadeIn">{greeting}, <span className="text-primary">Admin</span> 👋</h2>
-      </div>
-      
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-3 bg-surface/80 glass-card px-2 py-1.5 rounded-2xl border border-border shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 group">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-primary group-hover:text-white transition-colors duration-300 flex items-center justify-center text-primary font-bold text-sm">
-            DS
-          </div>
-          <div className="hidden md:flex flex-col pr-4">
-            <span className="text-sm font-semibold text-textDark leading-tight tracking-tight group-hover:text-primary transition-colors">Dr. Sterling</span>
-            <span className="text-[10px] text-textMuted uppercase tracking-widest mt-0.5 font-bold">Admin</span>
+    <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
+      <div className="flex items-center justify-between px-8 h-16">
+        {/* Left Section / Search */}
+        <div className="flex items-center gap-6 w-full max-w-md">
+          <h2 className="text-xl font-bold tracking-tight text-slate-800 animate-fadeIn whitespace-nowrap hidden md:block">
+            {greeting}, <span className="text-[#d4a843]">Admin</span> 👋
+          </h2>
+          <div className="relative w-full max-w-sm">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search reports, students..."
+              className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#d4a843]/15 focus:border-[#d4a843]/30 focus:bg-white transition-all duration-200"
+            />
           </div>
         </div>
-        
-        <div className="w-px h-8 bg-border border-l border-dashed"></div>
-        
-        <button onClick={handleLogout} className="text-sm font-bold text-textMuted hover:text-red-600 border border-transparent hover:border-red-200 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-all flex items-center gap-2">
-          Logout
-        </button>
+
+        {/* Right Section */}
+        <div className="flex items-center gap-2">
+          {/* Notification Bell */}
+          <button className="relative p-2 rounded-lg hover:bg-slate-100/80 transition-colors group">
+            <Bell className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white" />
+          </button>
+
+          {/* Help */}
+          <button className="p-2 rounded-lg hover:bg-slate-100/80 transition-colors group">
+            <HelpCircle className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-7 bg-slate-200 mx-1.5" />
+
+          {/* User Profile */}
+          <button className="flex items-center gap-2.5 pl-1 pr-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#d4a843] to-[#b8912e] flex items-center justify-center text-white font-bold text-xs shadow-sm uppercase">
+              AD
+            </div>
+            <div className="text-left hidden sm:block">
+              <p className="text-[13px] font-semibold text-slate-800 leading-tight group-hover:text-[#d4a843] transition-colors">
+                Dr. Sterling
+              </p>
+              <p className="text-[10px] text-slate-400 font-medium truncate max-w-[120px] uppercase tracking-wider">
+                Admin
+              </p>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
+          </button>
+        </div>
       </div>
     </header>
   );

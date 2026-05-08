@@ -18,14 +18,12 @@ export async function GET(request) {
     const semester = searchParams.get('semester')?.trim() || '';
     const status = searchParams.get('status')?.trim() || '';
     const academicYear = searchParams.get('academicYear')?.trim() || '';
-    const batch = searchParams.get('batch')?.trim() || '';
 
     const query = {};
     if (department) query.department = department;
     if (semester) query.semester = semester;
     if (status) query.status = status;
     if (academicYear) query.academicYear = academicYear;
-    if (batch) query.batch = batch;
 
     const uploads = await ResultUpload.find(query)
       .sort({ updatedAt: -1 })
@@ -63,18 +61,18 @@ export async function POST(request) {
     const {
       academicYear,
       department,
-      batch,
       semester,
       subjectCode,
       subjectName,
       credits,
       entries,
+      batch = 'N/A' // Fallback for cached schema
     } = body;
 
     // ── Validate required fields ──
-    if (!academicYear || !department || !batch || !semester || !subjectCode || !subjectName || !credits) {
+    if (!academicYear || !department || !semester || !subjectCode || !subjectName || !credits) {
       return NextResponse.json(
-        { success: false, message: 'All filter fields (academicYear, department, batch, semester, subjectCode, subjectName, credits) are required.' },
+        { success: false, message: 'All filter fields (academicYear, department, semester, subjectCode, subjectName, credits) are required.' },
         { status: 400 }
       );
     }
@@ -121,11 +119,11 @@ export async function POST(request) {
     const upload = await ResultUpload.create({
       academicYear,
       department,
-      batch,
       semester,
       subjectCode,
       subjectName,
       credits: Number(credits),
+      batch, // include batch to satisfy cached schema if necessary
       status: 'draft',
       entries,
       auditLog: [

@@ -482,7 +482,7 @@ export default function ResultUploadManager() {
                         </p>
                         <button
                             onClick={startNewUpload}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primaryHover transition-all active:scale-[0.98] shadow-sm shadow-primary/20"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#d4a843] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#b8912e] transition-all active:scale-[0.98] shadow-sm shadow-[#d4a843]/20"
                         >
                             <Plus className="w-5 h-5" />
                             <span>New Upload</span>

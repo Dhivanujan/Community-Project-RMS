@@ -175,7 +175,7 @@ export default function GradeEntryTable({
                                     <div className="flex flex-col items-center justify-center gap-3">
                                         <GraduationCap className="w-12 h-12 text-border" />
                                         <p>No students loaded yet.</p>
-                                        <p className="text-xs">Select Department & Batch, then click &quot;Load Students&quot;</p>
+                                        <p className="text-xs">Select Department to load students.</p>
                                     </div>
                                 </td>
                             </tr>

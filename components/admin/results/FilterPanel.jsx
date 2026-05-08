@@ -23,11 +23,10 @@ export default function FilterPanel({
     const allFiltersSelected =
         filters.academicYear &&
         filters.department &&
-        filters.batch &&
         filters.semester &&
         filters.subjectCode;
 
-    const canFetchStudents = filters.department && filters.batch;
+    const canFetchStudents = filters.department;
 
     const handleSubjectChange = (code) => {
         const subject = filteredSubjects.find((s) => s.code === code);
@@ -92,27 +91,7 @@ export default function FilterPanel({
                     </div>
                 </div>
 
-                {/* Batch */}
-                <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-textMuted uppercase tracking-wider">
-                        Batch
-                    </label>
-                    <div className="relative">
-                        <select
-                            disabled={disabled}
-                            value={filters.batch}
-                            onChange={(e) => onFilterChange('batch', e.target.value)}
-                            className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-textDark disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <option value="">Select Batch</option>
-                            {batches.map((b) => (
-                                <option key={b} value={b}>{b}</option>
-                            ))}
-                        </select>
-                        <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
-                </div>
-
+                
                 {/* Semester */}
                 <div className="space-y-1.5">
                     <label className="text-xs font-bold text-textMuted uppercase tracking-wider">
@@ -169,11 +148,11 @@ export default function FilterPanel({
                 </div>
             </div>
 
-            {/* Auto-fetch students button */}
-            {canFetchStudents && (
+            {/* Auto-fetch students button - hidden if they are fetched automatically or we can keep it as an explicit refresh */}
+            {canFetchStudents && !isLoadingStudents && (
                 <div className="pt-2 border-t border-border flex items-center justify-between">
                     <p className="text-xs text-textMuted font-medium">
-                        {filters.department} • Batch {filters.batch}
+                        {filters.department}
                     </p>
                     <button
                         onClick={onFetchStudents}
@@ -186,7 +165,7 @@ export default function FilterPanel({
                                 Loading...
                             </>
                         ) : (
-                            'Load Students'
+                            'Refresh Students'
                         )}
                     </button>
                 </div>

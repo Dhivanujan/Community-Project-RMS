@@ -10,7 +10,6 @@ import ResultUploadList from './ResultUploadList';
 const INITIAL_FILTERS = {
     academicYear: '',
     department: '',
-    batch: '',
     semester: '',
     subjectCode: '',
     subjectName: '',
@@ -94,7 +93,7 @@ export default function ResultUploadManager() {
                 updated.subjectName = '';
                 updated.credits = 0;
             }
-            if (field === 'department' || field === 'batch') {
+            if (field === 'department') {
                 // Reset students when key filter changes
                 setStudents([]);
                 setGrades({});
@@ -105,9 +104,9 @@ export default function ResultUploadManager() {
         });
     };
 
-    // ── Fetch students based on department + batch ──
-    const fetchStudents = async () => {
-        if (!filters.department || !filters.batch) return;
+    // ── Fetch students based on department ──
+    const fetchStudents = useCallback(async () => {
+        if (!filters.department) return;
 
         setIsLoadingStudents(true);
         setValidationErrors({});
@@ -116,12 +115,10 @@ export default function ResultUploadManager() {
             const res = await fetch('/api/students');
             const data = await res.json();
 
-            // Filter locally by department and batch (enrollmentYear)
+            // Filter locally by department
             const studentsArray = Array.isArray(data) ? data : data.data || [];
             const filtered = studentsArray.filter((s) => {
-                const matchesDept = s.department === filters.department;
-                const matchesBatch = s.enrollmentYear === filters.batch;
-                return matchesDept && matchesBatch;
+                return s.department === filters.department;
             });
 
             // Serialize _id
@@ -133,8 +130,8 @@ export default function ResultUploadManager() {
             setStudents(serialized);
 
             // Initialize grades (empty for new, or preserve existing)
+            let initialGrades = {};
             if (view === 'new') {
-                const initialGrades = {};
                 serialized.forEach((s) => {
                     initialGrades[s._id] = '';
                 });
@@ -142,7 +139,7 @@ export default function ResultUploadManager() {
             }
 
             if (serialized.length === 0) {
-                showToast('No students found for the selected department and batch.', 'warning');
+                showToast('No students found for the selected department.', 'warning');
             } else {
                 showToast(`${serialized.length} student(s) loaded successfully.`);
             }
@@ -152,7 +149,13 @@ export default function ResultUploadManager() {
         } finally {
             setIsLoadingStudents(false);
         }
-    };
+    }, [filters.department, view, showToast]);
+
+    useEffect(() => {
+        if (filters.department && view === 'new') {
+            fetchStudents();
+        }
+    }, [filters.department, view, fetchStudents]);
 
     // ── Handle grade change ──
     const handleGradeChange = (studentId, grade) => {
@@ -180,8 +183,8 @@ export default function ResultUploadManager() {
         let hasErrors = false;
 
         // Check filters
-        if (!filters.academicYear || !filters.department || !filters.batch || !filters.semester || !filters.subjectCode) {
-            showToast('Please select all filter fields before saving.', 'error');
+        if (!filters.academicYear || !filters.department || !filters.semester || !filters.subjectCode) {
+            showToast('Please select all filter fields before publishing.', 'error');
             return false;
         }
 
@@ -217,7 +220,6 @@ export default function ResultUploadManager() {
             const payload = {
                 academicYear: filters.academicYear,
                 department: filters.department,
-                batch: filters.batch,
                 semester: filters.semester,
                 subjectCode: filters.subjectCode,
                 subjectName: filters.subjectName,
@@ -275,7 +277,6 @@ export default function ResultUploadManager() {
                 const payload = {
                     academicYear: filters.academicYear,
                     department: filters.department,
-                    batch: filters.batch,
                     semester: filters.semester,
                     subjectCode: filters.subjectCode,
                     subjectName: filters.subjectName,
@@ -290,7 +291,7 @@ export default function ResultUploadManager() {
                 });
 
                 const createJson = await createRes.json();
-                if (!createRes.ok) throw new Error(createJson.message);
+                if (!createRes.ok) throw new Error(createJson.message || 'Failed to save draft before publishing');
 
                 setEditingUploadId(createJson.data._id);
                 setIsSaving(false);
@@ -300,6 +301,7 @@ export default function ResultUploadManager() {
             } catch (err) {
                 showToast(err.message || 'Failed to save before publish.', 'error');
                 setIsSaving(false);
+                setIsPublishModalOpen(false); // Close modal on failure
             }
             return;
         }
@@ -312,13 +314,20 @@ export default function ResultUploadManager() {
                     grade: grades[s._id],
                 }));
 
-                await fetch(`/api/admin/result-uploads/${editingUploadId}`, {
+                const putRes = await fetch(`/api/admin/result-uploads/${editingUploadId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ entries }),
                 });
+
+                if (!putRes.ok) {
+                    const putJson = await putRes.json();
+                    throw new Error(putJson.message || 'Failed to update draft before publishing');
+                }
             } catch (err) {
-                // Continue to publish even if update fails
+                showToast(err.message, 'error');
+                setIsPublishModalOpen(false);
+                return; // Stop publish if update fails
             }
         }
 
@@ -344,6 +353,7 @@ export default function ResultUploadManager() {
             loadUploads();
         } catch (err) {
             showToast(err.message || 'Failed to publish. Please try again.', 'error');
+            setIsPublishModalOpen(false);
         } finally {
             setIsPublishing(false);
         }
@@ -385,7 +395,6 @@ export default function ResultUploadManager() {
             setFilters({
                 academicYear: data.academicYear,
                 department: data.department,
-                batch: data.batch,
                 semester: data.semester,
                 subjectCode: data.subjectCode,
                 subjectName: data.subjectName,

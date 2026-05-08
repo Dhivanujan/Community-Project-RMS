@@ -48,7 +48,7 @@ export default function ResultUploadList({
                             onClick={() => setStatusFilter(s)}
                             className={`px-4 py-2 text-xs font-bold rounded-xl transition-all capitalize ${
                                 statusFilter === s
-                                    ? 'bg-primary text-white shadow-sm shadow-primary/20'
+                                    ? 'bg-[#d4a843] text-white shadow-sm shadow-[#d4a843]/20'
                                     : 'bg-background text-textMuted border border-border hover:bg-border hover:text-textDark'
                             }`}
                         >

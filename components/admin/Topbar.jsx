@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { Search, Bell, HelpCircle, ChevronDown, Edit3 } from "lucide-react";
+import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu } from "lucide-react";
 import EditProfileModal from './EditProfileModal';
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick }) {
   const [greeting, setGreeting] = useState('Welcome');
   const [admin, setAdmin] = useState({
     name: "Loading...",
@@ -76,9 +76,15 @@ export default function Topbar() {
 
   return (
     <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
-      <div className="flex items-center justify-between px-8 h-16">
+      <div className="flex items-center justify-between px-4 lg:px-8 h-16">
         {/* Left Section / Search */}
-        <div className="flex items-center gap-6 w-full max-w-md">
+        <div className="flex items-center gap-4 lg:gap-6 w-full max-w-md">
+          <button 
+             onClick={onMenuClick}
+             className="p-2 -ml-2 lg:hidden text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg transition-colors"
+          >
+             <Menu className="w-5 h-5" />
+          </button>
           <h2 className="text-xl font-bold tracking-tight text-slate-800 animate-fadeIn whitespace-nowrap hidden md:block">
             {greeting}, <span className="text-primary-900">{admin.name.split(' ')[0]}</span> 👋
           </h2>

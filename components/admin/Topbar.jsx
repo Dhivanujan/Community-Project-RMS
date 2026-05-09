@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu, CheckCircle2, AlertCircle } from "lucide-react";
 import EditProfileModal from './EditProfileModal';
 import HelpModal from './HelpModal';
@@ -162,9 +163,13 @@ export default function Topbar({ onMenuClick }) {
                 </div>
                 
                 <div className="px-4 py-2 border-t border-slate-100 text-center">
-                  <button className="text-xs font-bold text-primary-900 hover:text-primary-700 transition-colors">
+                  <Link 
+                    href="/admin" 
+                    onClick={() => setIsNotificationsOpen(false)}
+                    className="text-xs font-bold text-primary-900 hover:text-primary-700 transition-colors inline-block w-full"
+                  >
                     View All Activity
-                  </button>
+                  </Link>
                 </div>
               </div>
             )}

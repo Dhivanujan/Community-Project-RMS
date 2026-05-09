@@ -80,7 +80,7 @@ export default async function AdminDashboard() {
                     title="Total Students"
                     value={totalStudents.toString()}
                     icon={<Users className="w-5 h-5" />}
-                    bgColor="bg-primary"
+                    bgColor="bg-primary-900"
                 />
                 <DashboardCard
                     title="Result Entries"
@@ -109,12 +109,12 @@ export default async function AdminDashboard() {
             {/* Recent Activity */}
             <div className="bg-surface rounded-3xl p-6 border border-border shadow-sm">
                 <div className="flex items-center gap-2 mb-5">
-                    <Clock className="w-4 h-4 text-primary" />
+                    <Clock className="w-4 h-4 text-primary-900" />
                     <p className="text-sm font-bold text-textDark">Recent Published Results</p>
                 </div>
                 {serializedActivity.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 gap-3">
-                        <CheckCircle2 className="w-10 h-10 text-primary/20" />
+                        <CheckCircle2 className="w-10 h-10 text-primary-900/20" />
                         <p className="text-sm text-textMuted">No published results yet.</p>
                     </div>
                 ) : (
@@ -122,7 +122,7 @@ export default async function AdminDashboard() {
                         {serializedActivity.map((item) => (
                             <div
                                 key={item._id}
-                                className="flex items-start gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors border border-transparent hover:border-border"
+                                className="flex items-start gap-3 p-3 rounded-xl hover:bg-primary-900/5 transition-colors border border-transparent hover:border-border"
                             >
                                 <div className="mt-0.5 w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
                                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />

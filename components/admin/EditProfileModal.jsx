@@ -73,7 +73,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
                 {/* Header Decoration */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-primary-900 to-primary-700 opacity-10"></div>
                 
-                <div className="relative px-8 pt-8 pb-6 flex flex-col items-center text-center">
+                <div className="relative px-6 pt-8 pb-6 sm:px-8 flex flex-col items-center text-center">
                     <button 
                         onClick={onClose}
                         className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-full p-2 transition-all active:scale-95"
@@ -93,7 +93,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
                     <p className="text-sm text-slate-500 mt-1">Update your personal information below.</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-8 pb-8 space-y-5">
+                <form onSubmit={handleSubmit} className="px-6 pb-6 sm:px-8 sm:pb-8 space-y-5">
                     {error && (
                         <div className="p-3.5 bg-red-50 text-red-600 text-sm font-medium rounded-xl border border-red-100 flex items-start gap-2">
                             <span className="shrink-0 mt-0.5">⚠️</span>
@@ -135,7 +135,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
                         </div>
                     </div>
 
-                    <div className="pt-4 mt-2 flex justify-end gap-3">
+                    <div className="pt-4 mt-2 flex flex-col-reverse sm:flex-row justify-end gap-3">
                         <button
                             type="button"
                             onClick={onClose}

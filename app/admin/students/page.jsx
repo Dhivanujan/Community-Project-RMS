@@ -26,8 +26,8 @@ export default async function StudentsPage() {
             <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fadeInUp">
                 <div>
                     <h1 className="text-3xl lg:text-4xl font-bold text-textDark tracking-tight leading-[1.15] flex items-center gap-4">
-                        <div className="p-3 bg-primary/10 rounded-2xl card-glow">
-                            <Users className="w-8 h-8 text-primary animate-pulse-glow" />
+                        <div className="p-3 bg-primary-900/10 rounded-2xl card-glow">
+                            <Users className="w-8 h-8 text-primary-900 animate-pulse-glow" />
                         </div>
                         Students
                     </h1>

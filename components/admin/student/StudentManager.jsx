@@ -58,13 +58,13 @@ export default function StudentManager({ initialStudents }) {
                 <input
                     type="text"
                     placeholder="Search by name, roll number, or email..."
-                    className="w-full sm:max-w-md bg-background/50 border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all text-textDark placeholder:text-textMuted"
+                    className="w-full sm:max-w-md bg-background/50 border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 transition-all text-textDark placeholder:text-textMuted"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#d4a843] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#b8912e] transition-all active:scale-[0.98] shadow-md shadow-[#d4a843]/30"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary-900 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primary-800 transition-all active:scale-[0.98] shadow-md shadow-primary-900/30"
                 >
                     <Plus className="w-5 h-5" />
                     <span>Add Student</span>

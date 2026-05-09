@@ -18,14 +18,14 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                     <tbody>
                         {students.length > 0 ? (
                             students.map((student) => (
-                                <tr key={student._id} className="border-b border-border/50 hover:bg-primary/5 transition-colors group">
+                                <tr key={student._id} className="border-b border-border/50 hover:bg-primary-900/5 transition-colors group">
                                     <td className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm group-hover:scale-105 transition-transform">
+                                            <div className="w-10 h-10 rounded-full bg-primary-900/10 flex items-center justify-center text-primary-900 font-bold shadow-sm group-hover:scale-105 transition-transform">
                                                 {student.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-textDark group-hover:text-primary transition-colors">
+                                                <p className="font-bold text-textDark group-hover:text-primary-900 transition-colors">
                                                     {student.name}
                                                 </p>
                                                 <p className="text-textMuted text-xs font-semibold">{student.rollNumber}</p>
@@ -50,7 +50,7 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                                         <div className="flex items-center justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                             <button 
                                                 onClick={() => onEdit(student)}
-                                                className="p-2 text-textMuted hover:text-primary hover:bg-primary/10 rounded-lg transition-all hover:scale-110"
+                                                className="p-2 text-textMuted hover:text-primary-900 hover:bg-primary-900/10 rounded-lg transition-all hover:scale-110"
                                                 title="Edit Student"
                                             >
                                                 <Edit3 className="w-4 h-4" />
@@ -70,8 +70,8 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                             <tr>
                                 <td colSpan="4" className="py-12 text-center text-textMuted text-sm font-medium">
                                     <div className="flex flex-col items-center justify-center gap-4 animate-fadeIn">
-                                        <div className="p-4 bg-primary/5 rounded-full card-glow">
-                                            <GraduationCap className="w-12 h-12 text-primary/40 animate-pulse-glow" />
+                                        <div className="p-4 bg-primary-900/5 rounded-full card-glow">
+                                            <GraduationCap className="w-12 h-12 text-primary-900/40 animate-pulse-glow" />
                                         </div>
                                         <p>No students found.</p>
                                     </div>

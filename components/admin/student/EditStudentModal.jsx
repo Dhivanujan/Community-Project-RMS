@@ -91,7 +91,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                         <input 
                             required
                             type="text" 
-                            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 outline-none transition-all"
                             placeholder="John Doe"
                             value={formData.name}
                             onChange={e => setFormData({...formData, name: e.target.value})}
@@ -104,7 +104,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                             <input 
                                 required
                                 type="text" 
-                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 outline-none transition-all"
                                 placeholder="IT20123456"
                                 value={formData.rollNumber}
                                 onChange={e => setFormData({...formData, rollNumber: e.target.value})}
@@ -115,7 +115,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                             <input 
                                 required
                                 type="email" 
-                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 outline-none transition-all"
                                 placeholder="john@example.com"
                                 value={formData.email}
                                 onChange={e => setFormData({...formData, email: e.target.value})}
@@ -128,7 +128,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                             <label className="text-xs font-bold text-textMuted uppercase tracking-wider">Department</label>
                             <select 
                                 required
-                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 outline-none transition-all"
                                 value={formData.department}
                                 onChange={e => setFormData({...formData, department: e.target.value})}
                             >
@@ -144,7 +144,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                                 required
                                 type="text" 
                                 placeholder="21/22"
-                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 outline-none transition-all"
                                 value={formData.enrollmentYear}
                                 onChange={e => setFormData({...formData, enrollmentYear: e.target.value})}
                             />
@@ -162,7 +162,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primaryHover hover-lift rounded-xl transition-all shadow-md shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:transform-none"
+                            className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary-900 hover:bg-primary-800 hover-lift rounded-xl transition-all shadow-md shadow-primary-900/30 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:transform-none"
                         >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Update Student'}
                         </button>

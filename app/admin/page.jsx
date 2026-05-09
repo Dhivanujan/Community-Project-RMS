@@ -67,10 +67,10 @@ export default async function AdminDashboard() {
         <div className="w-full h-full space-y-8">
             <header>
                 <h1 className="text-3xl lg:text-4xl font-bold text-textDark tracking-tight leading-[1.15]">
-                    Dashboard Overview
+                    Faculty of Computing RMS
                 </h1>
                 <p className="mt-3 text-textMuted text-sm font-medium">
-                    Monitor your university&apos;s real-time performance, results statistics, and recent activity.
+                    Welcome to the Result Management System. Monitor student performance, academic statistics, and recent activity.
                 </p>
             </header>
 

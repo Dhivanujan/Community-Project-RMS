@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu } from "lucide-react";
 import EditProfileModal from './EditProfileModal';
+import HelpModal from './HelpModal';
 
 export default function Topbar({ onMenuClick }) {
   const [greeting, setGreeting] = useState('Welcome');
@@ -13,6 +14,7 @@ export default function Topbar({ onMenuClick }) {
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -107,7 +109,10 @@ export default function Topbar({ onMenuClick }) {
           </button>
 
           {/* Help */}
-          <button className="p-2 rounded-lg hover:bg-slate-100/80 transition-colors group">
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="p-2 rounded-lg hover:bg-slate-100/80 transition-colors group"
+          >
             <HelpCircle className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />
           </button>
 
@@ -152,6 +157,8 @@ export default function Topbar({ onMenuClick }) {
           </div>
         </div>
       </div>
+
+      <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
 
       <EditProfileModal 
         isOpen={isModalOpen}

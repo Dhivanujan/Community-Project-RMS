@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu } from "lucide-react";
+import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu, CheckCircle2, AlertCircle } from "lucide-react";
 import EditProfileModal from './EditProfileModal';
+import HelpModal from './HelpModal';
 
 export default function Topbar({ onMenuClick }) {
   const [greeting, setGreeting] = useState('Welcome');
@@ -13,7 +14,18 @@ export default function Topbar({ onMenuClick }) {
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [hasUnread, setHasUnread] = useState(true);
+  
   const dropdownRef = useRef(null);
+  const notificationsRef = useRef(null);
+
+  const mockNotifications = [
+    { id: 1, type: 'success', title: 'Results Published', message: 'Software Engineering Batch 21 results are now live.', time: '2 mins ago' },
+    { id: 2, type: 'alert', title: 'System Maintenance', message: 'Scheduled maintenance this Sunday at 2 AM.', time: '5 hours ago' },
+    { id: 3, type: 'info', title: 'New Registration', message: '5 new students registered in CS department.', time: '1 day ago' },
+  ];
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -55,16 +67,24 @@ export default function Topbar({ onMenuClick }) {
     fetchAdminData();
   }, []);
 
-  // Handle clicking outside dropdown
+  // Handle clicking outside dropdowns
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+        setIsNotificationsOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleNotificationClick = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
+    if (hasUnread) setHasUnread(false);
+  };
 
   const handleProfileUpdate = (updatedData) => {
     setAdmin({
@@ -101,13 +121,60 @@ export default function Topbar({ onMenuClick }) {
         {/* Right Section */}
         <div className="flex items-center gap-2">
           {/* Notification Bell */}
-          <button className="relative p-2 rounded-lg hover:bg-slate-100/80 transition-colors group">
-            <Bell className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white" />
-          </button>
+          <div className="relative" ref={notificationsRef}>
+            <button 
+              onClick={handleNotificationClick}
+              className="relative p-2 rounded-lg hover:bg-slate-100/80 transition-colors group"
+            >
+              <Bell className={`w-[18px] h-[18px] transition-colors ${isNotificationsOpen ? 'text-primary-900' : 'text-slate-500 group-hover:text-slate-700'}`} />
+              {hasUnread && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white animate-pulse" />
+              )}
+            </button>
+
+            {/* Notifications Dropdown */}
+            {isNotificationsOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 py-2 z-50 animate-fadeInUp">
+                <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
+                  <h3 className="font-bold text-slate-800 text-sm">Notifications</h3>
+                  <span className="text-xs font-semibold text-primary-900 bg-primary-50 px-2 py-0.5 rounded-full">
+                    {mockNotifications.length} New
+                  </span>
+                </div>
+                
+                <div className="max-h-[300px] overflow-y-auto">
+                  {mockNotifications.map((notif) => (
+                    <div key={notif.id} className="px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 last:border-0 flex items-start gap-3">
+                      <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                        notif.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 
+                        notif.type === 'alert' ? 'bg-rose-100 text-rose-600' : 
+                        'bg-blue-100 text-blue-600'
+                      }`}>
+                        {notif.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800 leading-tight">{notif.title}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 leading-snug">{notif.message}</p>
+                        <p className="text-[10px] text-slate-400 font-medium mt-1 uppercase tracking-wide">{notif.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="px-4 py-2 border-t border-slate-100 text-center">
+                  <button className="text-xs font-bold text-primary-900 hover:text-primary-700 transition-colors">
+                    View All Activity
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Help */}
-          <button className="p-2 rounded-lg hover:bg-slate-100/80 transition-colors group">
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="p-2 rounded-lg hover:bg-slate-100/80 transition-colors group"
+          >
             <HelpCircle className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />
           </button>
 
@@ -152,6 +219,8 @@ export default function Topbar({ onMenuClick }) {
           </div>
         </div>
       </div>
+
+      <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
 
       <EditProfileModal 
         isOpen={isModalOpen}

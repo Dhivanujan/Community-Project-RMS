@@ -17,10 +17,9 @@ export default function Navbar() {
   }, []);
 
   const navItems = [
-    { name: "Dashboard", href: "#dashboard" },
+    { name: "Home", href: "#home" },
+    { name: "Features", href: "#features" },
     { name: "Departments", href: "#departments" },
-    { name: "Results", href: "#results" },
-    { name: "Profile", href: "#profile" },
   ];
 
   return (
@@ -61,6 +60,13 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+            <div className="h-6 w-px bg-slate-200 mx-2"></div>
+            <Link
+              href="/login"
+              className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2 rounded-full font-semibold transition-all duration-300 shadow-md shadow-blue-600/20 hover:shadow-blue-600/40"
+            >
+              Login Portal
+            </Link>
           </div>
 
           {/* Mobile Button */}
@@ -101,6 +107,14 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+            <div className="h-px w-full bg-slate-100 my-2"></div>
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-3 rounded-xl font-semibold shadow-md shadow-blue-600/20 transition hover:shadow-blue-600/40"
+            >
+              Login Portal
+            </Link>
           </div>
         </div>
       </div>

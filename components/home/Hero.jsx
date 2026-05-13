@@ -31,7 +31,7 @@ export default function Hero() {
         {/* University name */}
         <AnimateOnScroll variant="fadeUp" delay={0} duration={800}>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-white tracking-[0.12em] uppercase leading-tight mb-3">
-            Sabargamuwa University
+            Sabaragamuwa University
             <br />
             <span className="tracking-[0.18em]">of Sri Lanka</span>
           </h1>

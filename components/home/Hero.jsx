@@ -1,264 +1,86 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ArrowDown, Activity, TrendingUp, Trophy, Users, BookOpen, Sparkles } from "lucide-react";
 import AnimateOnScroll from "./AnimateOnScroll";
 
-export default function Hero({ summary }) {
-  const topPerformers = summary?.topPerformers?.length
-    ? summary.topPerformers
-    : [
-        { name: "N/A", gpa: 0 },
-        { name: "N/A", gpa: 0 },
-        { name: "N/A", gpa: 0 },
-      ];
-
-  const stats = [
-    {
-      label: "Overall GPA",
-      val: Number(summary?.overallGpa ?? 0).toFixed(2),
-      icon: Activity,
-      color: "text-primary-600",
-      bg: "bg-primary-50",
-      border: "border-blue-100",
-    },
-    {
-      label: "Total Students",
-      val: String(summary?.totalStudents ?? 0),
-      icon: Users,
-      color: "text-primary-600",
-      bg: "bg-indigo-50",
-      border: "border-indigo-100",
-    },
-    {
-      label: "Active Courses",
-      val: String(summary?.activeCourses ?? 0),
-      icon: BookOpen,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-      border: "border-emerald-100",
-    },
-  ];
-
+export default function Hero() {
   return (
-    <section id="home" className="relative bg-white overflow-hidden pt-16 pb-28 lg:pt-24 lg:pb-36">
-      {/* ── Animated background blobs ── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-br from-rose-100 via-amber-50 to-transparent rounded-full blur-3xl opacity-60 animate-float-slow"></div>
-        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-amber-100 via-rose-50 to-transparent rounded-full blur-3xl opacity-40 animate-float"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-rose-50/50 to-transparent rounded-full"></div>
-
-        {/* Decorative geometric shapes */}
-        <div className="absolute top-20 left-[15%] w-3 h-3 rounded-full bg-blue-300/40 animate-float-fast"></div>
-        <div className="absolute top-40 right-[20%] w-2 h-2 rounded-full bg-indigo-300/50 animate-float-slow"></div>
-        <div className="absolute bottom-32 left-[30%] w-4 h-4 rounded-sm bg-blue-200/30 animate-float rotate-45"></div>
-        <div className="absolute top-1/3 right-[10%] w-2 h-2 rounded-full bg-blue-400/30 animate-float"></div>
-        <div className="absolute bottom-20 right-[35%] w-3 h-3 rounded-full bg-indigo-200/40 animate-float-fast"></div>
-
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+    <section
+      id="home"
+      className="relative bg-primary-900 overflow-hidden flex items-center justify-center min-h-[88vh] py-24 lg:py-32"
+    >
+      {/* ── Background: subtle vertical grid lines ── */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {/* Vertical lines evenly spaced */}
+        {[...Array(7)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute top-0 bottom-0 w-px bg-white/10"
+            style={{ left: `${(i + 1) * (100 / 8)}%` }}
+          />
+        ))}
+        {/* Top-to-bottom gradient overlay to darken the top */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/10" />
+        {/* Radial glow in centre */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.04)_0%,transparent_70%)]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          {/* Left Side Content */}
-          <div className="flex-1 text-center lg:text-left">
-            <AnimateOnScroll variant="fadeUp" delay={0} duration={800}>
-              <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
-                <Sparkles className="w-4 h-4 text-secondary-500" />
-                Sabaragamuwa University of Sri Lanka
-              </div>
-            </AnimateOnScroll>
+      {/* ── Main content ── */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
 
-            <AnimateOnScroll variant="fadeUp" delay={100} duration={800}>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
-                Smart Results{" "}
-                <br className="hidden md:block" />
-                Management for{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent whitespace-nowrap">
-                  SUSL
-                </span>
-              </h1>
-            </AnimateOnScroll>
+        {/* University name */}
+        <AnimateOnScroll variant="fadeUp" delay={0} duration={800}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-white tracking-[0.12em] uppercase leading-tight mb-3">
+            Sabargamuwa University
+            <br />
+            <span className="tracking-[0.18em]">of Sri Lanka</span>
+          </h1>
+        </AnimateOnScroll>
 
-            <AnimateOnScroll variant="fadeUp" delay={200} duration={800}>
-              <p className="text-lg sm:text-xl text-slate-600 font-medium mb-4 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Automate GPA calculations, track academic performance, and
-                identify top achievers with an intelligent results management
-                system.
-              </p>
-            </AnimateOnScroll>
+        {/* Sub-heading */}
+        <AnimateOnScroll variant="fadeUp" delay={120} duration={800}>
+          <p className="text-base sm:text-lg text-primary-200 font-medium tracking-widest uppercase mb-12">
+            Results Management System &nbsp;·&nbsp; Faculty of Computing
+          </p>
+        </AnimateOnScroll>
 
-            <AnimateOnScroll variant="fadeUp" delay={300} duration={800}>
-              <p className="text-base text-slate-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Designed for the Faculty of Computing to support Software
-                Engineering, Computing & Information Systems, and Data Science
-                departments.
-              </p>
-            </AnimateOnScroll>
+        {/* ── Login Card ── */}
+        <AnimateOnScroll variant="fadeUp" delay={240} duration={800}>
+          <div className="relative bg-white/[0.07] border border-white/20 rounded-2xl px-8 py-10 sm:px-14 sm:py-14 backdrop-blur-md shadow-[0_8px_60px_rgba(0,0,0,0.4)]">
 
-            <AnimateOnScroll variant="fadeUp" delay={400} duration={800}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto px-4 sm:px-0">
-                <Link
-                  href="/login"
-                  className="group flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 sm:py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 animate-pulse-glow w-full sm:w-max active:scale-[0.98]"
-                >
-                  Login Portal
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                </Link>
-                <Link
-                  href="#features"
-                  className="group flex items-center justify-center gap-2 bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 px-8 py-4 sm:py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg w-full sm:w-max active:scale-[0.98]"
-                >
-                  Explore Features
-                  <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
-                </Link>
-              </div>
-            </AnimateOnScroll>
+            {/* Thin top accent line */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-0.5 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full" />
+
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3">
+              Access Your Academic Insights Instantly
+            </h2>
+            <p className="text-primary-200 text-sm sm:text-base mb-10 max-w-xl mx-auto leading-relaxed">
+              Log in to view GPA analytics, track academic performance, and
+              identify rankings and graduation eligibility within the Faculty
+              of Computing.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Link
+                href="/login?type=student"
+                className="w-full sm:w-auto bg-white text-primary-900 px-10 py-3.5 rounded-lg font-bold tracking-wider text-sm hover:bg-slate-100 active:scale-[0.98] transition-all duration-200 shadow-lg"
+              >
+                STUDENT LOGIN
+              </Link>
+              <Link
+                href="/login?type=faculty"
+                className="w-full sm:w-auto bg-transparent border-2 border-white/70 text-white px-10 py-3.5 rounded-lg font-bold tracking-wider text-sm hover:bg-white/10 hover:border-white active:scale-[0.98] transition-all duration-200"
+              >
+                FACULTY ACCESS
+              </Link>
+            </div>
+
+            <p className="text-white/50 text-xs italic">
+              Secure access for students and academic staff of the Faculty of Computing
+            </p>
           </div>
-
-          {/* Right Side Visual */}
-          <div className="flex-1 w-full max-w-xl lg:max-w-2xl">
-            <AnimateOnScroll variant="fadeLeft" delay={200} duration={1000}>
-              <div className="relative">
-                {/* Glow behind card */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-rose-100 via-amber-100 to-rose-100 rounded-3xl blur-2xl opacity-60 animate-float-slow"></div>
-
-                <div className="relative bg-white rounded-2xl shadow-2xl shadow-slate-200/60 p-2 border border-slate-100/80">
-                  <div className="bg-gradient-to-b from-slate-50 to-white rounded-xl overflow-hidden border border-slate-100">
-                    {/* Mockup Header */}
-                    <div className="bg-white px-4 py-3 border-b border-slate-100 flex items-center gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded-full bg-red-300/70"></div>
-                        <div className="w-3 h-3 rounded-full bg-amber-300/70"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-300/70"></div>
-                      </div>
-                      <div className="bg-slate-50 px-4 py-1.5 rounded-lg flex-1 text-center text-[11px] font-semibold text-slate-400 border border-slate-100 truncate">
-                        meritmatrix.susl.lk/dashboard
-                      </div>
-                    </div>
-
-                    {/* Mockup Content */}
-                    <div className="p-5 flex flex-col gap-5">
-                      {/* Top Stats Cards */}
-                      <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                        {stats.map((stat, i) => (
-                          <div
-                            key={i}
-                            className={`p-3 sm:p-4 rounded-xl bg-white border ${stat.border} shadow-sm flex flex-col gap-2 sm:gap-3 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5`}
-                          >
-                            <div
-                              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center ${stat.bg}`}
-                            >
-                              <stat.icon
-                                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${stat.color}`}
-                              />
-                            </div>
-                            <div>
-                              <div className="text-lg sm:text-xl font-bold text-slate-800">
-                                {stat.val}
-                              </div>
-                              <div className="text-[9px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wide">
-                                {stat.label}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
-                        {/* Bar Chart Section */}
-                        <div className="sm:col-span-7 bg-white rounded-xl border border-slate-100 p-4 shadow-sm flex flex-col">
-                          <div className="flex justify-between items-center mb-4">
-                            <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                              Performance Trend
-                            </span>
-                            <TrendingUp className="w-4 h-4 text-slate-300" />
-                          </div>
-                          {/* Bar Chart */}
-                          <div className="flex items-end gap-2 h-28 w-full mt-auto mb-2 px-1">
-                            {[
-                              { h: 35, label: "Y1S1" },
-                              { h: 50, label: "Y1S2" },
-                              { h: 42, label: "Y2S1" },
-                              { h: 65, label: "Y2S2" },
-                              { h: 55, label: "Y3S1" },
-                              { h: 80, label: "Y3S2" },
-                              { h: 72, label: "Y4S1" },
-                            ].map((bar, i) => (
-                              <div
-                                key={i}
-                                className="flex-1 flex flex-col items-center gap-1"
-                              >
-                                <div
-                                  className="w-full bg-gradient-to-t from-rose-600 to-amber-500 rounded-t-md transition-all duration-500 hover:from-rose-700 hover:to-amber-600 animate-grow-up"
-                                  style={{
-                                    height: `${bar.h}%`,
-                                    animationDelay: `${i * 100}ms`,
-                                  }}
-                                ></div>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex justify-between w-full px-1 text-[8px] sm:text-[9px] font-bold text-slate-300 mt-1">
-                            <span>Y1S1</span>
-                            <span>Y1S2</span>
-                            <span>Y2S1</span>
-                            <span>Y2S2</span>
-                            <span>Y3S1</span>
-                            <span>Y3S2</span>
-                            <span>Y4S1</span>
-                          </div>
-                        </div>
-
-                        {/* Leaderboard Section */}
-                        <div className="sm:col-span-5 bg-white rounded-xl border border-slate-100 p-4 shadow-sm flex flex-col">
-                          <div className="flex justify-between items-center mb-4">
-                            <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                              Top Rankers
-                            </span>
-                            <Trophy className="w-4 h-4 text-amber-400" />
-                          </div>
-                          <div className="space-y-3 flex-1 justify-center flex flex-col">
-                            {topPerformers.map((student, i) => {
-                              const badge =
-                                i === 0
-                                  ? "bg-amber-50 text-amber-600 border-amber-200"
-                                  : i === 1
-                                  ? "bg-slate-50 text-slate-500 border-slate-200"
-                                  : "bg-orange-50 text-orange-600 border-orange-200";
-
-                              return (
-                              <div
-                                key={i}
-                                className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors"
-                              >
-                                <div className="flex items-center gap-2.5">
-                                  <div
-                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border ${badge}`}
-                                  >
-                                    {i + 1}
-                                  </div>
-                                  <span className="text-xs font-semibold text-slate-600">
-                                    {student.name}
-                                  </span>
-                                </div>
-                                <span className="text-xs font-bold text-primary-600">
-                                  {Number(student.gpa || 0).toFixed(2)}
-                                </span>
-                              </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </AnimateOnScroll>
-          </div>
-        </div>
+        </AnimateOnScroll>
       </div>
     </section>
   );

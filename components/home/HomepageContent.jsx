@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import Hero from "@/components/home/Hero";
 import Features from "@/components/home/Features";
 import Departments from "@/components/home/Departments";
-import DashboardPreview from "@/components/home/DashboardPreview";
-import CTA from "@/components/home/CTA";
 
 const FALLBACK_SUMMARY = {
   overallGpa: 3.42,
@@ -64,8 +62,6 @@ export default function HomepageContent() {
       <Hero summary={summary} />
       <Features />
       <Departments departmentStats={summary.departmentStats} />
-      <DashboardPreview summary={summary} />
-      <CTA />
     </>
   );
 }

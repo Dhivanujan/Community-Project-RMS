@@ -29,23 +29,23 @@ export default function Hero() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
 
         {/* University name */}
-        <AnimateOnScroll variant="fadeUp" delay={0} duration={800}>
+        <div className="animate-fadeInUp" style={{ animationDelay: '0ms' }}>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-white tracking-[0.12em] uppercase leading-tight mb-3">
             Sabaragamuwa University
             <br />
             <span className="tracking-[0.18em]">of Sri Lanka</span>
           </h1>
-        </AnimateOnScroll>
+        </div>
 
         {/* Sub-heading */}
-        <AnimateOnScroll variant="fadeUp" delay={120} duration={800}>
+        <div className="animate-fadeInUp" style={{ animationDelay: '120ms' }}>
           <p className="text-base sm:text-lg text-primary-200 font-medium tracking-widest uppercase mb-12">
             Results Management System &nbsp;·&nbsp; Faculty of Computing
           </p>
-        </AnimateOnScroll>
+        </div>
 
         {/* ── Login Card ── */}
-        <AnimateOnScroll variant="fadeUp" delay={240} duration={800}>
+        <div className="animate-fadeInUp" style={{ animationDelay: '240ms' }}>
           <div className="relative bg-white/[0.07] border border-white/20 rounded-2xl px-8 py-10 sm:px-14 sm:py-14 backdrop-blur-md shadow-[0_8px_60px_rgba(0,0,0,0.4)]">
 
             {/* Thin top accent line */}
@@ -80,7 +80,7 @@ export default function Hero() {
               Secure access for students and academic staff of the Faculty of Computing
             </p>
           </div>
-        </AnimateOnScroll>
+        </div>
       </div>
     </section>
   );

@@ -19,12 +19,20 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['Student', 'Faculty Admin'],
+      enum: ['Student', 'Faculty Admin', 'Faculty', 'Super Admin'],
       default: 'Student',
     },
     indexNumber: {
       type: String,
       required: function() { return this.role === 'Student'; }
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    forcePasswordChange: {
+      type: Boolean,
+      default: false,
     },
     isVerified: {
       type: Boolean,

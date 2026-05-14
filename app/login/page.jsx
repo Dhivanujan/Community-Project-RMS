@@ -52,8 +52,13 @@ export default function Login() {
         
         if (loginRes.ok) {
           localStorage.setItem("userName", formData.name);
-          localStorage.setItem("userRole", role);
-          const targetPath = (loginData.role || role).toLowerCase() === "faculty admin" ? "/admin" : "/student/dashboard";
+          localStorage.setItem("userRole", loginData.role || role);
+          
+          const normalizedRole = (loginData.role || role || "").toLowerCase();
+          let targetPath = "/student/dashboard";
+          if (normalizedRole === "super admin") targetPath = "/super-admin/dashboard";
+          else if (["faculty admin", "faculty", "admin"].includes(normalizedRole)) targetPath = "/admin";
+          
           router.push(targetPath);
           router.refresh();
         } else {
@@ -108,7 +113,10 @@ export default function Login() {
           setMessage("Logged in successfully!");
           // Route users to the correct dashboard based on role returned by API.
           const normalizedRole = (data.role || role || "").toLowerCase();
-          const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
+          let targetPath = "/student/dashboard";
+          if (normalizedRole === "super admin") targetPath = "/super-admin/dashboard";
+          else if (["faculty admin", "faculty", "admin"].includes(normalizedRole)) targetPath = "/admin";
+          
           router.push(targetPath);
           router.refresh();
         } else {
@@ -154,7 +162,10 @@ export default function Login() {
             const loginData = await loginRes.json();
             if (loginRes.ok) {
               const normalizedRole = (loginData.role || role || "").toLowerCase();
-              const targetPath = normalizedRole === "faculty admin" ? "/admin" : "/student/dashboard";
+              let targetPath = "/student/dashboard";
+              if (normalizedRole === "super admin") targetPath = "/super-admin/dashboard";
+              else if (["staff", "faculty", "admin"].includes(normalizedRole)) targetPath = "/admin";
+              
               router.push(targetPath);
               router.refresh();
             } else {
@@ -260,14 +271,14 @@ export default function Login() {
               </button>
               <button
                 type="button"
-                onClick={() => setRole("Faculty Admin")}
+                onClick={() => setRole("Staff")}
                 className={`flex-1 py-1.5 sm:py-2 text-sm font-semibold rounded-lg transition-all ${
-                  role === "Faculty Admin" 
+                  role === "Staff" 
                     ? "bg-white text-primary-700 shadow-sm border border-slate-200/50" 
                     : "text-slate-500 hover:text-slate-700"
                 }`}
               >
-                Faculty Admin
+                Staff
               </button>
             </div>
           )}

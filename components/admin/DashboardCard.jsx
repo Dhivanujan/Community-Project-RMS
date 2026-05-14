@@ -1,12 +1,22 @@
-export default function DashboardCard({ title, value, icon, bgColor = "bg-primary" }) {
+export default function DashboardCard({ title, value, icon, bgColor = "bg-primary", trend = null }) {
     return (
-        <div className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md cursor-pointer transition-all duration-300 group">
-            <div className={`w-12 h-12 flex items-center justify-center rounded-xl text-white shadow-sm ${bgColor} group-hover:scale-110 transition-transform duration-300`}>
+        <div className="flex flex-col p-6 bg-white rounded-3xl shadow-sm border border-slate-200/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500 scale-[2.5] group-hover:scale-[3] transform-gpu">
                 {icon}
             </div>
+            <div className="flex items-center gap-4 mb-4">
+                <div className={`w-12 h-12 flex items-center justify-center rounded-2xl text-white shadow-lg ${bgColor} group-hover:rotate-6 transition-all duration-500`}>
+                    {icon}
+                </div>
+                {trend && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                        {trend > 0 ? '+' : ''}{trend}%
+                    </span>
+                )}
+            </div>
             <div>
-                <p className="text-slate-500 font-medium text-sm group-hover:text-amber-600 transition-colors">{title}</p>
-                <h3 className="text-slate-800 font-bold text-2xl">{value}</h3>
+                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mb-1 group-hover:text-slate-600 transition-colors">{title}</p>
+                <h3 className="text-slate-900 font-black text-3xl tracking-tight">{value}</h3>
             </div>
         </div>
     );

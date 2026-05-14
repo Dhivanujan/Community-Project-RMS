@@ -1,65 +1,44 @@
-import { NextResponse } from 'next/server';
-import * as jose from 'jose';
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
-// Define protected routes and their required roles
-const protectedRoutes = {
-  '/super-admin': ['Super Admin'],
-  '/admin': ['Faculty Admin', 'Super Admin', 'Faculty', 'Admin'],
-  '/student': ['Student'],
-};
+export default withAuth(
+  function middleware(req) {
+    const token = req.nextauth.token;
+    const path = req.nextUrl.pathname;
 
-export async function middleware(request) {
-  const path = request.nextUrl.pathname;
-
-  // Find the required roles for the current path
-  let requiredRoles = null;
-  for (const [route, roles] of Object.entries(protectedRoutes)) {
-    if (path.startsWith(route)) {
-      requiredRoles = roles;
-      break;
+    // Force password change on first login
+    if (token?.isFirstLogin && path !== "/change-password" && !path.startsWith("/api")) {
+      return NextResponse.redirect(new URL("/change-password", req.url));
     }
-  }
 
-  // If route is not protected, continue
-  if (!requiredRoles) {
-    return NextResponse.next();
-  }
+    // Role-based access control
+    if (path.startsWith("/super-admin") && token?.role !== "SUPER_ADMIN") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
 
-  const token = request.cookies.get('token')?.value;
+    if (path.startsWith("/staff") && token?.role !== "STAFF" && token?.role !== "SUPER_ADMIN") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
 
-  if (!token) {
-    // If no token, redirect to login
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  try {
-    // Verify token using jose for Edge runtime compatibility
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const { payload } = await jose.jwtVerify(token, secret);
-
-    const userRole = payload.role;
-
-    // Check if user has required role
-    if (!requiredRoles.includes(userRole)) {
-      // Redirect unauthorized users
-      if (userRole === 'Student') {
-        return NextResponse.redirect(new URL('/student/dashboard', request.url));
-      } else if (['Faculty Admin', 'Faculty', 'Admin'].includes(userRole)) {
-        return NextResponse.redirect(new URL('/admin', request.url));
-      } else if (userRole === 'Super Admin') {
-        return NextResponse.redirect(new URL('/super-admin/dashboard', request.url));
-      } else {
-         return NextResponse.redirect(new URL('/login', request.url));
-      }
+    if (path.startsWith("/student") && token?.role !== "STUDENT") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 
     return NextResponse.next();
-  } catch (error) {
-    // Invalid or expired token
-    return NextResponse.redirect(new URL('/login', request.url));
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
   }
-}
+);
 
 export const config = {
-  matcher: ['/super-admin/:path*', '/admin/:path*', '/student/:path*'],
+  matcher: [
+    "/super-admin/:path*",
+    "/staff/:path*",
+    "/student/:path*",
+    "/dashboard/:path*",
+    "/change-password",
+  ],
 };

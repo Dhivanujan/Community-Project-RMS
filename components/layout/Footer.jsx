@@ -6,9 +6,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-950 border-t border-white/10 py-12">
       <div className="max-w-7xl mx-auto px-6">
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
-
           {/* LEFT - BRAND */}
           <div>
             <h3 className="text-white font-semibold text-lg">
@@ -65,7 +63,6 @@ export default function Footer() {
         <div className="mt-10 pt-6 border-t border-white/10 text-center text-xs text-white/30">
           Authorized access only for students and academic staff
         </div>
-
       </div>
     </footer>
   );

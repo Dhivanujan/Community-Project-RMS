@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  STAFF
+  STUDENT
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  username      String          @unique
+  email         String?         @unique
+  password      String
+  role          Role            @default(STUDENT)
+  isFirstLogin  Boolean         @default(true)
+  active        Boolean         @default(true)
+  failedLoginCount Int          @default(0)
+  lockUntil     DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  studentProfile StudentProfile?
+  staffProfile   StaffProfile?
+  auditLogs      AuditLog[]
+}
+
+model StudentProfile {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @unique @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName       String
+  lastName        String
+  indexNumber     String   @unique
+  rollNumber      String?  @unique // Keep consistent with existing rollNumber if needed
+  department      String?
+  enrollmentYear  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model StaffProfile {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName   String
+  lastName    String
+  employeeId  String   @unique
+  department  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model Result {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId    String   @db.ObjectId
+  semester     String
+  gpa          Float
+  totalCredits Int      @default(0)
+  subjects     Json     // Storing as Json for simplicity for now
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ResultUpload {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  subjectName   String
+  department    String
+  semester      String
+  publishedAt   DateTime?
+  batch         String?
+  academicYear  String?
+  status        String   @default("pending") // e.g., "pending", "published"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

@@ -1,44 +1,41 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import StudentDashboardLayout from "@/components/Student/StudentDashboardLayout";
 import StatsCards from "@/components/Student/StatsCards";
 import RecentUpdates from "@/components/Student/RecentUpdates";
 import SemesterTable from "@/components/Student/SemesterTable";
 
 export default function DashboardPage() {
-  const [userName, setUserName] = useState('Student');
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const storedName = localStorage.getItem('userName');
-        if (storedName) {
-          setUserName(storedName);
-        }
+    if (status === 'unauthenticated') {
+      router.push('/login');
+      return;
+    }
 
-        const response = await fetch('/api/student/dashboard', {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          },
-        });
+    const fetchDashboardData = async () => {
+      if (!session?.user) return;
+      
+      try {
+        const response = await fetch(`/api/student/dashboard?email=${session.user.email}`);
         
         if (response.ok) {
           const result = await response.json();
           if (result.success) {
              setDashboardData(result.data);
-             if (result.data.student?.name) {
-                 setUserName(result.data.student.name);
-             }
           } else {
              setError(result.message || 'Failed to load dashboard.');
           }
         } else {
-          setError('Authentication failed. Please login again.');
+          setError('Failed to fetch dashboard data.');
         }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
@@ -48,15 +45,21 @@ export default function DashboardPage() {
       }
     };
 
-    fetchDashboardData();
-  }, []);
+    if (status === 'authenticated') {
+      fetchDashboardData();
+    }
+  }, [session, status, router]);
+
+  if (status === 'loading') {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <StudentDashboardLayout>
       <section className="mb-7">
         <div className="flex items-center gap-2 mb-1">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Welcome back, {isLoading ? '...' : userName}
+            Welcome back, {session?.user?.username || 'Student'}
           </h1>
           <span className="text-xl">👋</span>
         </div>

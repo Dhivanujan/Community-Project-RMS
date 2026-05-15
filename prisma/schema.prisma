@@ -17,56 +17,126 @@ enum Role {
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  username      String          @unique
-  email         String?         @unique
-  password      String
-  role          Role            @default(STUDENT)
-  isFirstLogin  Boolean         @default(true)
-  active        Boolean         @default(true)
-  failedLoginCount Int          @default(0)
-  lockUntil     DateTime?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  username         String          @unique
+  email            String?         @unique
+  password         String
+  role             Role            @default(STUDENT)
+  isFirstLogin     Boolean         @default(true)
+  active           Boolean         @default(true)
+  failedLoginCount Int             @default(0)
+  lockUntil        DateTime?
+  lastLogin        DateTime?
+  department       String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
   studentProfile StudentProfile?
   staffProfile   StaffProfile?
   auditLogs      AuditLog[]
+  loginLogs      LoginLog[]
+  notifications  Notification[]
 }
 
 model StudentProfile {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String   @unique @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firstName       String
-  lastName        String
-  indexNumber     String   @unique
-  rollNumber      String?  @unique // Keep consistent with existing rollNumber if needed
-  department      String?
-  enrollmentYear  String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName      String
+  lastName       String
+  indexNumber    String   @unique
+  rollNumber     String?  @unique
+  department     String?
+  enrollmentYear String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model StaffProfile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @unique @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firstName   String
-  lastName    String
-  employeeId  String   @unique
-  department  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @unique @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName  String
+  lastName   String
+  employeeId String   @unique
+  department String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model AuditLog {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @db.ObjectId
+  user          User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  action        String
+  entity        String?
+  entityId      String?
+  details       String?
+  oldValues     String?
+  newValues     String?
+  ipAddress     String?
+  userAgent     String?
+  status        String   @default("success")
+  createdAt     DateTime @default(now())
+}
+
+model LoginLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  action    String
+  ipAddress String?
+  userAgent String?
+  success   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model SystemSettings {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Security
+  passwordMinLength     Int      @default(8)
+  requireUppercase      Boolean  @default(true)
+  requireNumbers        Boolean  @default(true)
+  requireSpecialChars   Boolean  @default(true)
+  sessionTimeout        Int      @default(30)
+  maxLoginAttempts      Int      @default(5)
+  accountLockDuration   Int      @default(15)
+  enable2FA             Boolean  @default(false)
+  maintenanceMode       Boolean  @default(false)
+  // System Configuration
+  universityName        String   @default("Sabaragamuwa University of Sri Lanka")
+  systemLogoUrl         String?
+  contactEmail          String?
+  academicYear          String   @default("2024/2025")
+  currentSemester       String   @default("Semester 1")
+  enableNotifications   Boolean  @default(true)
+  enableEmailAlerts     Boolean  @default(false)
+  // Theme
+  defaultTheme          String   @default("light")
+  primaryColor          String   @default("#e11d48")
+  // Timestamps
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Department {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  code      String   @unique
+  faculty   String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
-  action    String
-  details   String?
-  ipAddress String?
+  title     String
+  message   String
+  type      String   @default("info")
+  read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
@@ -76,20 +146,20 @@ model Result {
   semester     String
   gpa          Float
   totalCredits Int      @default(0)
-  subjects     Json     // Storing as Json for simplicity for now
+  subjects     Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
 
 model ResultUpload {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  subjectName   String
-  department    String
-  semester      String
-  publishedAt   DateTime?
-  batch         String?
-  academicYear  String?
-  status        String   @default("pending") // e.g., "pending", "published"
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  subjectName  String
+  department   String
+  semester     String
+  publishedAt  DateTime?
+  batch        String?
+  academicYear String?
+  status       String    @default("pending")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

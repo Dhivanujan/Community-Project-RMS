@@ -1,20 +1,144 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import User from '@/models/User';
-import { requireSuperAdmin } from '@/lib/auth';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { requireSuperAdmin } from "@/lib/auth";
+import { logAction } from "@/lib/audit";
 
 export async function GET(req) {
   try {
-    await dbConnect();
-    
-    const authResult = await requireSuperAdmin(req);
+    const authResult = await requireSuperAdmin();
     if (!authResult.authorized) return authResult.response;
 
-    const users = await User.find({}, '-password').sort({ createdAt: -1 });
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const search = searchParams.get("search") || "";
+    const role = searchParams.get("role") || "";
+    const status = searchParams.get("status") || "";
+    const sortBy = searchParams.get("sortBy") || "createdAt";
+    const sortOrder = searchParams.get("sortOrder") || "desc";
 
-    return NextResponse.json({ users }, { status: 200 });
+    const where = {};
+
+    if (search) {
+      where.OR = [
+        { username: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    if (role) {
+      where.role = role;
+    }
+
+    if (status === "active") where.active = true;
+    if (status === "inactive") where.active = false;
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          role: true,
+          active: true,
+          isFirstLogin: true,
+          lastLogin: true,
+          department: true,
+          createdAt: true,
+          updatedAt: true,
+          staffProfile: { select: { firstName: true, lastName: true, employeeId: true, department: true } },
+          studentProfile: { select: { firstName: true, lastName: true, indexNumber: true, department: true } },
+        },
+        orderBy: { [sortBy]: sortOrder },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      users,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    console.error("Users GET error:", error);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function POST(req) {
+  try {
+    const authResult = await requireSuperAdmin();
+    if (!authResult.authorized) return authResult.response;
+
+    const body = await req.json();
+    const { fullName, username, email, role, department, password } = body;
+
+    if (!fullName || !username || !role) {
+      return NextResponse.json({ message: "Full name, username, and role are required" }, { status: 400 });
+    }
+
+    // Check existing user
+    const existing = await prisma.user.findFirst({
+      where: { OR: [{ username }, ...(email ? [{ email }] : [])] },
+    });
+    if (existing) {
+      return NextResponse.json({ message: "Username or email already exists" }, { status: 409 });
+    }
+
+    const tempPassword = password || Math.random().toString(36).slice(-10) + "A1!";
+    const hashedPassword = await bcrypt.hash(tempPassword, 12);
+
+    const nameParts = fullName.trim().split(" ");
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(" ") || firstName;
+
+    const userData = {
+      username,
+      email: email || null,
+      password: hashedPassword,
+      role,
+      isFirstLogin: true,
+      active: true,
+      department: department || null,
+    };
+
+    // Create profile based on role
+    if (role === "STAFF" || role === "SUPER_ADMIN") {
+      userData.staffProfile = {
+        create: {
+          firstName,
+          lastName,
+          employeeId: `EMP-${Date.now().toString(36).toUpperCase()}`,
+          department: department || null,
+        },
+      };
+    }
+
+    const user = await prisma.user.create({
+      data: userData,
+      select: { id: true, username: true, role: true },
+    });
+
+    await logAction(authResult.user.id, "USER_CREATED", { userId: user.id, username, role }, null, {
+      entity: "User",
+      entityId: user.id,
+    });
+
+    return NextResponse.json({
+      message: "User created successfully",
+      user,
+      tempPassword,
+    }, { status: 201 });
+  } catch (error) {
+    console.error("Users POST error:", error);
+    return NextResponse.json({ message: "Failed to create user" }, { status: 500 });
   }
 }

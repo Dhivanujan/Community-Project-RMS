@@ -150,3 +150,63 @@ html {
   background: rgba(37, 99, 235, 0.15);
   color: #1e40af;
 }
+
+/* ══════════════════════════════════════════════
+   SUPER ADMIN MODULE - Additional Animations
+   ══════════════════════════════════════════════ */
+
+/* ── Fade In ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* ── Fade In Up ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* ── Slide In Right (for toasts) ── */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-slideInRight {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Modal In ── */
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-modalIn {
+  animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Scrollbar hide utility ── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Dark mode overrides for recharts ── */
+.dark .recharts-cartesian-grid line {
+  stroke: #334155;
+}
+.dark .recharts-text {
+  fill: #94a3b8 !important;
+}
+.dark .recharts-legend-item-text {
+  color: #94a3b8 !important;
+}

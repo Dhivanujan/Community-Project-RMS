@@ -119,6 +119,25 @@ export async function DELETE(req, { params }) {
     if (!authResult.authorized) return authResult.response;
 
     const { id } = await params;
+    
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
+    }
+    
+    const { password } = body;
+    if (!password) {
+      return NextResponse.json({ message: "Password is required for verification" }, { status: 400 });
+    }
+
+    // Verify super admin password
+    const superAdmin = await prisma.user.findUnique({ where: { id: authResult.user.id } });
+    const isPasswordValid = await bcrypt.compare(password, superAdmin.password);
+    if (!isPasswordValid) {
+      return NextResponse.json({ message: "Invalid password" }, { status: 401 });
+    }
 
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
@@ -130,9 +149,12 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ message: "Cannot delete your own account" }, { status: 403 });
     }
 
-    // Delete related profiles first
+    // Delete related profiles and logs first
     await prisma.staffProfile.deleteMany({ where: { userId: id } });
     await prisma.studentProfile.deleteMany({ where: { userId: id } });
+    await prisma.loginLog.deleteMany({ where: { userId: id } });
+    await prisma.auditLog.deleteMany({ where: { userId: id } });
+    await prisma.notification.deleteMany({ where: { userId: id } });
 
     await prisma.user.delete({ where: { id } });
 

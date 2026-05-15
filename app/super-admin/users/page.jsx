@@ -25,6 +25,7 @@ export default function UsersPage() {
   const [showEdit, setShowEdit] = useState(false);
   const [showResetPw, setShowResetPw] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [actionMenu, setActionMenu] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -95,12 +96,23 @@ export default function UsersPage() {
     } catch { toast.error("Failed to update status"); }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (e) => {
+    e?.preventDefault();
+    if (!deletePassword) return toast.error("Password is required to confirm deletion");
     setSaving(true);
     try {
-      const res = await fetch(`/api/super-admin/users/${selectedUser.id}`, { method: "DELETE" });
+      const res = await fetch(`/api/super-admin/users/${selectedUser.id}`, { 
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: deletePassword })
+      });
       const data = await res.json();
-      if (res.ok) { toast.success("User deleted"); setShowDelete(false); fetchUsers(); }
+      if (res.ok) { 
+        toast.success("User deleted"); 
+        setShowDelete(false); 
+        setDeletePassword(""); 
+        fetchUsers(); 
+      }
       else toast.error(data.message);
     } catch { toast.error("Failed to delete user"); }
     finally { setSaving(false); }
@@ -349,7 +361,25 @@ export default function UsersPage() {
       </Modal>
 
       {/* Delete Confirmation */}
-      <ConfirmDialog isOpen={showDelete} onClose={() => setShowDelete(false)} onConfirm={handleDelete} title="Delete User" message={`This will permanently delete "${selectedUser?.username}". This action cannot be undone.`} confirmText="Delete" variant="danger" loading={saving} />
+      <Modal isOpen={showDelete} onClose={() => { setShowDelete(false); setDeletePassword(""); }} title="Delete User" description={`Permanently delete "${selectedUser?.username}"`} size="sm">
+        <form onSubmit={handleDelete} className="space-y-4">
+          <div className="bg-red-50 dark:bg-red-950/30 p-3 rounded-xl border border-red-100 dark:border-red-900/50 flex items-start gap-3">
+            <Trash2 className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
+            <p className="text-sm text-red-700 dark:text-red-400">This action cannot be undone. All associated profiles and logs will be permanently removed.</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Super Admin Password <span className="text-red-500">*</span></label>
+            <input type="password" placeholder="Enter your password to confirm" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} required
+              className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:red-500/20 focus:border-red-400" />
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <button type="button" onClick={() => { setShowDelete(false); setDeletePassword(""); }} className="px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Cancel</button>
+            <button type="submit" disabled={saving || !deletePassword} className="px-5 py-2.5 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50">
+              {saving ? "Deleting..." : "Confirm Deletion"}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

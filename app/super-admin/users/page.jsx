@@ -11,6 +11,7 @@ import { TableSkeleton } from "@/components/ui/Skeleton";
 
 const ROLES = ["SUPER_ADMIN", "STAFF", "STUDENT"];
 const ROLE_BADGE = { SUPER_ADMIN: "rose", STAFF: "purple", STUDENT: "info" };
+const DEPARTMENTS = ["Software Engineering", "Computing and Information System", "Data Science"];
 
 export default function UsersPage() {
   const toast = useToast();
@@ -235,13 +236,21 @@ export default function UsersPage() {
           {[{ l: "Full Name", k: "fullName", p: "Enter full name", r: true },
             { l: "Username", k: "username", p: "Enter username", r: true },
             { l: "Email", k: "email", p: "Enter email address", t: "email" },
-            { l: "Department", k: "department", p: "Enter department" },
+            { l: "Department", k: "department", p: "Select department" },
             { l: "Temporary Password", k: "password", p: "Auto-generated if empty" }
           ].map(f => (
             <div key={f.k}>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{f.l} {f.r && <span className="text-red-500">*</span>}</label>
-              <input type={f.t || "text"} placeholder={f.p} value={createForm[f.k]} onChange={(e) => setCreateForm(p => ({ ...p, [f.k]: e.target.value }))}
-                className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
+              {f.k === "department" ? (
+                <select value={createForm[f.k]} onChange={(e) => setCreateForm(p => ({ ...p, [f.k]: e.target.value }))}
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400">
+                  <option value="">Select a department</option>
+                  {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              ) : (
+                <input type={f.t || "text"} placeholder={f.p} value={createForm[f.k]} onChange={(e) => setCreateForm(p => ({ ...p, [f.k]: e.target.value }))}
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
+              )}
             </div>
           ))}
           <div>
@@ -266,8 +275,16 @@ export default function UsersPage() {
           {[{ l: "Username", k: "username" }, { l: "Email", k: "email", t: "email" }, { l: "Department", k: "department" }].map(f => (
             <div key={f.k}>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{f.l}</label>
-              <input type={f.t || "text"} value={editForm[f.k] || ""} onChange={(e) => setEditForm(p => ({ ...p, [f.k]: e.target.value }))}
-                className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
+              {f.k === "department" ? (
+                <select value={editForm[f.k] || ""} onChange={(e) => setEditForm(p => ({ ...p, [f.k]: e.target.value }))}
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400">
+                  <option value="">Select a department</option>
+                  {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              ) : (
+                <input type={f.t || "text"} value={editForm[f.k] || ""} onChange={(e) => setEditForm(p => ({ ...p, [f.k]: e.target.value }))}
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
+              )}
             </div>
           ))}
           <div>

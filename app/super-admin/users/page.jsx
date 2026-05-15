@@ -61,8 +61,10 @@ export default function UsersPage() {
         setTempPw(data.tempPassword); setShowTempPw(true);
         setShowCreate(false); setCreateForm({ fullName: "", username: "", email: "", role: "STAFF", department: "", password: "", studentId: "", enrollmentYear: "" });
         fetchUsers();
-      } else toast.error(data.message);
-    } catch { toast.error("Failed to create user"); }
+      } else {
+        toast.error(data.error ? `${data.message}: ${data.error}` : data.message);
+      }
+    } catch (e) { toast.error("Failed to create user"); }
     finally { setSaving(false); }
   };
 

@@ -115,12 +115,12 @@ export async function POST(req) {
 
     const userData = {
       username,
-      email: email || null,
+      email: email ? email : undefined,
       password: hashedPassword,
       role,
       isFirstLogin: true,
       active: true,
-      department: department || null,
+      department: department ? department : undefined,
     };
 
     // Create profile based on role
@@ -130,7 +130,7 @@ export async function POST(req) {
           firstName,
           lastName,
           employeeId: `EMP-${Date.now().toString(36).toUpperCase()}`,
-          department: department || null,
+          department: department ? department : undefined,
         },
       };
     } else if (role === "STUDENT") {
@@ -139,7 +139,8 @@ export async function POST(req) {
           firstName,
           lastName,
           indexNumber: studentId,
-          department: department || null,
+          rollNumber: studentId,
+          department: department ? department : undefined,
           enrollmentYear,
         },
       };
@@ -162,6 +163,6 @@ export async function POST(req) {
     }, { status: 201 });
   } catch (error) {
     console.error("Users POST error:", error);
-    return NextResponse.json({ message: "Failed to create user" }, { status: 500 });
+    return NextResponse.json({ message: "Failed to create user", error: error?.message || String(error) }, { status: 500 });
   }
 }

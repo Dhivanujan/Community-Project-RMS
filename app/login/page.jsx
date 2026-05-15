@@ -55,7 +55,7 @@ export default function Login() {
           } else {
             const role = session.user.role;
             if (role === "SUPER_ADMIN") router.push("/super-admin/dashboard");
-            else if (role === "STAFF") router.push("/staff/dashboard");
+            else if (role === "STAFF") router.push("/admin");
             else router.push("/student/dashboard");
           }
           router.refresh();

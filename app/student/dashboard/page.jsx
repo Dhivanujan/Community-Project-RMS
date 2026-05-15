@@ -59,7 +59,7 @@ export default function DashboardPage() {
       <section className="mb-7">
         <div className="flex items-center gap-2 mb-1">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Welcome back, {session?.user?.username || 'Student'}
+            Welcome back, {dashboardData?.student?.name?.split(' ')[0] || session?.user?.username || 'Student'}
           </h1>
           <span className="text-xl">👋</span>
         </div>

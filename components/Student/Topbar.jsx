@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Search, Bell, HelpCircle, ChevronDown } from "lucide-react";
 
 export default function Topbar() {
+  const { data: session, status } = useSession();
   const [student, setStudent] = useState({
     name: "Loading...",
     rollNumber: "...",
@@ -11,42 +13,35 @@ export default function Topbar() {
   });
 
   useEffect(() => {
-    // Initial load from local storage if available
-    const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setStudent(prev => ({ 
-        ...prev, 
-        name: storedName,
-        initials: storedName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
-      }));
-    }
-
     // Fetch accurate data from API
     const fetchStudentData = async () => {
+      if (!session?.user?.email && !session?.user?.username) return;
+      
+      // We pass email to the API to resolve the student
+      const queryParam = session?.user?.email ? `email=${session.user.email}` : `rollNumber=${session.user.username}`;
+      
       try {
-        const response = await fetch('/api/student/dashboard', {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          },
-        });
+        const response = await fetch(`/api/student/dashboard?${queryParam}`);
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data?.student) {
             const s = result.data.student;
             setStudent({
               name: s.name,
-              rollNumber: s.rollNumber || s.email,
+              rollNumber: s.rollNumber || s.email || session.user.username,
               initials: s.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
             });
-            if (s.name) localStorage.setItem('userName', s.name);
           }
         }
       } catch (error) {
         console.error("Failed to fetch user data for topbar", error);
       }
     };
-    fetchStudentData();
-  }, []);
+
+    if (status === 'authenticated') {
+      fetchStudentData();
+    }
+  }, [session, status]);
 
   return (
     <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-200/60">

@@ -79,10 +79,14 @@ export async function POST(req) {
     if (!authResult.authorized) return authResult.response;
 
     const body = await req.json();
-    const { fullName, username, email, role, department, password } = body;
+    const { fullName, username, email, role, department, password, studentId, enrollmentYear } = body;
 
     if (!fullName || !username || !role) {
       return NextResponse.json({ message: "Full name, username, and role are required" }, { status: 400 });
+    }
+
+    if (role === "STUDENT" && (!studentId || !enrollmentYear)) {
+      return NextResponse.json({ message: "Student ID and enrollment year are required for students" }, { status: 400 });
     }
 
     // Check existing user
@@ -91,6 +95,15 @@ export async function POST(req) {
     });
     if (existing) {
       return NextResponse.json({ message: "Username or email already exists" }, { status: 409 });
+    }
+
+    if (role === "STUDENT") {
+      const existingStudent = await prisma.studentProfile.findUnique({
+        where: { indexNumber: studentId },
+      });
+      if (existingStudent) {
+        return NextResponse.json({ message: "Student ID already exists" }, { status: 409 });
+      }
     }
 
     const tempPassword = password || Math.random().toString(36).slice(-10) + "A1!";
@@ -118,6 +131,16 @@ export async function POST(req) {
           lastName,
           employeeId: `EMP-${Date.now().toString(36).toUpperCase()}`,
           department: department || null,
+        },
+      };
+    } else if (role === "STUDENT") {
+      userData.studentProfile = {
+        create: {
+          firstName,
+          lastName,
+          indexNumber: studentId,
+          department: department || null,
+          enrollmentYear,
         },
       };
     }

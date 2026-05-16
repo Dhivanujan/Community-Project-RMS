@@ -18,7 +18,7 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                     <tbody>
                         {students.length > 0 ? (
                             students.map((student) => (
-                                <tr key={student._id} className="border-b border-border/50 hover:bg-primary-900/5 transition-colors group">
+                                <tr key={student.id} className="border-b border-border/50 hover:bg-primary-900/5 transition-colors group">
                                     <td className="py-4 px-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-primary-900/10 flex items-center justify-center text-primary-900 font-bold shadow-sm group-hover:scale-105 transition-transform">
@@ -56,7 +56,7 @@ export default function StudentTable({ students, onDelete, onEdit }) {
                                                 <Edit3 className="w-4 h-4" />
                                             </button>
                                             <button 
-                                                onClick={() => onDelete(student._id)}
+                                                onClick={() => onDelete(student.id)}
                                                 className="p-2 text-textMuted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all hover:scale-110"
                                                 title="Delete Student"
                                             >

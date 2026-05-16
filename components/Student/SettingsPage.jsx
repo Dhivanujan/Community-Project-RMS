@@ -54,6 +54,54 @@ export default function SettingsPage() {
       fetchStudentData();
     }
   }, [session]);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPasswordValue, setNewPasswordValue] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordStatus, setPasswordStatus] = useState({ type: "", message: "" });
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
+  const handlePasswordChange = async () => {
+    setPasswordStatus({ type: "", message: "" });
+    if (!currentPassword || !newPasswordValue || !confirmPassword) {
+      setPasswordStatus({ type: "error", message: "All fields are required." });
+      return;
+    }
+    if (newPasswordValue !== confirmPassword) {
+      setPasswordStatus({ type: "error", message: "New passwords do not match." });
+      return;
+    }
+    if (newPasswordValue.length < 6) {
+      setPasswordStatus({ type: "error", message: "Password must be at least 6 characters long." });
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+    try {
+      const response = await fetch('/api/student/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: session?.user?.email,
+          currentPassword,
+          newPassword: newPasswordValue
+        })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setPasswordStatus({ type: "success", message: "Password updated successfully." });
+        setCurrentPassword("");
+        setNewPasswordValue("");
+        setConfirmPassword("");
+      } else {
+        setPasswordStatus({ type: "error", message: data.message || "Failed to update password." });
+      }
+    } catch (error) {
+      setPasswordStatus({ type: "error", message: "An error occurred. Please try again." });
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -148,6 +196,8 @@ export default function SettingsPage() {
               <input
                 type={showCurrentPassword ? "text" : "password"}
                 placeholder="Enter current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
                 className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
               />
               <button
@@ -173,6 +223,8 @@ export default function SettingsPage() {
                 <input
                   type={showNewPassword ? "text" : "password"}
                   placeholder="Enter new password"
+                  value={newPasswordValue}
+                  onChange={(e) => setNewPasswordValue(e.target.value)}
                   className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
                 />
                 <button
@@ -195,13 +247,25 @@ export default function SettingsPage() {
               <input
                 type="password"
                 placeholder="Confirm new password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full mt-1 bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
               />
             </div>
           </div>
 
-          <button className="bg-primary-900 text-white text-xs font-semibold px-5 py-2.5 rounded-lg hover:bg-[#163050] transition-colors shadow-sm shadow-[primary-900]/15 mt-1">
-            Update Password
+          {passwordStatus.message && (
+            <p className={`text-xs font-medium ${passwordStatus.type === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+              {passwordStatus.message}
+            </p>
+          )}
+
+          <button 
+            onClick={handlePasswordChange}
+            disabled={isUpdatingPassword}
+            className="bg-primary-900 text-white text-xs font-semibold px-5 py-2.5 rounded-lg hover:bg-[#163050] transition-colors shadow-sm shadow-[primary-900]/15 mt-1 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isUpdatingPassword ? 'Updating...' : 'Update Password'}
           </button>
         </div>
       </div>

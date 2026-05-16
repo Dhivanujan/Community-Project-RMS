@@ -5,6 +5,7 @@ import dbConnect from '@/lib/dbConnect';
 import Student from '@/models/Student';
 import StudentPreference from '@/models/StudentPreference';
 import User from '@/models/User';
+import prisma from '@/lib/prisma';
 import {
   hasStudentIdentifier,
   normalizeStudentIdentifier,
@@ -233,7 +234,7 @@ export async function POST(request) {
       );
     }
 
-    const user = await User.findOne({ email: student.email, role: 'Student' });
+    const user = await resolveUserForStudent(student);
     if (!user) {
       return NextResponse.json(
         {
@@ -255,8 +256,19 @@ export async function POST(request) {
       );
     }
 
-    user.password = await bcrypt.hash(newPassword, 10);
-    await user.save();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    if (user.id) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      });
+    } else {
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { password: hashedPassword } }
+      );
+    }
 
     return NextResponse.json(
       {

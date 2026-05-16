@@ -67,7 +67,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
 
     const handleClose = () => {
         if (tempPassword) {
-            onSuccess(); // Trigger refresh
+            window.location.reload(); // Trigger refresh properly
         }
         setFormData({
             firstName: '',

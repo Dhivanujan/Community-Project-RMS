@@ -105,6 +105,7 @@ export async function createStudent(data) {
             firstName,
             lastName,
             indexNumber,
+            rollNumber: indexNumber, // Fallback to indexNumber to prevent unique constraint error on null
             department,
             enrollmentYear,
           },
@@ -116,6 +117,7 @@ export async function createStudent(data) {
 
     return { success: true, tempPassword };
   } catch (error) {
-    return { error: "Username, email or index number already exists" };
+    console.error("Prisma error in createStudent:", error);
+    return { error: error.message || "An unexpected error occurred" };
   }
 }

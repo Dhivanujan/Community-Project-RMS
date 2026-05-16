@@ -34,7 +34,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, initialDa
         setError(null);
 
         try {
-            const res = await fetch(`/api/students/${initialData._id}`, {
+            const res = await fetch(`/api/students/${initialData.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

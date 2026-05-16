@@ -19,7 +19,7 @@ export default function StudentManager({ initialStudents }) {
     };
 
     const handleStudentUpdated = (updatedStudent) => {
-        setStudents(prev => prev.map(s => s._id === updatedStudent._id ? updatedStudent : s));
+        setStudents(prev => prev.map(s => s.id === updatedStudent.id ? updatedStudent : s));
         setIsEditModalOpen(false);
     };
 
@@ -36,7 +36,7 @@ export default function StudentManager({ initialStudents }) {
                 method: 'DELETE',
             });
             if (res.ok) {
-                setStudents(prev => prev.filter(s => s._id !== id));
+                setStudents(prev => prev.filter(s => s.id !== id));
             } else {
                 alert("Failed to delete student. (API might not be fully implemented yet)");
             }

@@ -109,44 +109,79 @@ export default function SettingsPage() {
   const [resultAlerts, setResultAlerts] = useState(true);
   const [academicUpdates, setAcademicUpdates] = useState(true);
   const [generalNews, setGeneralNews] = useState(false);
+  const [activeTheme, setActiveTheme] = useState("light");
+
+  useEffect(() => {
+    // Initialize theme from localStorage or document
+    const currentTheme = localStorage.getItem("theme") || "light";
+    setActiveTheme(currentTheme);
+    if (currentTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const handleThemeChange = (themeName) => {
+    const newTheme = themeName.toLowerCase();
+    setActiveTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
+    // Optional: send to backend API
+    if (session?.user?.email) {
+      fetch('/api/student/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: session.user.email,
+          preferences: { theme: newTheme }
+        })
+      }).catch(console.error);
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
           Settings
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">
           Manage your account preferences and profile settings.
         </p>
       </div>
 
       {/* Profile Information */}
-      <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
+      <div className="bg-white dark:bg-[#1e293b] rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm overflow-hidden transition-colors">
+        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
-              <User className="w-3.5 h-3.5 text-primary-900" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] dark:bg-primary-900/20 flex items-center justify-center">
+              <User className="w-3.5 h-3.5 text-primary-900 dark:text-primary-400" />
             </div>
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
+            <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em]">
               Profile Information
             </h3>
           </div>
         </div>
         <div className="p-5">
           {/* Avatar + Name */}
-          <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100/60">
+          <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100/60 dark:border-slate-700/60">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-900 to-primary-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-[primary-900]/15 uppercase">
               {student.initials}
             </div>
             <div>
-              <h4 className="text-base font-bold text-slate-800">
+              <h4 className="text-base font-bold text-slate-800 dark:text-white">
                 {student.name}
               </h4>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <GraduationCap className="w-3 h-3 text-slate-400" />
-                <p className="text-xs text-slate-400 font-medium">
+                <GraduationCap className="w-3 h-3 text-slate-400 dark:text-slate-500" />
+                <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
                   Student • Faculty of Computing
                 </p>
               </div>
@@ -163,10 +198,10 @@ export default function SettingsPage() {
               { label: "Enrollment Year", value: student.enrollmentYear },
             ].map((field) => (
               <div key={field.label}>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em]">
+                <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em]">
                   {field.label}
                 </label>
-                <p className="text-[13px] font-semibold text-slate-700 mt-1 bg-slate-50/80 px-3.5 py-2.5 rounded-lg border border-slate-100/80">
+                <p className="text-[13px] font-semibold text-slate-700 dark:text-slate-200 mt-1 bg-slate-50/80 dark:bg-slate-800/80 px-3.5 py-2.5 rounded-lg border border-slate-100/80 dark:border-slate-700/80">
                   {field.value}
                 </p>
               </div>
@@ -176,20 +211,20 @@ export default function SettingsPage() {
       </div>
 
       {/* Change Password */}
-      <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
+      <div className="bg-white dark:bg-[#1e293b] rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm overflow-hidden transition-colors">
+        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
-              <Lock className="w-3.5 h-3.5 text-primary-900" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] dark:bg-primary-900/20 flex items-center justify-center">
+              <Lock className="w-3.5 h-3.5 text-primary-900 dark:text-primary-400" />
             </div>
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
+            <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em]">
               Change Password
             </h3>
           </div>
         </div>
         <div className="p-5 space-y-4">
           <div>
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em]">
+            <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em]">
               Current Password
             </label>
             <div className="relative mt-1">
@@ -198,7 +233,7 @@ export default function SettingsPage() {
                 placeholder="Enter current password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
+                className="w-full bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 dark:focus:ring-primary-900/40 dark:focus:border-primary-900/50 focus:bg-white dark:focus:bg-[#1e293b] transition-all"
               />
               <button
                 type="button"
@@ -216,7 +251,7 @@ export default function SettingsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em]">
+              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em]">
                 New Password
               </label>
               <div className="relative mt-1">
@@ -225,7 +260,7 @@ export default function SettingsPage() {
                   placeholder="Enter new password"
                   value={newPasswordValue}
                   onChange={(e) => setNewPasswordValue(e.target.value)}
-                  className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
+                  className="w-full bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-lg py-2.5 px-3.5 pr-10 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 dark:focus:ring-primary-900/40 dark:focus:border-primary-900/50 focus:bg-white dark:focus:bg-[#1e293b] transition-all"
                 />
                 <button
                   type="button"
@@ -241,7 +276,7 @@ export default function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em]">
+              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em]">
                 Confirm New Password
               </label>
               <input
@@ -249,7 +284,7 @@ export default function SettingsPage() {
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full mt-1 bg-slate-50/80 border border-slate-200/80 rounded-lg py-2.5 px-3.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all"
+                className="w-full mt-1 bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-lg py-2.5 px-3.5 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 dark:focus:ring-primary-900/40 dark:focus:border-primary-900/50 focus:bg-white dark:focus:bg-[#1e293b] transition-all"
               />
             </div>
           </div>
@@ -271,13 +306,13 @@ export default function SettingsPage() {
       </div>
 
       {/* Notification Preferences */}
-      <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
+      <div className="bg-white dark:bg-[#1e293b] rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm overflow-hidden transition-colors">
+        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
-              <Bell className="w-3.5 h-3.5 text-primary-900" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] dark:bg-primary-900/20 flex items-center justify-center">
+              <Bell className="w-3.5 h-3.5 text-primary-900 dark:text-primary-400" />
             </div>
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
+            <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em]">
               Notification Preferences
             </h3>
           </div>
@@ -324,15 +359,15 @@ export default function SettingsPage() {
             return (
               <div
                 key={i}
-                className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-slate-50/50 transition-colors"
+                className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors"
               >
                 <div className="flex items-start gap-2.5">
-                  <Icon className="w-4 h-4 text-slate-400 mt-0.5" />
+                  <Icon className="w-4 h-4 text-slate-400 dark:text-slate-500 mt-0.5" />
                   <div>
-                    <h4 className="text-[13px] font-semibold text-slate-700">
+                    <h4 className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
                       {item.label}
                     </h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
                       {item.desc}
                     </p>
                   </div>
@@ -341,7 +376,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => item.setState(!item.state)}
                   className={`relative w-10 h-[22px] rounded-full transition-colors duration-200 flex-shrink-0 ${
-                    item.state ? "bg-primary-900" : "bg-slate-200"
+                    item.state ? "bg-primary-900 dark:bg-primary-700" : "bg-slate-200 dark:bg-slate-700"
                   }`}
                 >
                   <span
@@ -357,47 +392,49 @@ export default function SettingsPage() {
       </div>
 
       {/* Appearance */}
-      <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
+      <div className="bg-white dark:bg-[#1e293b] rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-sm overflow-hidden transition-colors">
+        <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] flex items-center justify-center">
-              <Palette className="w-3.5 h-3.5 text-primary-900" />
+            <div className="w-6 h-6 rounded-md bg-primary-900/[0.07] dark:bg-primary-900/20 flex items-center justify-center">
+              <Palette className="w-3.5 h-3.5 text-primary-900 dark:text-primary-400" />
             </div>
-            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em]">
+            <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em]">
               Appearance
             </h3>
           </div>
         </div>
         <div className="p-5">
-          <p className="text-xs text-slate-400 mb-4">
+          <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
             Choose your preferred theme for the dashboard.
           </p>
           <div className="flex gap-3">
             {[
-              { name: "Light", bg: "bg-white", active: true },
-              { name: "Dark", bg: "bg-slate-800", active: false },
-              { name: "System", bg: "bg-gradient-to-br from-white to-slate-800", active: false },
-            ].map((theme) => (
+              { name: "Light", bg: "bg-white", id: "light" },
+              { name: "Dark", bg: "bg-slate-800", id: "dark" },
+            ].map((theme) => {
+              const isActive = activeTheme === theme.id;
+              return (
               <button
                 key={theme.name}
+                onClick={() => handleThemeChange(theme.name)}
                 className={`flex flex-col items-center gap-2 p-3.5 rounded-lg border-2 transition-all duration-200 ${
-                  theme.active
-                    ? "border-primary-900 bg-primary-900/[0.03]"
-                    : "border-slate-200/60 hover:border-slate-300"
+                  isActive
+                    ? "border-primary-900 dark:border-primary-500 bg-primary-900/[0.03] dark:bg-primary-900/[0.2]"
+                    : "border-slate-200/60 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                 }`}
               >
                 <div
-                  className={`w-14 h-10 ${theme.bg} rounded-md border border-slate-200 shadow-inner`}
+                  className={`w-14 h-10 ${theme.bg} rounded-md border border-slate-200 dark:border-slate-600 shadow-inner`}
                 />
                 <span
                   className={`text-[11px] font-semibold ${
-                    theme.active ? "text-primary-900" : "text-slate-500"
+                    isActive ? "text-primary-900 dark:text-primary-400" : "text-slate-500 dark:text-slate-400"
                   }`}
                 >
                   {theme.name}
                 </span>
               </button>
-            ))}
+            )})}
           </div>
         </div>
       </div>

@@ -51,7 +51,10 @@ export default function UsersPage() {
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!createForm.fullName || !createForm.username) return toast.error("Name and username required");
-    if (createForm.role === "STUDENT" && (!createForm.studentId || !createForm.enrollmentYear)) return toast.error("Student ID and Enrollment Year required for students");
+    if (createForm.role === "STUDENT") {
+      if (!createForm.studentId || !createForm.enrollmentYear) return toast.error("Student ID and Enrollment Year required for students");
+      if (!/^\d{4}\/\d{4}$/.test(createForm.enrollmentYear)) return toast.error("Enrollment Year must be in format YYYY/YYYY (e.g., 2021/2022)");
+    }
     setSaving(true);
     try {
       const res = await fetch("/api/super-admin/users", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(createForm) });
@@ -284,7 +287,7 @@ export default function UsersPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Enrollment Year <span className="text-red-500">*</span></label>
-                <input type="text" placeholder="e.g. 2024" value={createForm.enrollmentYear} onChange={(e) => setCreateForm(p => ({ ...p, enrollmentYear: e.target.value }))}
+                <input type="text" placeholder="e.g. 2021/2022" value={createForm.enrollmentYear} onChange={(e) => setCreateForm(p => ({ ...p, enrollmentYear: e.target.value }))}
                   className="w-full px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
               </div>
             </>

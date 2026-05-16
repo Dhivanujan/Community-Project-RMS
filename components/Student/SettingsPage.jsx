@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import {
   User,
   Lock,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
+  const { data: session } = useSession();
   const [student, setStudent] = useState({
     name: "Loading...",
     rollNumber: "...",
@@ -26,23 +28,20 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const fetchStudentData = async () => {
+      if (!session?.user?.email) return;
       try {
-        const response = await fetch('/api/student/dashboard', {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          },
-        });
+        const response = await fetch(`/api/student/dashboard?email=${session.user.email}`);
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data?.student) {
             const s = result.data.student;
             setStudent({
-              name: s.name,
+              name: s.name || "N/A",
               rollNumber: s.rollNumber || "N/A",
-              email: s.email,
-              department: s.department || "Faculty of Computing",
+              email: s.email || "N/A",
+              department: s.department || "N/A",
               enrollmentYear: s.enrollmentYear || "N/A",
-              initials: s.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+              initials: (s.name || "ST").split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
             });
           }
         }
@@ -50,8 +49,11 @@ export default function SettingsPage() {
         console.error("Failed to fetch user data for settings", error);
       }
     };
-    fetchStudentData();
-  }, []);
+    
+    if (session?.user) {
+      fetchStudentData();
+    }
+  }, [session]);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);

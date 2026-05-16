@@ -85,8 +85,13 @@ export async function POST(req) {
       return NextResponse.json({ message: "Full name, username, and role are required" }, { status: 400 });
     }
 
-    if (role === "STUDENT" && (!studentId || !enrollmentYear)) {
-      return NextResponse.json({ message: "Student ID and enrollment year are required for students" }, { status: 400 });
+    if (role === "STUDENT") {
+      if (!studentId || !enrollmentYear) {
+        return NextResponse.json({ message: "Student ID and enrollment year are required for students" }, { status: 400 });
+      }
+      if (!/^\d{4}\/\d{4}$/.test(enrollmentYear)) {
+        return NextResponse.json({ message: "Enrollment Year must be in format YYYY/YYYY (e.g., 2021/2022)" }, { status: 400 });
+      }
     }
 
     // Check existing user

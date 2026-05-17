@@ -35,8 +35,8 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-8 h-8 transition-transform duration-300 group-hover:scale-110">
-              <Image src={suslLogo} alt="SUSL Logo" fill className="object-contain filter brightness-0 invert" />
+            <div className="relative w-10 h-10 transition-transform duration-300 group-hover:scale-110">
+              <Image src={suslLogo} alt="SUSL Logo" fill className="object-contain" />
             </div>
 
             <div className="flex flex-col leading-tight">

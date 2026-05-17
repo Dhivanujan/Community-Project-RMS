@@ -7,7 +7,6 @@ import { LayoutDashboard, Users, Building2, BookOpen, FileText, BarChart3, LogOu
 const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
     { name: 'Students', icon: Users, path: '/admin/students' },
-    { name: 'Departments', icon: Building2, path: '/admin/departments' },
     { name: 'Subjects', icon: BookOpen, path: '/admin/subjects' },
     { name: 'Results', icon: FileText, path: '/admin/results' },
     { name: 'GPA Reports', icon: BarChart3, path: '/admin/gpa-reports' },

@@ -1,6 +1,5 @@
-import dbConnect from '@/lib/dbConnect';
 import { requireAdmin, requireAuth } from '@/lib/auth';
-import Student from '@/models/Student';
+import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
 // ✅ GET all students - ADMIN ONLY
@@ -10,9 +9,30 @@ export async function GET(request) {
         const { authorized, response: authResponse } = await requireAdmin(request);
         if (!authorized) return authResponse;
 
-        await dbConnect();
-        const students = await Student.find();
-        return Response.json(students);
+        const students = await prisma.studentProfile.findMany({
+            include: {
+                user: true
+            }
+        });
+        
+        // Format to match old Mongoose structure where possible
+        const serializedStudents = students.map(student => ({
+            _id: student.id,
+            id: student.id,
+            name: `${student.firstName} ${student.lastName}`,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            rollNumber: student.indexNumber,
+            indexNumber: student.indexNumber,
+            email: student.user?.email,
+            username: student.user?.username,
+            department: student.department,
+            enrollmentYear: student.enrollmentYear,
+            createdAt: student.createdAt,
+            updatedAt: student.updatedAt
+        }));
+
+        return Response.json(serializedStudents);
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }

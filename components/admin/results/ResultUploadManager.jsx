@@ -104,9 +104,12 @@ export default function ResultUploadManager() {
         });
     };
 
-    // ── Fetch students based on department ──
+    // ── Fetch students based on department and academic year ──
     const fetchStudents = useCallback(async () => {
-        if (!filters.department) return;
+        if (!filters.department || !filters.academicYear) {
+            showToast('Please select both Academic Year and Department first.', 'warning');
+            return;
+        }
 
         setIsLoadingStudents(true);
         setValidationErrors({});
@@ -115,10 +118,20 @@ export default function ResultUploadManager() {
             const res = await fetch('/api/students');
             const data = await res.json();
 
-            // Filter locally by department
+            // Filter locally by department and academicYear as enrollmentYear
             const studentsArray = Array.isArray(data) ? data : data.data || [];
             const filtered = studentsArray.filter((s) => {
-                return s.department === filters.department;
+                const isDeptMatch = s.department === filters.department;
+                
+                // Allow exact match or matching the first year in the string "2021/2022" -> "2021"
+                const sYear = String(s.enrollmentYear || '').trim();
+                const fYear = String(filters.academicYear || '').trim();
+                
+                const isYearMatch = sYear === fYear || 
+                                    (fYear.includes('/') && sYear === fYear.split('/')[0]) ||
+                                    (sYear.includes('/') && fYear === sYear.split('/')[0]);
+                
+                return isDeptMatch && isYearMatch;
             });
 
             // Serialize _id
@@ -139,7 +152,7 @@ export default function ResultUploadManager() {
             }
 
             if (serialized.length === 0) {
-                showToast('No students found for the selected department.', 'warning');
+                showToast(`No students found for ${filters.department} in ${filters.academicYear}.`, 'warning');
             } else {
                 showToast(`${serialized.length} student(s) loaded successfully.`);
             }
@@ -149,13 +162,13 @@ export default function ResultUploadManager() {
         } finally {
             setIsLoadingStudents(false);
         }
-    }, [filters.department, view, showToast]);
+    }, [filters.department, filters.academicYear, view]);
 
     useEffect(() => {
-        if (filters.department && view === 'new') {
+        if (filters.department && filters.academicYear && view === 'new') {
             fetchStudents();
         }
-    }, [filters.department, view, fetchStudents]);
+    }, [filters.department, filters.academicYear, view, fetchStudents]);
 
     // ── Handle grade change ──
     const handleGradeChange = (studentId, grade) => {

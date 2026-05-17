@@ -26,7 +26,7 @@ export default function FilterPanel({
         filters.semester &&
         filters.subjectCode;
 
-    const canFetchStudents = filters.department;
+    const canFetchStudents = filters.department && filters.academicYear;
 
     const handleSubjectChange = (code) => {
         const subject = filteredSubjects.find((s) => s.code === code);

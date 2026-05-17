@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { logAction } from "@/lib/audit";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function changePassword(formData) {
   const session = await getServerSession(authOptions);
@@ -114,6 +115,14 @@ export async function createStudent(data) {
     });
 
     await logAction(session.user.id, "STUDENT_CREATION", { studentId: user.id });
+
+    if (email) {
+      try {
+        await sendWelcomeEmail(email, username, tempPassword, "STUDENT");
+      } catch (emailError) {
+        console.error("Failed to send welcome email to new student:", emailError);
+      }
+    }
 
     return { success: true, tempPassword };
   } catch (error) {

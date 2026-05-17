@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { requireSuperAdmin } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function GET(req) {
   try {
@@ -160,6 +161,10 @@ export async function POST(req) {
       entity: "User",
       entityId: user.id,
     });
+
+    if (email) {
+      await sendWelcomeEmail(email, username, tempPassword, role);
+    }
 
     return NextResponse.json({
       message: "User created successfully",

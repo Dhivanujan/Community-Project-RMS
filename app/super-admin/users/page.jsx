@@ -360,7 +360,7 @@ export default function UsersPage() {
           </div>
           <p className="text-sm text-slate-600 dark:text-slate-300">The temporary password is:</p>
           <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 font-mono text-lg font-bold text-slate-800 dark:text-white select-all border border-slate-200 dark:border-slate-700">{tempPw}</div>
-          <p className="text-xs text-slate-400">Please share this securely. The user will be required to change it on first login.</p>
+          <p className="text-xs text-slate-400">An email with the login credentials has been sent to the user (if an email was provided). The user will be required to change it on first login.</p>
           <button onClick={() => { navigator.clipboard.writeText(tempPw); toast.success("Copied to clipboard"); }} className="px-5 py-2.5 text-sm font-semibold text-white bg-rose-600 rounded-xl hover:bg-rose-700 transition-colors">Copy Password</button>
         </div>
       </Modal>

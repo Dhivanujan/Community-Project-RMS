@@ -15,7 +15,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [tempPassword, setTempPassword] = useState(null);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     if (!isOpen) return null;
 
@@ -38,7 +38,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
             }
 
             // Successfully added
-            setTempPassword(result.tempPassword);
+            setIsSuccess(true);
             
             // Format for local state update
             const newStudent = {
@@ -66,7 +66,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
     };
 
     const handleClose = () => {
-        if (tempPassword) {
+        if (isSuccess) {
             window.location.reload(); // Trigger refresh properly
         }
         setFormData({
@@ -77,7 +77,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
             department: '',
             enrollmentYear: ''
         });
-        setTempPassword(null);
+        setIsSuccess(false);
         onClose();
     };
 
@@ -91,7 +91,7 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
             <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden">
                 <div className="flex items-center justify-between p-6 border-b border-slate-100">
                     <h3 className="text-xl font-bold text-slate-900">
-                        {tempPassword ? 'Student Created Successfully' : 'Add New Student'}
+                        {isSuccess ? 'Success' : 'Add New Student'}
                     </h3>
                     <button 
                         onClick={handleClose}
@@ -101,21 +101,13 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
                     </button>
                 </div>
 
-                {tempPassword ? (
+                {isSuccess ? (
                     <div className="p-8 text-center space-y-6">
                         <div className="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto">
                             <CheckCircle2 className="w-10 h-10" />
                         </div>
                         <div>
-                            <p className="text-slate-600 font-medium">Please provide this temporary password to the student:</p>
-                            <div className="mt-4 p-4 bg-slate-50 rounded-2xl border-2 border-dashed border-green-200">
-                                <span className="text-2xl font-mono font-bold text-slate-900 tracking-wider">
-                                    {tempPassword}
-                                </span>
-                            </div>
-                            <p className="text-xs text-slate-400 mt-4 italic">
-                                The student will be forced to change this on their first login.
-                            </p>
+                            <p className="text-slate-900 font-bold text-xl">Student added successfully.</p>
                         </div>
                         <button
                             onClick={handleClose}
@@ -202,10 +194,12 @@ export default function AddStudentModal({ isOpen, onClose, onSuccess }) {
                                 <input 
                                     required
                                     type="text" 
-                                    placeholder="2024"
+                                    pattern="\d{4}/\d{4}"
+                                    placeholder="2021/2022"
                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all"
                                     value={formData.enrollmentYear}
                                     onChange={e => setFormData({...formData, enrollmentYear: e.target.value})}
+                                    title="Format must be YYYY/YYYY (e.g., 2021/2022)"
                                 />
                             </div>
                         </div>

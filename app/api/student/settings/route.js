@@ -12,6 +12,7 @@ import {
   resolveStudent,
   resolveUserForStudent,
 } from '@/lib/student/shared';
+import { validatePassword } from '@/lib/passwordPolicy';
 
 const DEFAULT_PREFERENCES = {
   emailNotifications: true,
@@ -213,11 +214,23 @@ export async function POST(request) {
       );
     }
 
-    if (!currentPassword || !newPassword || newPassword.length < 6) {
+    if (!currentPassword || !newPassword) {
       return NextResponse.json(
         {
           success: false,
-          message: 'currentPassword and a newPassword of at least 6 characters are required.',
+          message: 'currentPassword and newPassword are required.',
+        },
+        { status: 400 }
+      );
+    }
+
+    const validation = await validatePassword(newPassword);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Password does not meet the security policy requirements.',
+          errors: validation.errors
         },
         { status: 400 }
       );

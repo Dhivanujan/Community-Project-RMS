@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { requireSuperAdmin } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { sendWelcomeEmail } from "@/lib/email";
+import { validatePassword } from "@/lib/passwordPolicy";
 
 export async function GET(req) {
   try {
@@ -113,6 +114,16 @@ export async function POST(req) {
     }
 
     const tempPassword = password || Math.random().toString(36).slice(-10) + "A1!";
+    
+    // Enforce Password Policy
+    const validation = await validatePassword(tempPassword);
+    if (!validation.isValid) {
+      return NextResponse.json({ 
+        message: "Password does not meet the security policy requirements", 
+        errors: validation.errors 
+      }, { status: 400 });
+    }
+
     const hashedPassword = await bcrypt.hash(tempPassword, 12);
 
     const nameParts = fullName.trim().split(" ");

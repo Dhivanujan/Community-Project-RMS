@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { validatePassword } from "@/lib/passwordPolicy";
 
 export async function PUT(request, { params }) {
   try {
@@ -9,6 +10,14 @@ export async function PUT(request, { params }) {
 
     if (!password) {
       return NextResponse.json({ message: "Password is required" }, { status: 400 });
+    }
+
+    const validation = await validatePassword(password);
+    if (!validation.isValid) {
+      return NextResponse.json({ 
+        message: "Password does not meet the security policy requirements", 
+        errors: validation.errors 
+      }, { status: 400 });
     }
 
     // In a real app, verify the token here

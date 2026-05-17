@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { requireSuperAdmin } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { validatePassword } from "@/lib/passwordPolicy";
 
 export async function GET(req, { params }) {
   try {
@@ -67,6 +68,14 @@ export async function PATCH(req, { params }) {
 
     // Handle password reset
     if (body.newPassword) {
+      const validation = await validatePassword(body.newPassword);
+      if (!validation.isValid) {
+        return NextResponse.json({
+          message: "Password does not meet the security policy requirements",
+          errors: validation.errors
+        }, { status: 400 });
+      }
+
       updateData.password = await bcrypt.hash(body.newPassword, 12);
       updateData.isFirstLogin = true;
     }

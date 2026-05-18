@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import ResultUpload from '@/models/ResultUpload';
+import prisma from '@/lib/prisma';
 
 // ── GET: Fetch a single result upload with populated student data ──
 export async function GET(request, { params }) {
@@ -16,9 +17,7 @@ export async function GET(request, { params }) {
       );
     }
 
-    const upload = await ResultUpload.findById(id)
-      .populate('entries.student', 'name rollNumber email department enrollmentYear')
-      .lean();
+    const upload = await ResultUpload.findById(id).lean();
 
     if (!upload) {
       return NextResponse.json(
@@ -27,6 +26,27 @@ export async function GET(request, { params }) {
       );
     }
 
+    // Since we're using Prisma for students, manually fetch them
+    const studentIds = upload.entries.map(e => e.student.toString());
+    
+    // Fallback: Also look up users to get email
+    const studentProfiles = await prisma.studentProfile.findMany({
+      where: { id: { in: studentIds } },
+      include: { user: { select: { email: true } } }
+    });
+
+    const studentMap = {};
+    studentProfiles.forEach(sp => {
+      studentMap[sp.id] = {
+        _id: sp.id,
+        name: `${sp.firstName} ${sp.lastName}`,
+        rollNumber: sp.rollNumber || sp.indexNumber,
+        email: sp.user?.email || '',
+        department: sp.department || upload.department,
+        enrollmentYear: sp.enrollmentYear || upload.academicYear
+      };
+    });
+
     const serialized = {
       ...upload,
       _id: upload._id.toString(),
@@ -34,16 +54,7 @@ export async function GET(request, { params }) {
       updatedAt: upload.updatedAt?.toISOString(),
       publishedAt: upload.publishedAt?.toISOString() || null,
       entries: upload.entries.map((e) => ({
-        student: e.student
-          ? {
-              _id: e.student._id.toString(),
-              name: e.student.name,
-              rollNumber: e.student.rollNumber,
-              email: e.student.email,
-              department: e.student.department,
-              enrollmentYear: e.student.enrollmentYear,
-            }
-          : null,
+        student: studentMap[e.student.toString()] || null,
         grade: e.grade,
       })),
     };

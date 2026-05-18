@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import ResultUpload from '@/models/ResultUpload';
-import Student from '@/models/Student';
+import prisma from '@/lib/prisma';
 
 // ── GET: List all result uploads with optional filters ──
 export async function GET(request) {
@@ -104,8 +104,11 @@ export async function POST(request) {
 
     // ── Verify students exist ──
     const studentIds = entries.map((e) => e.student);
-    const existingStudents = await Student.find({ _id: { $in: studentIds } }).select('_id').lean();
-    const existingIds = new Set(existingStudents.map((s) => s._id.toString()));
+    const existingStudents = await prisma.studentProfile.findMany({
+      where: { id: { in: studentIds } },
+      select: { id: true }
+    });
+    const existingIds = new Set(existingStudents.map((s) => s.id));
     const missingIds = studentIds.filter((id) => !existingIds.has(id));
 
     if (missingIds.length > 0) {

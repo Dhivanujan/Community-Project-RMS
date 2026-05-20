@@ -6,6 +6,8 @@ import ResultUpload from '@/models/ResultUpload';
 import Result from '@/models/Result';
 import StudentNotification from '@/models/StudentNotification';
 import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
+import prisma from '@/lib/prisma';
+import { sendResultPublishedEmail } from '@/lib/email';
 
 // ── POST: Publish a result upload ──
 export async function POST(request, { params }) {
@@ -140,6 +142,29 @@ export async function POST(request, { params }) {
       } catch (notifError) {
         // Non-blocking: don't fail publish if notification creation fails
         console.warn('Notification creation warning:', notifError.message);
+      }
+
+      // ── Send email to the correct user mail ──
+      try {
+        const profile = await prisma.studentProfile.findUnique({
+          where: { id: studentId.toString() },
+          include: { user: true },
+        });
+
+        if (profile && profile.user && profile.user.email) {
+          await sendResultPublishedEmail(
+            profile.user.email,
+            profile.firstName,
+            upload.subjectCode,
+            upload.subjectName,
+            upload.semester,
+            grade,
+            upload.department,
+            upload.batch
+          );
+        }
+      } catch (emailError) {
+        console.warn('Email send warning:', emailError.message);
       }
     }
 

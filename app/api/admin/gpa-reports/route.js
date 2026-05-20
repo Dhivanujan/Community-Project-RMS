@@ -3,6 +3,9 @@ import { requireAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import ResultUpload from '@/models/ResultUpload';
 import Student from '@/models/Student';
+import GpaReport from '@/models/GpaReport';
+import prisma from '@/lib/prisma';
+import { recalculateStudentGPA } from '@/lib/gpa';
 import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
 
 // Grade → GPA point conversion (already in config)
@@ -28,9 +31,19 @@ export async function GET(request) {
     if (batch) query.batch = batch;
     if (semester) query.semester = semester;
 
-    const uploads = await ResultUpload.find(query)
-      .populate('entries.student', 'name rollNumber department enrollmentYear')
-      .lean();
+    const uploads = await ResultUpload.find(query).lean();
+
+    // Fetch all student profiles from Prisma to map name and roll number without depending on mongoose populate
+    const studentProfiles = await prisma.studentProfile.findMany({});
+    const profileMap = {};
+    studentProfiles.forEach((p) => {
+      profileMap[p.id.toString()] = {
+        name: `${p.firstName} ${p.lastName}`,
+        rollNumber: p.rollNumber || p.indexNumber,
+        department: p.department || 'N/A',
+        enrollmentYear: p.enrollmentYear || 'N/A',
+      };
+    });
 
     // ── 1. Grade Distribution (across all filtered uploads) ──
     const gradeCount = {};
@@ -87,13 +100,16 @@ export async function GET(request) {
     uploads.forEach((upload) => {
       upload.entries.forEach((entry) => {
         if (!entry.student) return;
-        const sid = entry.student._id.toString();
+        const sid = entry.student.toString();
+        const profile = profileMap[sid];
+        if (!profile) return;
+
         if (!studentGpaMap[sid]) {
           studentGpaMap[sid] = {
             _id: sid,
-            name: entry.student.name,
-            rollNumber: entry.student.rollNumber,
-            department: entry.student.department || upload.department,
+            name: profile.name,
+            rollNumber: profile.rollNumber,
+            department: profile.department || upload.department,
             sum: 0,
             count: 0,
             grades: [],
@@ -122,6 +138,43 @@ export async function GET(request) {
     const totalPublished = uploads.length;
     const uniqueStudents = Object.keys(studentGpaMap).length;
 
+    // ── 6. Self-healing Seeding ──
+    const gpaCount = await GpaReport.countDocuments();
+    if (gpaCount === 0) {
+      const uniqueStudentIds = Object.keys(studentGpaMap);
+      for (const studentId of uniqueStudentIds) {
+        try {
+          await recalculateStudentGPA(studentId);
+        } catch (err) {
+          console.error(`Failed to seed GPA for student ${studentId}:`, err);
+        }
+      }
+    }
+
+    // ── 7. Query GPA Records with Filters & Search ──
+    const searchStudentId = searchParams.get('studentId')?.trim() || '';
+    const gpaQuery = {};
+    if (department) gpaQuery.department = department;
+    if (batch) {
+      if (batch.includes('/')) {
+        const parts = batch.split('/');
+        const startYr = parts[0].length === 2 ? `20${parts[0]}` : parts[0];
+        const endYr = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
+        const fullBatch = `${startYr}/${endYr}`;
+        gpaQuery.$or = [
+          { batch: batch },
+          { batch: fullBatch }
+        ];
+      } else {
+        gpaQuery.batch = batch;
+      }
+    }
+    if (searchStudentId) {
+      gpaQuery.studentId = { $regex: searchStudentId, $options: 'i' };
+    }
+
+    const gpaRecords = await GpaReport.find(gpaQuery).sort({ studentId: 1 }).lean();
+
     return NextResponse.json({
       success: true,
       data: {
@@ -135,6 +188,7 @@ export async function GET(request) {
         departmentComparison,
         semesterTrend,
         topPerformers,
+        gpaRecords,
       },
     });
   } catch (error) {

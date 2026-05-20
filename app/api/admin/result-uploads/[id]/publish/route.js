@@ -8,6 +8,7 @@ import StudentNotification from '@/models/StudentNotification';
 import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
 import prisma from '@/lib/prisma';
 import { sendResultPublishedEmail } from '@/lib/email';
+import { recalculateStudentGPA } from '@/lib/gpa';
 
 // ── POST: Publish a result upload ──
 export async function POST(request, { params }) {
@@ -180,6 +181,15 @@ export async function POST(request, { params }) {
     });
 
     await upload.save();
+
+    // ── Trigger GPA recalculation for each student ──
+    for (const entry of upload.entries) {
+      try {
+        await recalculateStudentGPA(entry.student);
+      } catch (gpaError) {
+        console.error(`GPA recalculation error for student ${entry.student}:`, gpaError);
+      }
+    }
 
     return NextResponse.json(
       {

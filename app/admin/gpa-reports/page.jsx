@@ -17,10 +17,10 @@ export default function GPAReportsPage() {
             <div className="p-3 bg-primary/10 rounded-2xl card-glow">
               <BarChart3 className="w-8 h-8 text-primary animate-pulse-glow" />
             </div>
-            GPA Reports
+            GPA Analytics
           </h1>
           <p className="mt-3 text-textMuted text-sm font-medium">
-            Analyze published results — grade distribution, department comparison, and top performers.
+            Analyze published results — grade distribution, department comparison, and student performance.
           </p>
         </div>
       </header>

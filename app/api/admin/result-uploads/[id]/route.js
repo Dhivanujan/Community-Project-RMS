@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import ResultUpload from '@/models/ResultUpload';
 import prisma from '@/lib/prisma';
+import { recalculateStudentGPA } from '@/lib/gpa';
 
 // ── GET: Fetch a single result upload with populated student data ──
 export async function GET(request, { params }) {
@@ -145,6 +146,17 @@ export async function PUT(request, { params }) {
 
     upload.entries = entries;
     await upload.save();
+
+    // ── Trigger GPA recalculation if already published ──
+    if (upload.status === 'published') {
+      for (const entry of entries) {
+        try {
+          await recalculateStudentGPA(entry.student);
+        } catch (gpaError) {
+          console.error(`GPA recalculation error for student ${entry.student} on update:`, gpaError);
+        }
+      }
+    }
 
     return NextResponse.json(
       { success: true, message: 'Result upload updated successfully.' },

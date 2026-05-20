@@ -9,7 +9,7 @@ const menuItems = [
     { name: 'Students', icon: Users, path: '/admin/students' },
     { name: 'Subjects', icon: BookOpen, path: '/admin/subjects' },
     { name: 'Results', icon: FileText, path: '/admin/results' },
-    { name: 'GPA Reports', icon: BarChart3, path: '/admin/gpa-reports' },
+    { name: 'GPA Analytics', icon: BarChart3, path: '/admin/gpa-reports' },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen }) {

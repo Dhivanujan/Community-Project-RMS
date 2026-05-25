@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, ArrowLeft, Save, Send, Loader2 } from 'lucide-react';
+import { Plus, ArrowLeft, Save, Send, Loader2, ScanLine } from 'lucide-react';
 import FilterPanel from './FilterPanel';
 import GradeEntryTable from './GradeEntryTable';
 import PublishConfirmModal from './PublishConfirmModal';
 import ResultUploadList from './ResultUploadList';
+import BulkUploadModal from './BulkUploadModal';
 
 const INITIAL_FILTERS = {
     academicYear: '',
@@ -36,6 +37,7 @@ export default function ResultUploadManager() {
     const [isPublishing, setIsPublishing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+    const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
     const [toast, setToast] = useState(null);
 
     // ── Show toast notifications ──
@@ -502,13 +504,24 @@ export default function ResultUploadManager() {
                         <p className="text-sm text-textMuted font-medium">
                             {uploads.length} result upload(s) total
                         </p>
-                        <button
-                            onClick={startNewUpload}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#d4a843] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#b8912e] transition-all active:scale-[0.98] shadow-sm shadow-[#d4a843]/20"
-                        >
-                            <Plus className="w-5 h-5" />
-                            <span>New Upload</span>
-                        </button>
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                            {/* Bulk Upload */}
+                            <button
+                                onClick={() => setIsBulkModalOpen(true)}
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-emerald-700 transition-all active:scale-[0.98] shadow-sm shadow-emerald-600/20"
+                            >
+                                <ScanLine className="w-4 h-4" />
+                                <span>Scan PDF</span>
+                            </button>
+                            {/* Manual Upload */}
+                            <button
+                                onClick={startNewUpload}
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#d4a843] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#b8912e] transition-all active:scale-[0.98] shadow-sm shadow-[#d4a843]/20"
+                            >
+                                <Plus className="w-5 h-5" />
+                                <span>Manual Entry</span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Upload List */}
@@ -621,6 +634,18 @@ export default function ResultUploadManager() {
                     />
                 </>
             )}
+
+            {/* ═══════════ BULK UPLOAD MODAL ═══════════ */}
+            <BulkUploadModal
+                isOpen={isBulkModalOpen}
+                onClose={() => setIsBulkModalOpen(false)}
+                config={config}
+                onSuccess={() => {
+                    setIsBulkModalOpen(false);
+                    loadUploads();
+                    showToast('Bulk upload saved as draft! Review and publish from the list.');
+                }}
+            />
         </div>
     );
 }

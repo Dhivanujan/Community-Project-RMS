@@ -134,7 +134,6 @@ export default function GPAReportsManager() {
         <Filter className="w-4 h-4 text-textMuted" />
         <SelectFilter label="All Departments" icon={null} stateKey="department" options={DEPARTMENTS} />
         <SelectFilter label="Academic Year" icon={null} stateKey="academicYear" options={ACADEMIC_YEARS} />
-        <SelectFilter label="Batch" icon={null} stateKey="batch" options={BATCHES} />
         <SelectFilter label="Semester" icon={null} stateKey="semester" options={SEMESTERS} />
         
         {/* Search by Student ID */}
@@ -150,7 +149,7 @@ export default function GPAReportsManager() {
 
         <button
           onClick={() => {
-            setFilters({ department: '', academicYear: '', batch: '', semester: '' });
+            setFilters({ department: '', academicYear: '', semester: '' });
             setStudentIdSearch('');
           }}
           className="text-xs font-semibold text-textMuted hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 transition-all"
@@ -261,7 +260,7 @@ export default function GPAReportsManager() {
                                     {record.publishedSubjects.map((sub, idx) => (
                                       <div key={idx} className="grid grid-cols-4 gap-4 text-xs text-textDark items-center py-2.5 border-b border-slate-50 last:border-b-0">
                                         <div className="font-medium">{sub}</div>
-                                        <div className="text-center">{record.credits[idx]} Cr</div>
+                                        <div className="text-center">{record.credits[idx]}</div>
                                         <div className="text-center font-bold">
                                           <span className={`text-[10px] font-bold px-2.5 py-1 rounded ${
                                             record.grades[idx].startsWith('A') ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'

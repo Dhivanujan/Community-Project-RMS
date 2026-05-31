@@ -145,6 +145,31 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ── Custom Grid Background ── */
+.bg-grid-slate-200 {
+  background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+:root {
+  --maroon-primary: #731010;
+  --maroon-hover: #5a0c0c;
+  --maroon-light: #f8eded;
+}
+
+.bg-maroon {
+  background-color: var(--maroon-primary);
+}
+
+.text-maroon {
+  color: var(--maroon-primary);
+}
+
+.border-maroon {
+  border-color: var(--maroon-primary);
+}
+
 /* ── Selection color ── */
 ::selection {
   background: rgba(37, 99, 235, 0.15);

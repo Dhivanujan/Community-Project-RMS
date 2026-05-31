@@ -88,16 +88,16 @@ export default function Login() {
         <div className="min-h-screen bg-slate-50 bg-grid-slate-200 flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
           {/* Header */}
           <div className="flex flex-col items-center mb-8 text-center bg-white/50 backdrop-blur-sm p-4 rounded-2xl">
-            <div className="w-16 h-16 bg-maroon flex items-center justify-center rounded-xl shadow-lg mb-4">
+            <div className="w-16 h-16 bg-primary-900 flex items-center justify-center rounded-xl shadow-lg mb-4">
               <GraduationCap className="text-white w-10 h-10" />
             </div>
-            <h1 className="text-3xl font-bold text-maroon tracking-tight">Faculty Access Portal</h1>
+            <h1 className="text-3xl font-bold text-primary-900 tracking-tight">Faculty Access Portal</h1>
             <p className="text-slate-500 text-sm mt-1">Sabaragamuwa University of Sri Lanka</p>
           </div>
 
           {/* Main Card */}
           <div className="max-w-[480px] w-full bg-white rounded-xl shadow-xl overflow-hidden border border-slate-100 flex flex-col p-8 sm:p-10 relative">
-            <div className="absolute top-0 left-0 w-full h-1 bg-maroon"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-primary-900"></div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Staff ID */}
@@ -106,7 +106,7 @@ export default function Login() {
                   Staff ID
                 </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-maroon transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-900 transition-colors">
                     <IdCard className="w-5 h-5" />
                   </div>
                   <input
@@ -116,7 +116,7 @@ export default function Login() {
                     value={formData.username}
                     onChange={handleChange}
                     placeholder="e.g. FAC/COM/2024/001"
-                    className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all placeholder:text-slate-400 text-slate-900"
+                    className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-primary-900/5 focus:border-primary-900 transition-all placeholder:text-slate-400 text-slate-900"
                   />
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default function Login() {
                   Password
                 </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-maroon transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-900 transition-colors">
                     <Lock className="w-5 h-5" />
                   </div>
                   <input
@@ -137,12 +137,12 @@ export default function Login() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-12 py-3.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all placeholder:text-slate-400 text-slate-900 tracking-wider"
+                    className="w-full pl-12 pr-12 py-3.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-primary-900/5 focus:border-primary-900 transition-all placeholder:text-slate-400 text-slate-900 tracking-wider"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-maroon transition-colors"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-primary-900 transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -160,7 +160,7 @@ export default function Login() {
                     onClick={() => setFacultyAccessLevel("records")}
                     className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg border transition-all text-sm font-semibold ${
                       facultyAccessLevel === "records"
-                        ? "bg-maroon/5 border-maroon text-maroon"
+                        ? "bg-primary-900/5 border-primary-900 text-primary-900"
                         : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
                   >
@@ -172,7 +172,7 @@ export default function Login() {
                     onClick={() => setFacultyAccessLevel("management")}
                     className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg border transition-all text-sm font-semibold ${
                       facultyAccessLevel === "management"
-                        ? "bg-maroon/5 border-maroon text-maroon"
+                        ? "bg-primary-900/5 border-primary-900 text-primary-900"
                         : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
                   >
@@ -193,7 +193,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-maroon hover:bg-maroon/90 text-white py-4 rounded-lg font-bold text-lg transition-all shadow-lg shadow-maroon/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.98]"
+                className="w-full bg-primary-900 hover:bg-primary-800 text-white py-4 rounded-lg font-bold text-lg transition-all shadow-lg shadow-primary-900/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.98]"
               >
                 {loading ? "Authenticating..." : "Secure Login"}
                 {!loading && <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
@@ -203,7 +203,7 @@ export default function Login() {
               <div className="pt-4 text-center space-y-3">
                 <Link
                   href="/forgot-password"
-                  className="block text-sm font-medium text-maroon hover:underline decoration-2 underline-offset-4"
+                  className="block text-sm font-medium text-primary-900 hover:underline decoration-2 underline-offset-4"
                 >
                   Forgot your credentials?
                 </Link>
@@ -233,7 +233,7 @@ export default function Login() {
           {/* Switch to Student Portal */}
           <button
             onClick={() => setAccessType("student")}
-            className="mt-8 px-6 py-2.5 rounded-full bg-white text-maroon border border-maroon hover:bg-maroon hover:text-white transition-all font-semibold text-sm shadow-sm flex items-center gap-2 active:scale-95"
+            className="mt-8 px-6 py-2.5 rounded-full bg-white text-primary-900 border border-primary-900 hover:bg-primary-900 hover:text-white transition-all font-semibold text-sm shadow-sm flex items-center gap-2 active:scale-95"
           >
             <User className="w-4 h-4" />
             Switch to Student Portal
@@ -242,13 +242,13 @@ export default function Login() {
           {/* Footer */}
           <footer className="mt-auto pt-16 pb-8 w-full max-w-[1200px] flex flex-col md:flex-row justify-between items-center gap-6 text-slate-500 border-t border-slate-200/50">
             <div className="text-left space-y-1">
-              <p className="font-bold text-maroon tracking-tight">SUSL Results Management</p>
+              <p className="font-bold text-primary-900 tracking-tight">SUSL Results Management</p>
               <p className="text-xs">© 2024 Sabaragamuwa University of Sri Lanka. All Rights Reserved.</p>
             </div>
             <div className="flex gap-8 text-xs font-semibold">
-              <Link href="#" className="hover:text-maroon transition-colors">Privacy Policy</Link>
-              <Link href="#" className="hover:text-maroon transition-colors">Terms of Service</Link>
-              <Link href="#" className="hover:text-maroon transition-colors">Contact Us</Link>
+              <Link href="#" className="hover:text-primary-900 transition-colors">Privacy Policy</Link>
+              <Link href="#" className="hover:text-primary-900 transition-colors">Terms of Service</Link>
+              <Link href="#" className="hover:text-primary-900 transition-colors">Contact Us</Link>
             </div>
           </footer>
         </div>
@@ -257,7 +257,7 @@ export default function Login() {
           {/* Header */}
           <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-50">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-maroon rounded flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 bg-primary-900 rounded flex items-center justify-center shadow-md">
                 <GraduationCap className="text-white w-6 h-6" />
               </div>
               <div>
@@ -281,7 +281,7 @@ export default function Login() {
               <div className="space-y-4 max-w-[600px]">
                 <h1 className="text-4xl lg:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight">
                   Access Your Academic <br />
-                  <span className="text-maroon">Insights Instantly</span>
+                  <span className="text-primary-900">Insights Instantly</span>
                 </h1>
                 <p className="text-lg text-slate-600 leading-relaxed font-medium">
                   Seamlessly manage your academic journey. Review comprehensive GPA analytics, track your faculty rankings, and monitor your graduation eligibility in real-time.
@@ -297,7 +297,7 @@ export default function Login() {
                   { icon: <Shield className="w-6 h-6" />, title: "Secure Access", desc: "Enterprise-grade protection for your records." },
                 ].map((f, i) => (
                   <div key={i} className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 group">
-                    <div className="w-12 h-12 bg-maroon/5 rounded-xl flex items-center justify-center text-maroon mb-4 group-hover:bg-maroon group-hover:text-white transition-colors shadow-sm">
+                    <div className="w-12 h-12 bg-primary-900/5 rounded-xl flex items-center justify-center text-primary-900 mb-4 group-hover:bg-primary-900 group-hover:text-white transition-colors shadow-sm">
                       {f.icon}
                     </div>
                     <h3 className="font-bold text-slate-900 mb-1">{f.title}</h3>
@@ -310,7 +310,7 @@ export default function Login() {
             {/* Right Side: Login Card */}
             <div className="lg:w-[500px] w-full">
               <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 p-8 lg:p-12 relative">
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-maroon"></div>
+                <div className="absolute top-0 left-0 w-full h-1.5 bg-primary-900"></div>
 
                 <div className="text-center mb-10">
                   <div className="w-20 h-20 bg-slate-50 rounded-full mx-auto mb-6 flex items-center justify-center border-4 border-slate-100 shadow-inner overflow-hidden">
@@ -334,7 +334,7 @@ export default function Login() {
                       Student ID Number
                     </label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-maroon transition-colors">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-900 transition-colors">
                         <User className="w-5 h-5" />
                       </div>
                       <input
@@ -344,7 +344,7 @@ export default function Login() {
                         value={formData.username}
                         onChange={handleChange}
                         placeholder="e.g. 19/COM/001"
-                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all placeholder:text-slate-400 text-slate-900 font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-primary-900/5 focus:border-primary-900 transition-all placeholder:text-slate-400 text-slate-900 font-medium"
                       />
                     </div>
                   </div>
@@ -354,7 +354,7 @@ export default function Login() {
                       Password
                     </label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-maroon transition-colors">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-900 transition-colors">
                         <Lock className="w-5 h-5" />
                       </div>
                       <input
@@ -364,12 +364,12 @@ export default function Login() {
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="••••••••"
-                        className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all placeholder:text-slate-400 text-slate-900 tracking-widest"
+                        className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-primary-900/5 focus:border-primary-900 transition-all placeholder:text-slate-400 text-slate-900 tracking-widest"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-maroon transition-colors"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-primary-900 transition-colors"
                       >
                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -384,7 +384,7 @@ export default function Login() {
                         name="rememberMe"
                         checked={formData.rememberMe}
                         onChange={handleChange}
-                        className="w-5 h-5 rounded border-slate-300 text-maroon focus:ring-maroon transition-all"
+                        className="w-5 h-5 rounded border-slate-300 text-primary-900 focus:ring-primary-900 transition-all"
                       />
                       <label
                         htmlFor="rememberMe"
@@ -395,7 +395,7 @@ export default function Login() {
                     </div>
                     <Link
                       href="/forgot-password"
-                      className="text-xs font-bold text-maroon hover:underline decoration-2 underline-offset-4"
+                      className="text-xs font-bold text-primary-900 hover:underline decoration-2 underline-offset-4"
                     >
                       Forgot password?
                     </Link>
@@ -411,7 +411,7 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-maroon hover:bg-maroon/90 text-white py-4 rounded-xl font-black text-sm tracking-widest uppercase transition-all shadow-xl shadow-maroon/30 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.98]"
+                    className="w-full bg-primary-900 hover:bg-primary-800 text-white py-4 rounded-xl font-black text-sm tracking-widest uppercase transition-all shadow-xl shadow-primary-900/30 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.98]"
                   >
                     {loading ? "Verifying..." : "Sign In to Dashboard"}
                     {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
@@ -421,7 +421,7 @@ export default function Login() {
                 <div className="mt-12 pt-8 border-t border-slate-100 text-center">
                   <p className="text-sm font-bold text-slate-600 leading-relaxed px-4">
                     Need technical assistance? <br />
-                    <button className="text-maroon hover:underline decoration-2 underline-offset-4">Contact IT Support</button>
+                    <button className="text-primary-900 hover:underline decoration-2 underline-offset-4">Contact IT Support</button>
                   </p>
                 </div>
               </div>
@@ -436,9 +436,9 @@ export default function Login() {
                 <p className="text-xs font-semibold">© 2024 Sabaragamuwa University of Sri Lanka. All Rights Reserved.</p>
               </div>
               <div className="flex gap-8 text-xs font-bold tracking-tight">
-                <Link href="#" className="hover:text-maroon transition-colors">Privacy Policy</Link>
-                <Link href="#" className="hover:text-maroon transition-colors">Terms of Service</Link>
-                <Link href="#" className="hover:text-maroon transition-colors">Contact Us</Link>
+                <Link href="#" className="hover:text-primary-900 transition-colors">Privacy Policy</Link>
+                <Link href="#" className="hover:text-primary-900 transition-colors">Terms of Service</Link>
+                <Link href="#" className="hover:text-primary-900 transition-colors">Contact Us</Link>
               </div>
             </div>
           </footer>
@@ -446,7 +446,7 @@ export default function Login() {
       )}
 
       {/* Help Bubble - Shared */}
-      <button className="fixed bottom-8 right-8 w-14 h-14 bg-white rounded-full flex items-center justify-center text-maroon shadow-2xl border border-slate-100 hover:-translate-y-2 transition-all hover:rotate-12 group z-[100]">
+      <button className="fixed bottom-8 right-8 w-14 h-14 bg-white rounded-full flex items-center justify-center text-primary-900 shadow-2xl border border-slate-100 hover:-translate-y-2 transition-all hover:rotate-12 group z-[100]">
         <HelpCircle className="w-7 h-7 group-hover:scale-110 transition-transform" />
       </button>
     </div>

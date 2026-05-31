@@ -106,17 +106,17 @@ export default function UsersPage() {
     if (!deletePassword) return toast.error("Password is required to confirm deletion");
     setSaving(true);
     try {
-      const res = await fetch(`/api/super-admin/users/${selectedUser.id}`, { 
+      const res = await fetch(`/api/super-admin/users/${selectedUser.id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: deletePassword })
       });
       const data = await res.json();
-      if (res.ok) { 
-        toast.success("User deleted"); 
-        setShowDelete(false); 
-        setDeletePassword(""); 
-        fetchUsers(); 
+      if (res.ok) {
+        toast.success("User deleted");
+        setShowDelete(false);
+        setDeletePassword("");
+        fetchUsers();
       }
       else toast.error(data.message);
     } catch { toast.error("Failed to delete user"); }
@@ -252,10 +252,10 @@ export default function UsersPage() {
       <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Create New User" description="Add a new staff or admin account to the system.">
         <form onSubmit={handleCreate} className="space-y-4">
           {[{ l: "Full Name", k: "fullName", p: "Enter full name", r: true },
-            { l: "Username", k: "username", p: "Enter username", r: true },
-            { l: "Email", k: "email", p: "Enter email address", t: "email" },
-            { l: "Department", k: "department", p: "Select department" },
-            { l: "Temporary Password", k: "password", p: "Auto-generated if empty" }
+          { l: "Username", k: "username", p: "Enter username", r: true },
+          { l: "Email", k: "email", p: "Enter email address", t: "email" },
+          { l: "Department", k: "department", p: "Select department" },
+          { l: "Temporary Password", k: "password", p: "Auto-generated if empty" }
           ].map(f => (
             <div key={f.k}>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{f.l} {f.r && <span className="text-red-500">*</span>}</label>

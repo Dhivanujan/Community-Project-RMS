@@ -84,7 +84,7 @@ export default function Departments() {
 
                   {/* CTA */}
                   <Link
-                    href={`#departments-${dept.slug}`}
+                    href={`/departments/${dept.slug}`}
                     className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 hover:text-blue-300 group/link"
                   >
                     Explore Department

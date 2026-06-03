@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Hero from "@/components/home/Hero";
+import DashboardPreview from "@/components/home/DashboardPreview";
 import Features from "@/components/home/Features";
 import Departments from "@/components/home/Departments";
+import CTA from "@/components/home/CTA";
 
 const FALLBACK_SUMMARY = {
   overallGpa: 3.42,
@@ -16,7 +18,11 @@ const FALLBACK_SUMMARY = {
     { name: "H. A. Fernando", gpa: 3.95 },
     { name: "K. D. Silva", gpa: 3.91 },
   ],
-  departmentStats: [],
+  departmentStats: [
+    { title: "Software Engineering", students: 480, gpa: 3.45, gpaPercent: 86 },
+    { title: "Data Science", students: 320, gpa: 3.52, gpaPercent: 88 },
+    { title: "Computer Information Systems", students: 650, gpa: 3.32, gpaPercent: 83 },
+  ],
   gpaDistribution: {
     below2: 5,
     between2And24: 12,
@@ -59,9 +65,11 @@ export default function HomepageContent() {
 
   return (
     <>
-      <Hero summary={summary} />
+      <Hero />
+      <DashboardPreview summary={summary} />
       <Features />
       <Departments departmentStats={summary.departmentStats} />
+      <CTA />
     </>
   );
 }

@@ -28,7 +28,22 @@ const departments = [
   },
 ];
 
-export default function Departments() {
+export default function Departments({ departmentStats = [] }) {
+  const getDeptStats = (deptTitle) => {
+    if (!departmentStats || departmentStats.length === 0) return null;
+    const normalizedDept = deptTitle.toLowerCase().replace(/department\s+of\s+/g, "").trim();
+
+    return departmentStats.find((stat) => {
+      const normalizedStat = stat.title.toLowerCase().replace(/department\s+of\s+/g, "").trim();
+      return (
+        normalizedDept.includes(normalizedStat) ||
+        normalizedStat.includes(normalizedDept) ||
+        (normalizedDept === "information systems" && normalizedStat.includes("information system")) ||
+        (normalizedDept === "information systems" && normalizedStat.includes("cis"))
+      );
+    });
+  };
+
   return (
     <section
       id="departments"
@@ -55,46 +70,69 @@ export default function Departments() {
         {/* CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          {departments.map((dept, i) => (
-            <AnimateOnScroll key={i} variant="fadeUp" delay={i * 120}>
-              <div className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
+          {departments.map((dept, i) => {
+            const stats = getDeptStats(dept.title);
+            return (
+              <AnimateOnScroll key={i} variant="fadeUp" delay={i * 120}>
+                <div className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
 
-                {/* IMAGE */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={dept.image}
-                    alt={dept.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  {/* IMAGE */}
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={dept.image}
+                      alt={dept.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
 
-                  {/* overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+                    {/* overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+                  </div>
+
+                  {/* CONTENT */}
+                  <div className="p-6">
+
+                    <h3 className="text-white font-semibold text-lg mb-2">
+                      {dept.title}
+                    </h3>
+
+                    <p className="text-white/50 text-sm leading-relaxed mb-6">
+                      {dept.desc}
+                    </p>
+
+                    {/* STATS */}
+                    {stats && (
+                      <div className="mt-4 pt-4 border-t border-white/10 mb-6 space-y-3">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-white/40">Avg GPA</span>
+                          <span className="text-blue-400 font-bold">{stats.gpa.toFixed(2)}</span>
+                        </div>
+                        <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="bg-blue-500 h-1.5 rounded-full transition-all duration-500"
+                            style={{ width: `${stats.gpaPercent}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-white/40">Enrolled Students</span>
+                          <span className="text-white/70 font-semibold">{stats.students}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* CTA */}
+                    <Link
+                      href={`/departments/${dept.slug}`}
+                      className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 hover:text-blue-300 group/link"
+                    >
+                      Explore Department
+                      <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                    </Link>
+
+                  </div>
                 </div>
-
-                {/* CONTENT */}
-                <div className="p-6">
-
-                  <h3 className="text-white font-semibold text-lg mb-2">
-                    {dept.title}
-                  </h3>
-
-                  <p className="text-white/50 text-sm leading-relaxed mb-6">
-                    {dept.desc}
-                  </p>
-
-                  {/* CTA */}
-                  <Link
-                    href={`/departments/${dept.slug}`}
-                    className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 hover:text-blue-300 group/link"
-                  >
-                    Explore Department
-                    <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
-                  </Link>
-
-                </div>
-              </div>
-            </AnimateOnScroll>
-          ))}
+              </AnimateOnScroll>
+            );
+          })}
         </div>
       </div>
     </section>

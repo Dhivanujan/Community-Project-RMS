@@ -151,31 +151,27 @@ export default function DashboardPreview({ summary }) {
                       Batch GPA Distribution
                     </h5>
 
-                    <div className="flex items-end gap-3 h-40">
+                    <div className="flex gap-3 items-end">
                       {bars.map((bar, i) => (
-                        <div key={i} className="flex-1 flex flex-col items-center gap-0">
-                          <div
-                            className={`w-full bg-gradient-to-t ${bar.color} rounded-t-lg hover:opacity-80 transition-all duration-300 animate-grow-up cursor-pointer relative group`}
-                            style={{
-                              height: `${bar.h}%`,
-                              animationDelay: `${i * 120}ms`,
-                            }}
-                          >
-                            {/* Tooltip */}
-                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold">
-                              {bar.h}%
+                        <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                          {/* Fixed-height container for bar alignment */}
+                          <div className="h-32 w-full flex items-end">
+                            <div
+                              className={`w-full bg-gradient-to-t ${bar.color} rounded-t-lg hover:opacity-80 transition-all duration-300 animate-grow-up cursor-pointer relative group`}
+                              style={{
+                                height: `${bar.h}%`,
+                                animationDelay: `${i * 120}ms`,
+                              }}
+                            >
+                              {/* Tooltip */}
+                              <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold">
+                                {bar.h}%
+                              </div>
                             </div>
                           </div>
+                          <span className="text-[10px] sm:text-xs text-slate-400 font-semibold whitespace-nowrap">{bar.label}</span>
                         </div>
                       ))}
-                    </div>
-
-                    <div className="flex justify-between text-xs text-slate-400 mt-3 font-medium">
-                      <span>&lt;2.0</span>
-                      <span>2.0–2.4</span>
-                      <span>2.5–2.9</span>
-                      <span>3.0–3.4</span>
-                      <span>3.5+</span>
                     </div>
                   </div>
                 </AnimateOnScroll>

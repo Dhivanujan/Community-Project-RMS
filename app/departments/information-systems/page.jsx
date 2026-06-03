@@ -1,19 +1,11 @@
 import Link from "next/link";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur border-b border-slate-800">
-        <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center">
-          <Link
-            href="/"
-            className="text-2xl font-bold text-blue-400 hover:text-blue-300 transition"
-          >
-            SUSL Results Management
-          </Link>
-        </nav>
-      </header>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative h-[550px] overflow-hidden">
@@ -43,13 +35,19 @@ export default function Home() {
               </p>
 
               <div className="flex gap-4 mt-8">
-                <button className="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-lg font-semibold transition">
+                <Link
+                  href="/login?type=student"
+                  className="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-lg font-semibold transition text-center"
+                >
                   Student Portal
-                </button>
+                </Link>
 
-                <button className="border border-blue-400 text-blue-300 px-6 py-3 rounded-lg hover:bg-blue-900/30 transition">
+                <Link
+                  href="#programs"
+                  className="border border-blue-400 text-blue-300 px-6 py-3 rounded-lg hover:bg-blue-900/30 transition text-center"
+                >
                   View Programs
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -139,7 +137,7 @@ export default function Home() {
         </section>
 
         {/* Programs */}
-        <section className="mb-16">
+        <section id="programs" className="mb-16">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
             <div className="p-6 border-b border-slate-800">
               <h2 className="text-3xl font-bold text-blue-400">
@@ -237,43 +235,24 @@ export default function Home() {
           </p>
 
           <div className="flex gap-4">
-            <button className="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold">
+            <Link
+              href="/login?type=student"
+              className="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-slate-100 transition text-center"
+            >
               View Results
-            </button>
+            </Link>
 
-            <button className="border border-white px-6 py-3 rounded-lg">
+            <Link
+              href="/login?type=student"
+              className="border border-white px-6 py-3 rounded-lg hover:bg-white/10 transition text-center"
+            >
               Student Login
-            </button>
+            </Link>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 bg-slate-950 mt-16">
-        <div className="max-w-7xl mx-auto px-6 py-10">
-          <h3 className="text-2xl font-bold text-blue-400 mb-4">
-            Faculty of Computing
-          </h3>
-
-          <p className="text-slate-400">
-            Sabaragamuwa University of Sri Lanka
-          </p>
-
-          <p className="text-slate-400">
-            P.O. Box 02, Belihuloya 70140, Sri Lanka
-          </p>
-
-          <p className="text-slate-400 mt-2">
-            +94 45 2280014 / +94 45 2280087
-          </p>
-
-          <p className="text-slate-400">info@sab.ac.lk</p>
-
-          <div className="border-t border-slate-800 mt-6 pt-6 text-slate-500">
-            Copyright 2026 Sabaragamuwa University of Sri Lanka. All Rights Reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

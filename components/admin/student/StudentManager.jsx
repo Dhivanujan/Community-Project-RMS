@@ -52,31 +52,33 @@ export default function StudentManager({ initialStudents }) {
     );
 
     return (
-        <div className="space-y-6 animate-fadeInUp">
-            {/* Top Bar for Manager: Search & Add Button */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface/80 glass-card p-4 rounded-2xl shadow-sm border border-border">
-                <input
-                    type="text"
-                    placeholder="Search by name, roll number, or email..."
-                    className="w-full sm:max-w-md bg-background/50 border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 transition-all text-textDark placeholder:text-textMuted"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#d4a843] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#c1993b] transition-all active:scale-[0.98] shadow-md shadow-[#d4a843]/30"
-                >
-                    <Plus className="w-5 h-5" />
-                    <span>Add Student</span>
-                </button>
-            </div>
+        <>
+            <div className="space-y-6 animate-fadeInUp">
+                {/* Top Bar for Manager: Search & Add Button */}
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface/80 glass-card p-4 rounded-2xl shadow-sm border border-border">
+                    <input
+                        type="text"
+                        placeholder="Search by name, roll number, or email..."
+                        className="w-full sm:max-w-md bg-background/50 border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-900/50 focus:ring-2 focus:ring-primary-900/20 transition-all text-textDark placeholder:text-textMuted"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#d4a843] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#c1993b] transition-all active:scale-[0.98] shadow-md shadow-[#d4a843]/30"
+                    >
+                        <Plus className="w-5 h-5" />
+                        <span>Add Student</span>
+                    </button>
+                </div>
 
-            {/* Table Component */}
-            <StudentTable 
-                students={filteredStudents} 
-                onDelete={handleDelete}
-                onEdit={handleEditClick}
-            />
+                {/* Table Component */}
+                <StudentTable 
+                    students={filteredStudents} 
+                    onDelete={handleDelete}
+                    onEdit={handleEditClick}
+                />
+            </div>
 
             {/* Add Student Modal Component */}
             <AddStudentModal 
@@ -92,6 +94,6 @@ export default function StudentManager({ initialStudents }) {
                 onSuccess={handleStudentUpdated}
                 initialData={editingStudent}
             />
-        </div>
+        </>
     );
 }

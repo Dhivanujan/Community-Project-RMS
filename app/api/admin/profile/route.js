@@ -12,7 +12,7 @@ export async function GET(request) {
     await dbConnect();
 
     // Fetch the admin's profile, excluding the password
-    const adminProfile = await User.findById(user.userId).select('-password');
+    const adminProfile = await User.findById(user.id).select('-password');
 
     if (!adminProfile) {
       return NextResponse.json(
@@ -50,7 +50,7 @@ export async function PUT(request) {
     }
 
     // Check if another user already uses this email
-    const existingUser = await User.findOne({ email, _id: { $ne: user.userId } });
+    const existingUser = await User.findOne({ email, _id: { $ne: user.id } });
     if (existingUser) {
       return NextResponse.json(
         { success: false, message: 'Email is already in use by another account' },
@@ -60,7 +60,7 @@ export async function PUT(request) {
 
     // Update the admin user
     const updatedAdmin = await User.findByIdAndUpdate(
-      user.userId,
+      user.id,
       { name, email },
       { new: true, runValidators: true }
     ).select('-password');

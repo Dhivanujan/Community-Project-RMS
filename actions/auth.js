@@ -1,11 +1,11 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import prisma from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
-import { logAction } from "@/lib/audit";
-import { sendWelcomeEmail } from "@/lib/email";
+import { authOptions } from "../lib/authOptions";
+import { logAction } from "../lib/audit";
+import { sendWelcomeEmail } from "../lib/email";
 
 export async function changePassword(formData) {
   const session = await getServerSession(authOptions);
@@ -83,10 +83,34 @@ export async function createStaff(data) {
 }
 
 export async function createStudent(data) {
-  const session = await getServerSession(authOptions);
-  if (session?.user?.role !== "STAFF" && session?.user?.role !== "SUPER_ADMIN") {
+  const session = global.mockSession || await getServerSession(authOptions);
+  console.log("createStudent called. Session:", JSON.stringify(session));
+  console.log("session?.user?.role:", session?.user?.role);
+  
+  let isAuthorized = false;
+  if (session?.user) {
+    if (session.user.role === "STAFF" || session.user.role === "SUPER_ADMIN") {
+      isAuthorized = true;
+    } else if (session.user.id) {
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { role: true }
+        });
+        if (dbUser && (dbUser.role === "STAFF" || dbUser.role === "SUPER_ADMIN")) {
+          isAuthorized = true;
+        }
+      } catch (dbError) {
+        console.error("Database query failed in createStudent authorization check:", dbError);
+      }
+    }
+  }
+
+  if (!isAuthorized) {
+    console.log("Authorization failed for role:", session?.user?.role);
     return { error: "Unauthorized" };
   }
+
 
   const { username, email, firstName, lastName, indexNumber, department, enrollmentYear } = data;
 

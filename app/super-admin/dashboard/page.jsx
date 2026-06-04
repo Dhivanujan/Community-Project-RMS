@@ -130,7 +130,7 @@ export default function DashboardPage() {
   const activities = data?.recentActivities || [];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fadeInUp">
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>

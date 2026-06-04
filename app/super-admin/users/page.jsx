@@ -136,115 +136,117 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">User Management</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage system access, roles, and security policies.</p>
-        </div>
-        <button onClick={() => setShowCreate(true)} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-sm shadow-rose-500/20">
-          <Plus className="w-4 h-4" /> Create User
-        </button>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-wrap gap-3 items-center">
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
+    <>
+      <div className="space-y-6 animate-fadeInUp">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">User Management</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage system access, roles, and security policies.</p>
           </div>
-          <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20">
-            <option value="">All Roles</option>
-            {ROLES.map(r => <option key={r} value={r}>{r.replace("_", " ")}</option>)}
-          </select>
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-          <button onClick={() => fetchUsers()} className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-            <RefreshCw className="w-4 h-4 text-slate-500" />
+          <button onClick={() => setShowCreate(true)} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-sm shadow-rose-500/20">
+            <Plus className="w-4 h-4" /> Create User
           </button>
         </div>
 
-        {/* Table */}
-        {loading ? <div className="p-4"><TableSkeleton rows={5} cols={6} /></div> : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-medium">
-                <tr>
-                  <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800">User</th>
-                  <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800">Role</th>
-                  <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800">Status</th>
-                  <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 hidden md:table-cell">Last Login</th>
-                  <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 hidden lg:table-cell">Created</th>
-                  <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {users.length === 0 ? (
-                  <tr><td colSpan="6" className="px-6 py-16 text-center">
-                    <Users className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                    <p className="text-slate-400 dark:text-slate-500 text-sm">No users found</p>
-                  </td></tr>
-                ) : users.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-xs uppercase">
-                          {user.username.substring(0, 2)}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-slate-800 dark:text-slate-100">{getDisplayName(user)}</p>
-                          <p className="text-xs text-slate-400 dark:text-slate-500">{user.email || user.username}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3.5"><Badge variant={ROLE_BADGE[user.role] || "default"}>{user.role.replace("_", " ")}</Badge></td>
-                    <td className="px-6 py-3.5">
-                      <button onClick={() => handleToggleStatus(user)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${user.active ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100" : "text-red-600 bg-red-50 dark:bg-red-950/30 hover:bg-red-100"}`}>
-                        {user.active ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldOff className="w-3.5 h-3.5" />}
-                        {user.active ? "Active" : "Inactive"}
-                      </button>
-                    </td>
-                    <td className="px-6 py-3.5 hidden md:table-cell text-slate-500 dark:text-slate-400 text-xs">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : "Never"}</td>
-                    <td className="px-6 py-3.5 hidden lg:table-cell text-slate-500 dark:text-slate-400 text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-3.5 text-right">
-                      <div className="relative inline-block">
-                        <button onClick={() => setActionMenu(actionMenu === user.id ? null : user.id)} className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-                        {actionMenu === user.id && (
-                          <>
-                            <div className="fixed inset-0 z-30" onClick={() => setActionMenu(null)} />
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 py-1.5 z-40 animate-fadeIn">
-                              <button onClick={() => openEdit(user)} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                                <Edit3 className="w-3.5 h-3.5" /> Edit User
-                              </button>
-                              <button onClick={() => { setSelectedUser(user); setShowResetPw(true); setActionMenu(null); }} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                                <KeyRound className="w-3.5 h-3.5" /> Reset Password
-                              </button>
-                              <button onClick={() => { setSelectedUser(user); setShowDelete(true); setActionMenu(null); }} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
-                                <Trash2 className="w-3.5 h-3.5" /> Delete User
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Filters */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-wrap gap-3 items-center">
+            <div className="relative flex-1 min-w-[200px] max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400" />
+            </div>
+            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}
+              className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+              <option value="">All Roles</option>
+              {ROLES.map(r => <option key={r} value={r}>{r.replace("_", " ")}</option>)}
+            </select>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            <button onClick={() => fetchUsers()} className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <RefreshCw className="w-4 h-4 text-slate-500" />
+            </button>
           </div>
-        )}
-        <div className="border-t border-slate-100 dark:border-slate-800 px-4">
-          <Pagination currentPage={pagination.page} totalPages={pagination.totalPages} onPageChange={(p) => fetchUsers(p)} totalItems={pagination.total} itemsPerPage={pagination.limit} />
+
+          {/* Table */}
+          {loading ? <div className="p-4"><TableSkeleton rows={5} cols={6} /></div> : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-medium">
+                  <tr>
+                    <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800">User</th>
+                    <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800">Role</th>
+                    <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800">Status</th>
+                    <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 hidden md:table-cell">Last Login</th>
+                    <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 hidden lg:table-cell">Created</th>
+                    <th className="px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {users.length === 0 ? (
+                    <tr><td colSpan="6" className="px-6 py-16 text-center">
+                      <Users className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                      <p className="text-slate-400 dark:text-slate-500 text-sm">No users found</p>
+                    </td></tr>
+                  ) : users.map((user) => (
+                    <tr key={user.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="px-6 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-xs uppercase">
+                            {user.username.substring(0, 2)}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-slate-800 dark:text-slate-100">{getDisplayName(user)}</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-500">{user.email || user.username}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3.5"><Badge variant={ROLE_BADGE[user.role] || "default"}>{user.role.replace("_", " ")}</Badge></td>
+                      <td className="px-6 py-3.5">
+                        <button onClick={() => handleToggleStatus(user)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${user.active ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100" : "text-red-600 bg-red-50 dark:bg-red-950/30 hover:bg-red-100"}`}>
+                          {user.active ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldOff className="w-3.5 h-3.5" />}
+                          {user.active ? "Active" : "Inactive"}
+                        </button>
+                      </td>
+                      <td className="px-6 py-3.5 hidden md:table-cell text-slate-500 dark:text-slate-400 text-xs">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : "Never"}</td>
+                      <td className="px-6 py-3.5 hidden lg:table-cell text-slate-500 dark:text-slate-400 text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
+                      <td className="px-6 py-3.5 text-right">
+                        <div className="relative inline-block">
+                          <button onClick={() => setActionMenu(actionMenu === user.id ? null : user.id)} className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+                          {actionMenu === user.id && (
+                            <>
+                              <div className="fixed inset-0 z-30" onClick={() => setActionMenu(null)} />
+                              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 py-1.5 z-40 animate-fadeIn">
+                                <button onClick={() => openEdit(user)} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                  <Edit3 className="w-3.5 h-3.5" /> Edit User
+                                </button>
+                                <button onClick={() => { setSelectedUser(user); setShowResetPw(true); setActionMenu(null); }} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                  <KeyRound className="w-3.5 h-3.5" /> Reset Password
+                                </button>
+                                <button onClick={() => { setSelectedUser(user); setShowDelete(true); setActionMenu(null); }} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                                  <Trash2 className="w-3.5 h-3.5" /> Delete User
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <div className="border-t border-slate-100 dark:border-slate-800 px-4">
+            <Pagination currentPage={pagination.page} totalPages={pagination.totalPages} onPageChange={(p) => fetchUsers(p)} totalItems={pagination.total} itemsPerPage={pagination.limit} />
+          </div>
         </div>
       </div>
 
@@ -385,6 +387,6 @@ export default function UsersPage() {
           </div>
         </form>
       </Modal>
-    </div>
+    </>
   );
 }

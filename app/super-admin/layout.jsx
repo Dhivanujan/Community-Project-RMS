@@ -36,7 +36,7 @@ export default function SuperAdminLayout({ children }) {
                 <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
                 <div className="flex-1 ml-0 lg:ml-64 flex flex-col relative transition-all duration-300">
                     <Topbar onMenuClick={() => setIsSidebarOpen(true)} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-                    <main className="flex-1 px-4 lg:px-8 py-7 max-w-[1440px] w-full mx-auto animate-fadeInUp overflow-x-hidden">
+                    <main className="flex-1 px-4 lg:px-8 py-7 max-w-[1440px] w-full mx-auto overflow-x-hidden">
                         {children}
                     </main>
                 </div>

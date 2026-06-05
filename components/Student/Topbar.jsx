@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { Search, Bell, HelpCircle, ChevronDown } from "lucide-react";
+import { Search, Bell, HelpCircle, ChevronDown, Sun, Moon } from "lucide-react";
 
-export default function Topbar() {
+export default function Topbar({ darkMode, toggleDarkMode }) {
   const { data: session, status } = useSession();
   const [student, setStudent] = useState({
     name: "Loading...",
@@ -58,6 +58,15 @@ export default function Topbar() {
 
         {/* Right Section */}
         <div className="flex items-center gap-2">
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 rounded-lg hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-colors group"
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {darkMode ? <Sun className="w-[18px] h-[18px] text-amber-400" /> : <Moon className="w-[18px] h-[18px] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors" />}
+          </button>
+
           {/* Notification Bell */}
           <button className="relative p-2 rounded-lg hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-colors group">
             <Bell className="w-[18px] h-[18px] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors" />

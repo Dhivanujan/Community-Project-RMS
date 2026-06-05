@@ -51,19 +51,19 @@ export default function DashboardPage() {
   }, [session, status, router]);
 
   if (status === 'loading') {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">Loading...</div>;
   }
 
   return (
     <StudentDashboardLayout>
       <section className="mb-7">
         <div className="flex items-center gap-2 mb-1">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Welcome back, {dashboardData?.student?.name?.split(' ')[0] || session?.user?.username || 'Student'}
           </h1>
           <span className="text-xl">👋</span>
         </div>
-        <p className="text-slate-400 text-sm">
+        <p className="text-slate-400 dark:text-slate-500 text-sm">
           Here is the latest snapshot of your academic performance.
         </p>
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}

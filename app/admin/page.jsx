@@ -69,10 +69,10 @@ export default async function AdminDashboard() {
     return (
         <div className="w-full h-full space-y-8">
             <header>
-                <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-[1.15]">
+                <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-[1.15]">
                     Faculty of Computing RMS
                 </h1>
-                <p className="mt-3 text-slate-500 text-sm font-medium">
+                <p className="mt-3 text-slate-500 dark:text-slate-400 text-sm font-medium">
                     Welcome to the Result Management System. Monitor student performance, academic statistics, and recent activity.
                 </p>
             </header>
@@ -110,39 +110,39 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
                 <div className="flex items-center gap-2 mb-5">
                     <Clock className="w-4 h-4 text-blue-900" />
-                    <p className="text-sm font-bold text-slate-900">Recent Published Results</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Recent Published Results</p>
                 </div>
                 {recentActivity.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 gap-3">
                         <CheckCircle2 className="w-10 h-10 text-blue-900/20" />
-                        <p className="text-sm text-slate-500">No published results yet.</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">No published results yet.</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
                         {recentActivity.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex items-start gap-3 p-3 rounded-xl hover:bg-blue-50 transition-colors border border-transparent hover:border-slate-100"
+                                className="flex items-start gap-3 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700"
                             >
                                 <div className="mt-0.5 w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
                                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-slate-900 truncate">{item.subjectName}</p>
-                                    <p className="text-xs text-slate-500 mt-0.5">
+                                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{item.subjectName}</p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                                         {item.department} · {item.semester} · Batch {item.batch}
                                     </p>
                                 </div>
                                 <div className="text-right shrink-0">
-                                    <p className="text-xs text-slate-500 font-medium">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                                         {item.publishedAt
                                             ? new Date(item.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })
                                             : '—'}
                                     </p>
-                                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
                                         Published
                                     </span>
                                 </div>

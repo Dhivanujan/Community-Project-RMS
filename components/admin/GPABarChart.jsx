@@ -5,8 +5,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-slate-200">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{label}</p>
+            <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{label}</p>
                 <p className="text-lg font-black text-blue-600">
                     GPA: {payload[0].value}
                 </p>
@@ -19,26 +19,26 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function GPABarChart({ data = [] }) {
     if (!data || data.length === 0) {
         return (
-            <div className="bg-white rounded-[2rem] p-8 border border-slate-200 h-80 flex flex-col items-center justify-center shadow-sm">
-                <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mb-4">
-                    <BarChart className="w-8 h-8 text-slate-200" />
+            <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-slate-200 dark:border-slate-700 h-80 flex flex-col items-center justify-center shadow-sm transition-colors duration-300">
+                <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-4">
+                    <BarChart className="w-8 h-8 text-slate-200 dark:text-slate-600" />
                 </div>
-                <h3 className="text-slate-900 font-bold mb-1">GPA Trends</h3>
-                <p className="text-slate-400 text-sm">No academic data available yet.</p>
+                <h3 className="text-slate-900 dark:text-slate-100 font-bold mb-1">GPA Trends</h3>
+                <p className="text-slate-400 dark:text-slate-500 text-sm">No academic data available yet.</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 h-96 shadow-sm relative overflow-hidden group">
+        <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-slate-200 dark:border-slate-700 h-96 shadow-sm relative overflow-hidden group transition-colors duration-300">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h3 className="text-slate-900 font-black text-xl tracking-tight">Academic Performance</h3>
-                    <p className="text-slate-400 text-xs font-medium mt-1">GPA distribution across semesters</p>
+                    <h3 className="text-slate-900 dark:text-slate-100 font-black text-xl tracking-tight">Academic Performance</h3>
+                    <p className="text-slate-400 dark:text-slate-500 text-xs font-medium mt-1">GPA distribution across semesters</p>
                 </div>
                 <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                    <div className="w-3 h-3 rounded-full bg-blue-200"></div>
+                    <div className="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-400"></div>
                 </div>
             </div>
             

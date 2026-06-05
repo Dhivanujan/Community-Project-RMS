@@ -43,9 +43,9 @@ export default function StatsCards({ data }) {
       </div>
 
       {/* Completed Subjects */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-300 group">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/60 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-300 group">
         <div className="flex items-center justify-between mb-4">
-          <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
             Completed Subjects
           </p>
           <div className="w-9 h-9 rounded-lg bg-primary-900/[0.07] flex items-center justify-center group-hover:bg-primary-900/[0.10] transition-colors">
@@ -53,32 +53,32 @@ export default function StatsCards({ data }) {
           </div>
         </div>
         <div className="flex items-baseline gap-1.5 mb-3">
-          <h2 className="text-[38px] font-extrabold text-slate-800 leading-none tracking-tight">
+          <h2 className="text-[38px] font-extrabold text-slate-800 dark:text-slate-200 leading-none tracking-tight">
             {completed}
           </h2>
-          <span className="text-base text-slate-400 font-medium">/ {total}</span>
+          <span className="text-base text-slate-400 dark:text-slate-500 font-medium">/ {total}</span>
         </div>
         {/* Progress Bar */}
-        <div className="w-full bg-slate-100 rounded-full h-1.5 mb-2">
+        <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mb-2">
           <div
             className="bg-gradient-to-r from-primary-900 to-primary-600 h-1.5 rounded-full transition-all duration-1000"
             style={{ width: `${completionPercentage}%` }}
           />
         </div>
-        <p className="text-[11px] text-slate-400 font-medium">{completionPercentage}% program completion</p>
+        <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">{completionPercentage}% program completion</p>
       </div>
 
       {/* Pending Results */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-300 group">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/60 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-300 group">
         <div className="flex items-center justify-between mb-4">
-          <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
             Pending Results
           </p>
-          <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center group-hover:bg-amber-100/80 transition-colors">
+          <div className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center group-hover:bg-amber-100/80 dark:group-hover:bg-amber-900/50 transition-colors">
             <ClipboardList className="w-4 h-4 text-amber-600" />
           </div>
         </div>
-        <h2 className="text-[38px] font-extrabold text-slate-800 leading-none tracking-tight mb-3">
+        <h2 className="text-[38px] font-extrabold text-slate-800 dark:text-slate-200 leading-none tracking-tight mb-3">
           {pending < 10 && pending > 0 ? `0${pending}` : pending}
         </h2>
         <a

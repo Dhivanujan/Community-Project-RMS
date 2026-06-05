@@ -31,7 +31,7 @@ export default function GPASummaryPage() {
   }, []);
 
   if (loading) {
-    return <div className="p-8 text-center text-slate-500">Loading GPA Summary...</div>;
+    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading GPA Summary...</div>;
   }
 
   const overview = data?.overview || {
@@ -71,69 +71,69 @@ export default function GPASummaryPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
           GPA Summary
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">
           Track your academic progress and GPA trends across semesters.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
-          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
-            Final GPA & Academic Standing
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-6 shadow-sm transition-colors">
+          <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em] mb-4">
+            Final GPA &amp; Academic Standing
           </h3>
-          <div className="rounded-xl bg-slate-50/80 border border-slate-200/60 p-5 mb-5">
-            <p className="text-sm font-semibold text-slate-700 mb-2">
+          <div className="rounded-xl bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 p-5 mb-5">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
               Your overall standing based on your results so far.
             </p>
           </div>
 
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div className="rounded-lg bg-primary-900/5 border border-primary-900/10 p-4">
-              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-1">
+            <div className="rounded-lg bg-primary-900/5 dark:bg-primary-900/20 border border-primary-900/10 dark:border-primary-900/30 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500 mb-1">
                 Cumulative GPA
               </div>
-              <div className="text-3xl font-extrabold text-primary-900 tracking-tight">
+              <div className="text-3xl font-extrabold text-primary-900 dark:text-primary-400 tracking-tight">
                 {finalGpa.toFixed(2)}
               </div>
             </div>
-            <div className="rounded-lg bg-emerald-50 border border-emerald-100 p-4">
-              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-600 mb-1">
+            <div className="rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-400 mb-1">
                 Standing
               </div>
-              <div className="text-xl font-extrabold text-emerald-700 tracking-tight">
+              <div className="text-xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight">
                 {degreeClass}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
-          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-6 shadow-sm transition-colors">
+          <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em] mb-4">
             Examination Criteria
           </h3>
           <div className="space-y-3">
             {examCriteria.map((item) => (
-              <div key={item} className="rounded-lg bg-slate-50/80 border border-slate-100/80 p-3">
-                <p className="text-xs text-slate-600 leading-relaxed">{item}</p>
+              <div key={item} className="rounded-lg bg-slate-50/80 dark:bg-slate-800/80 border border-slate-100/80 dark:border-slate-700/80 p-3">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item}</p>
               </div>
             ))}
           </div>
 
           <div className="mt-5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-2">
+            <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500 mb-2">
               Awarded Classes
             </div>
             <div className="space-y-2">
               {classAwardRules.map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between rounded-lg border border-slate-100 bg-white px-3 py-2 text-xs"
+                  className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs"
                 >
-                  <span className="font-semibold text-slate-700">{item.label}</span>
-                  <span className="text-slate-400 font-medium">{item.range}</span>
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">{item.label}</span>
+                  <span className="text-slate-400 dark:text-slate-500 font-medium">{item.range}</span>
                 </div>
               ))}
             </div>
@@ -155,41 +155,41 @@ export default function GPASummaryPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm">
-          <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/60 dark:border-slate-700/60 shadow-sm transition-colors">
+          <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
             <BookOpen className="w-3.5 h-3.5" />
             Total Credits
           </div>
-          <h2 className="text-4xl font-extrabold text-slate-800 tracking-tight">
+          <h2 className="text-4xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
             {overview.totalCreditsEarned}
           </h2>
-          <p className="text-slate-400 text-xs mt-1.5 font-medium">
+          <p className="text-slate-400 dark:text-slate-500 text-xs mt-1.5 font-medium">
             of {overview.totalCreditsRequired} required
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm">
-          <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/60 dark:border-slate-700/60 shadow-sm transition-colors">
+          <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
             <GraduationCap className="w-3.5 h-3.5" />
             Final Standing
           </div>
-          <h2 className="text-2xl font-extrabold text-emerald-600 tracking-tight">
+          <h2 className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
             {degreeClass}
           </h2>
-          <p className="text-slate-400 text-xs mt-1.5 font-medium">
+          <p className="text-slate-400 dark:text-slate-500 text-xs mt-1.5 font-medium">
             FGPA {finalGpa.toFixed(2)} / 4.00
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm">
-          <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/60 dark:border-slate-700/60 shadow-sm transition-colors">
+          <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-[0.12em] mb-2">
             <Award className="w-3.5 h-3.5" />
             Dean&apos;s List
           </div>
           <h2 className="text-4xl font-extrabold text-[#d4a843] tracking-tight">
             {overview.deansListCount}
           </h2>
-          <p className="text-slate-400 text-xs mt-1.5 font-medium">
+          <p className="text-slate-400 dark:text-slate-500 text-xs mt-1.5 font-medium">
             semesters achieved
           </p>
         </div>
@@ -198,13 +198,13 @@ export default function GPASummaryPage() {
       {/* GPA Trend Chart + Credit Progress */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* GPA Trend */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
-          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-6">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-6 shadow-sm transition-colors">
+          <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em] mb-6">
             GPA Trend by Semester
           </h3>
           <div className="flex items-end gap-4 h-44">
             {semesterBreakdown.length === 0 ? (
-               <div className="text-center text-sm text-slate-500 py-10 w-full flex-1">
+               <div className="text-center text-sm text-slate-500 dark:text-slate-400 py-10 w-full flex-1">
                  No semester results found to display GPA trend.
                </div>
             ) : (
@@ -215,7 +215,7 @@ export default function GPASummaryPage() {
                     key={i}
                     className="flex-1 flex flex-col items-center gap-2 group"
                   >
-                    <span className="text-xs font-bold text-primary-900 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs font-bold text-primary-900 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">
                       {sem.gpa.toFixed(2)}
                     </span>
                     <div
@@ -223,11 +223,11 @@ export default function GPASummaryPage() {
                       style={{ height: `${Math.max(heightPct, 5)}%`, minHeight: "12px" }}
                     >
                       {/* Tooltip */}
-                      <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold pointer-events-none">
+                      <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-slate-800 dark:bg-slate-700 text-white text-[10px] px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold pointer-events-none">
                         {sem.gpa.toFixed(2)} • {sem.credits}cr
                       </div>
                     </div>
-                    <span className="text-[10px] font-semibold text-slate-400 text-center leading-tight">
+                    <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 text-center leading-tight">
                       {sem.semester.split(" ")[0]}
                       <br />
                       {sem.semester.split(" ")[1]}
@@ -239,16 +239,16 @@ export default function GPASummaryPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100/60">
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100/60 dark:border-slate-700/60">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm bg-gradient-to-t from-primary-900 to-[#3d6a99]" />
-              <span className="text-[11px] text-slate-400 font-medium">
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                 Semester GPA
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-6 h-[2px] bg-emerald-400/80 rounded" />
-              <span className="text-[11px] text-slate-400 font-medium">
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                 Cumulative: {finalGpa.toFixed(2)}
               </span>
             </div>
@@ -256,8 +256,8 @@ export default function GPASummaryPage() {
         </div>
 
         {/* Credit Progress */}
-        <div className="bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
-          <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-6">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-6 shadow-sm transition-colors">
+          <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em] mb-6">
             Credit Progress
           </h3>
 
@@ -271,6 +271,7 @@ export default function GPASummaryPage() {
                   r="50"
                   fill="none"
                   stroke="#f1f5f9"
+                  className="dark:stroke-slate-700"
                   strokeWidth="8"
                 />
                 <circle
@@ -293,13 +294,13 @@ export default function GPASummaryPage() {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-extrabold text-slate-800 tracking-tight">
+                <span className="text-2xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
                   {Math.round(
                     (overview.totalCreditsEarned / overview.totalCreditsRequired) * 100
                   )}
                   %
                 </span>
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                <span className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
                   Complete
                 </span>
               </div>
@@ -313,8 +314,8 @@ export default function GPASummaryPage() {
               { label: "Required", value: `${overview.totalCreditsRequired} credits` },
             ].map((item) => (
               <div key={item.label} className="flex justify-between text-[13px]">
-                <span className="text-slate-400 font-medium">{item.label}</span>
-                <span className="font-semibold text-slate-700">{item.value}</span>
+                <span className="text-slate-400 dark:text-slate-500 font-medium">{item.label}</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300">{item.value}</span>
               </div>
             ))}
           </div>
@@ -323,43 +324,43 @@ export default function GPASummaryPage() {
 
       {/* Semester Breakdown Cards */}
       <div>
-        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
+        <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em] mb-4">
           Semester Breakdown
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {semesterBreakdown.length === 0 && (
-            <div className="col-span-full text-center text-sm text-slate-500 py-6">
+            <div className="col-span-full text-center text-sm text-slate-500 dark:text-slate-400 py-6">
               No breakdown data available.
             </div>
           )}
           {semesterBreakdown.map((sem, i) => (
             <div
               key={i}
-              className="bg-white rounded-xl border border-slate-200/60 p-5 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer group"
+              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-5 shadow-sm hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-bold text-slate-700 group-hover:text-primary-900 transition-colors">
+                <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-primary-900 dark:group-hover:text-primary-400 transition-colors">
                   {sem.semester}
                 </h4>
                 <span
                   className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-md ${
                     sem.deansList
                       ? "bg-[#d4a843]/10 text-[#b8912e] border border-[#d4a843]/20"
-                      : "bg-primary-50 text-primary-600 border border-blue-200/60"
+                      : "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 border border-blue-200/60 dark:border-primary-800/40"
                   }`}
                 >
                   {sem.deansList ? "Dean's List" : "Good Standing"}
                 </span>
               </div>
               <div className="flex items-baseline gap-1 mb-2.5">
-                <span className="text-2xl font-extrabold text-slate-800 tracking-tight">
+                <span className="text-2xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
                   {sem.gpa.toFixed(2)}
                 </span>
-                <span className="text-sm text-slate-400 font-medium">GPA</span>
+                <span className="text-sm text-slate-400 dark:text-slate-500 font-medium">GPA</span>
               </div>
-              <div className="flex gap-3 text-[11px] text-slate-400 font-medium">
+              <div className="flex gap-3 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                 <span>{sem.credits} credits</span>
-                <span className="text-slate-200">•</span>
+                <span className="text-slate-200 dark:text-slate-700">•</span>
                 <span>{sem.subjects} subjects</span>
               </div>
             </div>
@@ -368,23 +369,23 @@ export default function GPASummaryPage() {
       </div>
 
       {/* GPA Scale Reference */}
-      <div className="bg-white rounded-xl border border-slate-200/60 p-6 shadow-sm">
-        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-[0.1em] mb-4">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-6 shadow-sm transition-colors">
+        <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-[0.1em] mb-4">
           GPA Scale Reference
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
           {gpaScale.map((item) => (
             <div
               key={item.grade}
-              className="text-center p-3 rounded-lg bg-slate-50/80 border border-slate-100/80 hover:border-primary-900/15 hover:bg-primary-900/[0.02] transition-all"
+              className="text-center p-3 rounded-lg bg-slate-50/80 dark:bg-slate-800/80 border border-slate-100/80 dark:border-slate-700/80 hover:border-primary-900/15 dark:hover:border-primary-700/30 hover:bg-primary-900/[0.02] dark:hover:bg-primary-900/10 transition-all"
             >
-              <span className="text-lg font-extrabold text-primary-900">
+              <span className="text-lg font-extrabold text-primary-900 dark:text-primary-400">
                 {item.grade}
               </span>
-              <p className="text-xs font-bold text-slate-600 mt-0.5">
+              <p className="text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5">
                 {item.range}
               </p>
-              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-0.5">
                 {item.desc}
               </p>
             </div>

@@ -2,11 +2,11 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search, Bell, HelpCircle, ChevronDown, Edit3, Menu, CheckCircle2, AlertCircle, Sun, Moon } from "lucide-react";
 import EditProfileModal from './EditProfileModal';
 import HelpModal from './HelpModal';
 
-export default function Topbar({ onMenuClick }) {
+export default function Topbar({ onMenuClick, darkMode, toggleDarkMode }) {
   const [greeting, setGreeting] = useState('Welcome');
   const [admin, setAdmin] = useState({
     name: "Loading...",
@@ -96,73 +96,82 @@ export default function Topbar({ onMenuClick }) {
   };
 
   return (
-    <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
+    <header className="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 transition-colors duration-300">
       <div className="flex items-center justify-between px-4 lg:px-8 h-16">
         {/* Left Section / Search */}
         <div className="flex items-center gap-4 lg:gap-6 w-full max-w-md">
           <button 
              onClick={onMenuClick}
-             className="p-2 -ml-2 lg:hidden text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg transition-colors"
+             className="p-2 -ml-2 lg:hidden text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-300 rounded-lg transition-colors"
           >
              <Menu className="w-5 h-5" />
           </button>
-          <h2 className="text-xl font-bold tracking-tight text-slate-800 animate-fadeIn whitespace-nowrap hidden md:block">
+          <h2 className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-200 animate-fadeIn whitespace-nowrap hidden md:block">
             {greeting}, <span className="text-primary-900">{admin.name.split(' ')[0]}</span> 👋
           </h2>
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search reports, students..."
-              className="w-full bg-slate-50/80 border border-slate-200/80 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white transition-all duration-200"
+              className="w-full bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-lg py-2 pl-10 pr-4 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-900/15 focus:border-primary-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200"
             />
           </div>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center gap-2">
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 rounded-lg hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-colors group"
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {darkMode ? <Sun className="w-[18px] h-[18px] text-amber-400" /> : <Moon className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />}
+          </button>
+
           {/* Notification Bell */}
           <div className="relative" ref={notificationsRef}>
             <button 
               onClick={handleNotificationClick}
-              className="relative p-2 rounded-lg hover:bg-slate-100/80 transition-colors group"
+              className="relative p-2 rounded-lg hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-colors group"
             >
-              <Bell className={`w-[18px] h-[18px] transition-colors ${isNotificationsOpen ? 'text-primary-900' : 'text-slate-500 group-hover:text-slate-700'}`} />
+              <Bell className={`w-[18px] h-[18px] transition-colors ${isNotificationsOpen ? 'text-primary-900' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300'}`} />
               {hasUnread && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white animate-pulse" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
               )}
             </button>
 
             {/* Notifications Dropdown */}
             {isNotificationsOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 py-2 z-50 animate-fadeInUp">
-                <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
-                  <h3 className="font-bold text-slate-800 text-sm">Notifications</h3>
-                  <span className="text-xs font-semibold text-primary-900 bg-primary-50 px-2 py-0.5 rounded-full">
+              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 border border-slate-100 dark:border-slate-800 py-2 z-50 animate-fadeInUp">
+                <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm">Notifications</h3>
+                  <span className="text-xs font-semibold text-primary-900 bg-primary-50 dark:bg-primary-900/20 px-2 py-0.5 rounded-full">
                     {mockNotifications.length} New
                   </span>
                 </div>
                 
                 <div className="max-h-[300px] overflow-y-auto">
                   {mockNotifications.map((notif) => (
-                    <div key={notif.id} className="px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 last:border-0 flex items-start gap-3">
+                    <div key={notif.id} className="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer border-b border-slate-50 dark:border-slate-800 last:border-0 flex items-start gap-3">
                       <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                        notif.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 
-                        notif.type === 'alert' ? 'bg-rose-100 text-rose-600' : 
-                        'bg-blue-100 text-blue-600'
+                        notif.type === 'success' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 
+                        notif.type === 'alert' ? 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400' : 
+                        'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
                       }`}>
                         {notif.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-slate-800 leading-tight">{notif.title}</p>
-                        <p className="text-xs text-slate-500 mt-0.5 leading-snug">{notif.message}</p>
-                        <p className="text-[10px] text-slate-400 font-medium mt-1 uppercase tracking-wide">{notif.time}</p>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 leading-tight">{notif.title}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{notif.message}</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1 uppercase tracking-wide">{notif.time}</p>
                       </div>
                     </div>
                   ))}
                 </div>
                 
-                <div className="px-4 py-2 border-t border-slate-100 text-center">
+                <div className="px-4 py-2 border-t border-slate-100 dark:border-slate-800 text-center">
                   <Link 
                     href="/admin" 
                     onClick={() => setIsNotificationsOpen(false)}
@@ -178,43 +187,43 @@ export default function Topbar({ onMenuClick }) {
           {/* Help */}
           <button 
             onClick={() => setIsHelpOpen(true)}
-            className="p-2 rounded-lg hover:bg-slate-100/80 transition-colors group"
+            className="p-2 rounded-lg hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-colors group"
           >
-            <HelpCircle className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700 transition-colors" />
+            <HelpCircle className="w-[18px] h-[18px] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors" />
           </button>
 
           {/* Divider */}
-          <div className="w-px h-7 bg-slate-200 mx-1.5" />
+          <div className="w-px h-7 bg-slate-200 dark:bg-slate-700 mx-1.5" />
 
           {/* User Profile */}
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2.5 pl-1 pr-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors group"
+              className="flex items-center gap-2.5 pl-1 pr-2 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
             >
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-900 to-primary-600 flex items-center justify-center text-white font-bold text-xs shadow-sm uppercase">
                 {admin.initials}
               </div>
               <div className="text-left hidden sm:block">
-                <p className="text-[13px] font-semibold text-slate-800 leading-tight group-hover:text-primary-900 transition-colors">
+                <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-200 leading-tight group-hover:text-primary-900 transition-colors">
                   {admin.name}
                 </p>
-                <p className="text-[10px] text-slate-400 font-medium truncate max-w-[120px] uppercase tracking-wider">
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate max-w-[120px] uppercase tracking-wider">
                   Admin
                 </p>
               </div>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 hidden sm:block transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 hidden sm:block transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Dropdown Menu */}
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-1 z-50 animate-fadeIn">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 py-1 z-50 animate-fadeIn">
                 <button
                   onClick={() => {
                     setIsDropdownOpen(false);
                     setIsModalOpen(true);
                   }}
-                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary-900 transition-colors"
+                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary-900 transition-colors"
                 >
                   <Edit3 className="w-4 h-4" />
                   Edit Profile

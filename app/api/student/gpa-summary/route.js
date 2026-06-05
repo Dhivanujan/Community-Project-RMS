@@ -44,7 +44,7 @@ export async function GET(request) {
     }
 
     // Prevent students from viewing other students' data
-    if (user.role === 'Student' && identifiers.email !== user.email) {
+    if (user.role === 'STUDENT' && identifiers.email !== user.email) {
       return NextResponse.json(
         {
           success: false,

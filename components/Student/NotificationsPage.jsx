@@ -10,6 +10,7 @@ import {
   Info,
   Bell,
   CheckCheck,
+  Loader2,
 } from "lucide-react";
 
 // Helper function to pick an icon based on category or type
@@ -24,19 +25,19 @@ const getIconForCategory = (category) => {
 
 const getIconColorForCategory = (category) => {
   switch (category?.toLowerCase()) {
-    case 'results': return { bg: "bg-[#d4a843]/10", text: "text-[#b8912e]" };
-    case 'academic': return { bg: "bg-emerald-50", text: "text-emerald-600" };
-    case 'general': return { bg: "bg-sky-50", text: "text-sky-500" };
-    default: return { bg: "bg-slate-50", text: "text-slate-500" };
+    case 'results': return { bg: "bg-[#d4a843]/10 dark:bg-[#d4a843]/20", text: "text-[#b8912e] dark:text-[#d4a843]" };
+    case 'academic': return { bg: "bg-emerald-50 dark:bg-emerald-950/20", text: "text-emerald-600 dark:text-emerald-400" };
+    case 'general': return { bg: "bg-sky-50 dark:bg-sky-950/20", text: "text-sky-500 dark:text-sky-400" };
+    default: return { bg: "bg-slate-50 dark:bg-slate-800/50", text: "text-slate-500 dark:text-slate-400" };
   }
 };
 
 const tabs = ["All", "Results", "Academic", "General"];
 
 const categoryColors = {
-  Results: "bg-primary-900/[0.06] text-primary-900 border-primary-900/10",
-  Academic: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
-  General: "bg-slate-50 text-slate-600 border-slate-200/60",
+  Results: "bg-primary-900/[0.06] dark:bg-blue-900/20 text-primary-900 dark:text-blue-400 border-primary-900/10 dark:border-blue-900/30",
+  Academic: "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-800/30",
+  General: "bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/60",
 };
 
 export default function NotificationsPage() {
@@ -45,16 +46,21 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchNotifications = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('/api/student/notifications', {
+      const url = new URL('/api/student/notifications', window.location.origin);
+      if (activeTab !== "All") {
+        url.searchParams.append('category', activeTab);
+      }
+      const response = await fetch(url.toString(), {
         headers: {
           'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
         },
       });
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
-          setNotifications(result.data.notifications);
+        if (result.success && result.data) {
+          setNotifications(result.data.notifications || []);
         }
       }
     } catch (error) {
@@ -66,159 +72,154 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [activeTab]);
 
-  const filtered =
-    activeTab === "All"
-      ? notifications
-      : notifications.filter((n) => n.category === activeTab);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const markAllRead = async () => {
-    // Optimistic UI update
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const handleMarkAsRead = async (id) => {
     try {
-      await fetch('/api/student/notifications', {
+      const response = await fetch('/api/student/notifications', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        },
-        body: JSON.stringify({
-          markAllRead: true 
-        })
-      });
-      window.dispatchEvent(new Event('notificationsUpdated'));
-    } catch (error) {
-      console.error("Failed to mark all as read", error);
-    }
-  };
-
-  const toggleRead = async (id, currentStatus) => {
-    // Optimistic UI update
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !currentStatus } : n))
-    );
-    try {
-      await fetch('/api/student/notifications', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
         },
         body: JSON.stringify({
           notificationId: id,
-          read: !currentStatus
+          read: true
         })
       });
-      window.dispatchEvent(new Event('notificationsUpdated'));
+      if (response.ok) {
+        setNotifications(prev =>
+          prev.map(item => (item.id === id ? { ...item, read: true } : item))
+        );
+        // Dispatch custom event to notify Sidebar unread count
+        window.dispatchEvent(new Event('notificationsUpdated'));
+      }
     } catch (error) {
-      console.error("Failed to toggle read status", error);
+      console.error("Failed to mark notification as read", error);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      const response = await fetch('/api/student/notifications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (localStorage.getItem('token') || ''),
+        },
+        body: JSON.stringify({
+          markAllRead: true
+        })
+      });
+      if (response.ok) {
+        setNotifications(prev => prev.map(item => ({ ...item, read: true })));
+        // Dispatch custom event to notify Sidebar unread count
+        window.dispatchEvent(new Event('notificationsUpdated'));
+      }
+    } catch (error) {
+      console.error("Failed to mark all notifications as read", error);
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Notifications
-            </h1>
-            {unreadCount > 0 && (
-              <span className="bg-primary-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
-                {unreadCount} new
-              </span>
-            )}
-          </div>
-          <p className="text-slate-400 text-sm mt-1">
-            Stay updated with your academic activities and announcements.
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            Notifications
+          </h1>
+          <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">
+            Stay updated with your results and academic announcements.
           </p>
         </div>
-        {unreadCount > 0 && (
-          <button
-            onClick={markAllRead}
-            className="inline-flex items-center gap-1.5 bg-white border border-slate-200/80 text-slate-600 text-xs font-semibold px-3.5 py-2 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
-          >
-            <CheckCheck className="w-3.5 h-3.5" />
-            Mark all as read
-          </button>
-        )}
+        <button
+          onClick={handleMarkAllRead}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-primary-900 dark:text-blue-400 hover:text-primary-705 dark:hover:text-blue-300 transition-colors uppercase tracking-wider bg-primary-900/[0.04] dark:bg-blue-900/10 px-3 py-1.5 rounded-lg border border-primary-900/10 dark:border-blue-900/20"
+        >
+          <CheckCheck className="w-3.5 h-3.5" />
+          Mark all as read
+        </button>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-1 bg-white border border-slate-200/60 rounded-lg p-1 w-fit shadow-sm">
-        {tabs.map((tab) => {
-          const count =
-            tab === "All"
-              ? notifications.length
-              : notifications.filter((n) => n.category === tab).length;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
-                activeTab === tab
-                  ? "bg-primary-900 text-white shadow-sm"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              {tab}
-              <span
-                className={`ml-1 text-[10px] ${
-                  activeTab === tab ? "text-white/60" : "text-slate-400"
-                }`}
-              >
-                ({count})
-              </span>
-            </button>
-          );
-        })}
+      {/* Tabs */}
+      <div className="flex border-b border-slate-200/60 dark:border-slate-800 gap-6">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`pb-3 text-sm font-semibold transition-all relative uppercase tracking-wider text-[11px] ${
+              activeTab === tab
+                ? "text-primary-900 dark:text-blue-400 font-bold"
+                : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-350"
+            }`}
+          >
+            {tab}
+            {activeTab === tab && (
+              <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-primary-900 dark:bg-blue-500 rounded-full" />
+            )}
+          </button>
+        ))}
       </div>
 
       {/* Notifications List */}
-      <div className="space-y-2.5">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800 overflow-hidden shadow-sm transition-colors duration-200">
         {loading ? (
-          <div className="bg-white rounded-xl border border-slate-200/60 p-12 text-center shadow-sm">
-            <h3 className="text-base font-bold text-slate-400">Loading notifications...</h3>
+          <div className="py-20 text-center">
+            <Loader2 className="w-6 h-6 animate-spin text-primary-900 dark:text-blue-500 mx-auto mb-3" />
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Loading notifications...</p>
           </div>
-        ) : filtered.length === 0 ? (
-          <div className="bg-white rounded-xl border border-slate-200/60 p-12 text-center shadow-sm">
-            <Bell className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-400">
-              No notifications
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              You&apos;re all caught up! Check back later for updates.
+        ) : notifications.length === 0 ? (
+          <div className="py-20 text-center">
+            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 dark:border-slate-700">
+              <Bell className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+            </div>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">All caught up!</h3>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+              You have no {activeTab !== "All" ? activeTab.toLowerCase() : ""} notifications.
             </p>
           </div>
         ) : (
-          filtered.map((notification) => {
+          notifications.map((notification, i) => {
             const Icon = getIconForCategory(notification.category);
             const iconColors = getIconColorForCategory(notification.category);
-            const catColor = categoryColors[notification.category] || categoryColors["General"];
-            
-            // Format time simply
-            const notifDate = new Date(notification.createdAt);
-            const timeStr = notifDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const catColor = categoryColors[notification.category] || categoryColors.General;
+
+            const timeStr = notification.createdAt
+              ? new Date(notification.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : "Recently";
 
             return (
               <div
                 key={notification.id}
-                onClick={() => toggleRead(notification.id, notification.read)}
-                className={`flex gap-3.5 p-4 rounded-xl border transition-all duration-200 cursor-pointer group ${
-                  notification.read
-                    ? "bg-white border-slate-200/60 hover:border-slate-200 hover:shadow-sm"
-                    : "bg-primary-900/[0.015] border-primary-900/15 hover:border-primary-900/25 shadow-sm"
+                onClick={() => !notification.read && handleMarkAsRead(notification.id)}
+                className={`p-5 flex gap-4 transition-all duration-200 border-b border-slate-100 dark:border-slate-800 last:border-b-0 hover:bg-slate-50/60 dark:hover:bg-slate-850/40 cursor-pointer group ${
+                  !notification.read ? "bg-primary-900/[0.01] dark:bg-blue-900/[0.02]" : ""
                 }`}
               >
-                {/* Icon with unread dot */}
-                <div className="flex items-start gap-2 pt-0.5">
-                  {!notification.read && (
-                    <div className="w-2 h-2 bg-primary-900 rounded-full mt-2.5 flex-shrink-0" />
-                  )}
+                {/* Action indicator on hover */}
+                {!notification.read && (
+                  <div className="flex items-center justify-center shrink-0">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMarkAsRead(notification.id);
+                      }}
+                      className="text-slate-300 dark:text-slate-700 hover:text-emerald-500 dark:hover:text-emerald-450 transition-colors bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 border border-slate-200/80 dark:border-slate-700 p-1.5 rounded-lg shadow-sm"
+                      title="Mark as read"
+                    >
+                      <CheckCheck className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Icon */}
+                <div className="shrink-0">
                   <div
                     className={`w-9 h-9 rounded-lg ${iconColors.bg} flex items-center justify-center flex-shrink-0`}
                   >
@@ -233,19 +234,19 @@ export default function NotificationsPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h4
-                        className={`text-[13px] font-semibold group-hover:text-primary-900 transition-colors ${
+                        className={`text-[13px] font-semibold group-hover:text-primary-900 dark:group-hover:text-blue-450 transition-colors ${
                           notification.read
-                            ? "text-slate-600"
-                            : "text-slate-800"
+                            ? "text-slate-600 dark:text-slate-400"
+                            : "text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {notification.title}
                       </h4>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-slate-400 dark:text-slate-550 mt-1 leading-relaxed">
                         {notification.description}
                       </p>
                     </div>
-                    <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap mt-0.5">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap mt-0.5">
                       {timeStr}
                     </span>
                   </div>

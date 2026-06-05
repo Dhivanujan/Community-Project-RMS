@@ -15,7 +15,7 @@ export async function GET(request) {
     let email = searchParams.get('email')?.trim() || '';
 
     if (!studentId && !rollNumber && !email) {
-      if (user.role === 'Student') {
+      if (user.role === 'STUDENT') {
         email = user.email;
       } else {
         return NextResponse.json(
@@ -30,7 +30,7 @@ export async function GET(request) {
 
     // Prevent students from viewing other students' data
     // (allow admin to view any student, but students can only view their own)
-    if (user.role === 'Student' && user.email !== email && email) {
+    if (user.role === 'STUDENT' && user.email !== email && email) {
       return NextResponse.json(
         {
           success: false,

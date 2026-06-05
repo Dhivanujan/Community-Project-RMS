@@ -113,7 +113,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     // Initialize theme from localStorage or document
-    const currentTheme = localStorage.getItem("theme") || "light";
+    const savedDark = localStorage.getItem('student-dark-mode');
+    const currentTheme = savedDark === 'true' ? 'dark' : 'light';
     setActiveTheme(currentTheme);
     if (currentTheme === "dark") {
       document.documentElement.classList.add("dark");
@@ -125,12 +126,15 @@ export default function SettingsPage() {
   const handleThemeChange = (themeName) => {
     const newTheme = themeName.toLowerCase();
     setActiveTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
+    const isDark = newTheme === 'dark';
+    localStorage.setItem('student-dark-mode', String(isDark));
+    if (isDark) {
+      document.documentElement.classList.add('dark');
     } else {
-      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.remove('dark');
     }
+    // Dispatch event so layout/topbar can sync
+    window.dispatchEvent(new Event('darkModeChanged'));
     
     // Optional: send to backend API
     if (session?.user?.email) {

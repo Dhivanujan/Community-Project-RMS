@@ -42,10 +42,11 @@ export async function GET(request) {
   try {
     await dbConnect();
 
-    // Try API auth, bypass error if not found? No, let's just try auth to get the user email if there are no search params.
+    const { searchParams } = new URL(request.url);
+
+    // Try API auth, bypass error if not found
     let identifiers;
     try {
-      const { searchParams } = new URL(request.url);
       identifiers = normalizeStudentIdentifier(searchParams);
 
       if (!hasStudentIdentifier(identifiers)) {

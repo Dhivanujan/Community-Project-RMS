@@ -138,7 +138,7 @@ export async function POST(request, { params }) {
               sourceResultId: resultDoc._id,
             },
           },
-          { upsert: true, new: true }
+          { upsert: true, returnDocument: 'after' }
         );
       } catch (notifError) {
         // Non-blocking: don't fail publish if notification creation fails

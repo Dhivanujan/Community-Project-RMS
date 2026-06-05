@@ -70,7 +70,17 @@ export async function GET(request) {
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
-    const identifiers = normalizeStudentIdentifier(searchParams);
+    let identifiers = normalizeStudentIdentifier(searchParams);
+
+    // If no identifiers provided, fall back to session auth
+    if (!hasStudentIdentifier(identifiers)) {
+      try {
+        const { authorized, user } = await requireStudent(request);
+        if (authorized && user?.email) {
+          identifiers = { ...identifiers, email: user.email };
+        }
+      } catch (e) {}
+    }
 
     if (!hasStudentIdentifier(identifiers)) {
       return NextResponse.json(

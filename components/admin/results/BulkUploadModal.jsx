@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   FileText, X, AlertCircle, CheckCircle2,
   ChevronDown, Loader2, Eye, Save, AlertTriangle, ScanLine
@@ -25,6 +26,13 @@ const GRADE_COLORS = {
 };
 
 export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
   const [step, setStep] = useState(0);
   const [filters, setFilters] = useState({
     academicYear: '', department: '', semester: '', subjectCode: '', subjectName: '', credits: 0,
@@ -162,8 +170,9 @@ export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) 
   };
 
   if (!isOpen) return null;
+  if (!mounted) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
       {/* Toast */}
       {toast && (
@@ -175,20 +184,20 @@ export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) 
         </div>
       )}
 
-      <div className="bg-surface w-full max-w-3xl max-h-[92vh] rounded-3xl shadow-2xl border border-border flex flex-col overflow-hidden">
+      <div className="bg-surface dark:bg-slate-900 w-full max-w-3xl max-h-[92vh] rounded-3xl shadow-2xl border border-border dark:border-slate-800 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border shrink-0">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border dark:border-slate-800 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-[#d4a843]/10 flex items-center justify-center">
               <ScanLine className="w-5 h-5 text-[#d4a843]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-textDark">PDF Result Scanner</h2>
-              <p className="text-xs text-textMuted font-medium">Upload a result PDF to extract and verify student marks</p>
+              <h2 className="text-lg font-bold text-textDark dark:text-white">PDF Result Scanner</h2>
+              <p className="text-xs text-textMuted dark:text-slate-400 font-medium">Upload a result PDF to extract and verify student marks</p>
             </div>
           </div>
-          <button onClick={handleClose} className="w-8 h-8 rounded-xl hover:bg-border flex items-center justify-center transition-colors">
-            <X className="w-4 h-4 text-textMuted" />
+          <button onClick={handleClose} className="w-8 h-8 rounded-xl hover:bg-border dark:hover:bg-slate-800 flex items-center justify-center transition-colors">
+            <X className="w-4 h-4 text-textMuted dark:text-slate-450" />
           </button>
         </div>
 
@@ -203,8 +212,8 @@ export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) 
                   : 'bg-border text-textMuted'}`}>
                   {i < step ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
                 </div>
-                <span className={`text-xs font-semibold hidden sm:block ${i === step ? 'text-textDark' : 'text-textMuted'}`}>{s}</span>
-                {i < STEPS.length - 1 && <div className={`flex-1 h-px ${i < step ? 'bg-emerald-300' : 'bg-border'}`} />}
+                <span className={`text-xs font-semibold hidden sm:block ${i === step ? 'text-textDark dark:text-white' : 'text-textMuted dark:text-slate-500'}`}>{s}</span>
+                {i < STEPS.length - 1 && <div className={`flex-1 h-px ${i < step ? 'bg-emerald-300 dark:bg-emerald-700' : 'bg-border dark:bg-slate-800'}`} />}
               </div>
             ))}
           </div>
@@ -267,15 +276,15 @@ export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) 
                 </div>
                 {/* Subject */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-textMuted uppercase tracking-wider">Subject</label>
+                  <label className="text-xs font-bold text-textMuted dark:text-slate-400 uppercase tracking-wider">Subject</label>
                   <div className="relative">
                     <select value={filters.subjectCode} onChange={e => handleSubjectChange(e.target.value)}
                       disabled={!filters.department || !filters.semester}
-                      className="w-full appearance-none bg-background border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#d4a843]/50 focus:ring-2 focus:ring-[#d4a843]/20 transition-all text-textDark disabled:opacity-50 disabled:cursor-not-allowed">
+                      className="w-full appearance-none bg-background dark:bg-slate-950 border border-border dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#d4a843]/50 focus:ring-2 focus:ring-[#d4a843]/20 transition-all text-textDark dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="">{!filters.department || !filters.semester ? 'Select dept & semester first' : 'Select Subject'}</option>
                       {filteredSubjects.map(s => <option key={s.code} value={s.code}>{s.code} — {s.name} ({s.credits} cr)</option>)}
                     </select>
-                    <ChevronDown className="w-4 h-4 text-textMuted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-4 h-4 text-textMuted dark:text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -288,20 +297,20 @@ export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) 
                 onClick={() => fileInputRef.current?.click()}
                 className={`relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${
                   isDragging ? 'border-[#d4a843] bg-[#d4a843]/5'
-                  : file ? 'border-emerald-400 bg-emerald-50'
-                  : 'border-border hover:border-[#d4a843]/50 hover:bg-[#d4a843]/5'}`}>
+                  : file ? 'border-emerald-400 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/20'
+                  : 'border-border dark:border-slate-800 hover:border-[#d4a843]/50 hover:bg-[#d4a843]/5'}`}>
                 <input ref={fileInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
                 {file ? (
                   <div className="flex flex-col items-center gap-2">
                     <CheckCircle2 className="w-10 h-10 text-emerald-500" />
-                    <p className="font-bold text-emerald-700 text-sm">{file.name}</p>
-                    <p className="text-xs text-textMuted">{(file.size / 1024).toFixed(1)} KB · Click to change</p>
+                    <p className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">{file.name}</p>
+                    <p className="text-xs text-textMuted dark:text-slate-500">{(file.size / 1024).toFixed(1)} KB · Click to change</p>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-2">
-                    <FileText className="w-10 h-10 text-textMuted" />
-                    <p className="font-bold text-textDark text-sm">Drop your result PDF here</p>
-                    <p className="text-xs text-textMuted">Supports .pdf · Text-based PDFs only · Click to browse</p>
+                    <FileText className="w-10 h-10 text-textMuted dark:text-slate-500" />
+                    <p className="font-bold text-textDark dark:text-slate-300 text-sm">Drop your result PDF here</p>
+                    <p className="text-xs text-textMuted dark:text-slate-500">Supports .pdf · Text-based PDFs only · Click to browse</p>
                   </div>
                 )}
               </div>
@@ -476,6 +485,7 @@ export default function BulkUploadModal({ isOpen, onClose, config, onSuccess }) 
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

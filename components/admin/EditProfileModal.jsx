@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Loader2, User, Mail, ShieldCheck } from 'lucide-react';
 
 export default function EditProfileModal({ isOpen, onClose, onSuccess, initialData }) {
@@ -10,6 +11,12 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
 
     useEffect(() => {
         if (initialData && isOpen) {
@@ -21,6 +28,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
     }, [initialData, isOpen]);
 
     if (!isOpen) return null;
+    if (!mounted) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -60,7 +68,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
         return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
             {/* Glassmorphism Backdrop */}
             <div 
@@ -80,7 +88,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
                     >
                         <X className="w-5 h-5" />
                     </button>
-
+                    
                     {/* Avatar Preview */}
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-900 to-primary-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-primary-900/20 mb-4 ring-4 ring-white dark:ring-slate-900">
                         {getInitials(formData.name)}
@@ -153,6 +161,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, initialDa
                     </div>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

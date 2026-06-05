@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 export default function Modal({ isOpen, onClose, title, description, children, size = "md", className = "" }) {
   const overlayRef = useRef(null);
@@ -10,6 +11,13 @@ export default function Modal({ isOpen, onClose, title, description, children, s
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +75,7 @@ export default function Modal({ isOpen, onClose, title, description, children, s
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
+  if (!mounted) return null;
 
   const sizes = {
     sm: "max-w-md",
@@ -76,7 +85,7 @@ export default function Modal({ isOpen, onClose, title, description, children, s
     full: "max-w-6xl",
   };
 
-  return (
+  return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[100] flex justify-center items-start pt-4 sm:pt-8 p-4"
@@ -123,6 +132,7 @@ export default function Modal({ isOpen, onClose, title, description, children, s
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

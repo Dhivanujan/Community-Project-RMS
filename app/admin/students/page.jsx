@@ -5,8 +5,15 @@ import { Users } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export default async function StudentsPage() {
-    // Fetch initial student data using Prisma
+    // Fetch valid user IDs first, then only load profiles that have a matching user
+    // This prevents crashes from orphaned profiles when a user is deleted directly in MongoDB
+    const validUsers = await prisma.user.findMany({ select: { id: true } });
+    const validUserIds = validUsers.map(u => u.id);
+
     const initialStudents = await prisma.studentProfile.findMany({
+        where: {
+            userId: { in: validUserIds }
+        },
         orderBy: { createdAt: 'desc' },
         include: {
             user: true

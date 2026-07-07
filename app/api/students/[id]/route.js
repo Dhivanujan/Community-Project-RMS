@@ -75,14 +75,23 @@ export async function DELETE(request, { params }) {
             return NextResponse.json({ error: 'Student not found' }, { status: 404 });
         }
         
-        // Delete the user completely (Prisma Cascade will also delete StudentProfile)
+        // Remove dependent records before deleting the user to avoid Prisma relation errors.
+        await prisma.result.deleteMany({
+            where: { studentId: studentProfile.userId }
+        });
+        await prisma.loginLog.deleteMany({
+            where: { userId: studentProfile.userId }
+        });
+        await prisma.auditLog.deleteMany({
+            where: { userId: studentProfile.userId }
+        });
+        await prisma.notification.deleteMany({
+            where: { userId: studentProfile.userId }
+        });
+
+        // Deleting the user cascades to StudentProfile.
         await prisma.user.delete({
             where: { id: studentProfile.userId }
-        });
-        
-        // Delete related results for cleanup
-        await prisma.result.deleteMany({ 
-            where: { studentId: studentProfile.userId } 
         });
         
         return NextResponse.json({ message: 'Student deleted successfully' }, { status: 200 });

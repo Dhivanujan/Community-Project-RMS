@@ -1,43 +1,37 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
-import dbConnect from '@/lib/dbConnect';
-import ResultUpload from '@/models/ResultUpload';
 import prisma from '@/lib/prisma';
+import {
+  newOid, toOidFilter, toDateRaw,
+  rawFind, rawInsert, serializeUploadList,
+} from '@/lib/rawMongo';
 
-// ── GET: List all result uploads with optional filters ──
+const VALID_GRADES = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'E', 'F'];
+
+// ── GET: List all result uploads ──
 export async function GET(request) {
   try {
-    // Require admin authentication
     const { authorized, response: authResponse } = await requireAdmin(request);
     if (!authorized) return authResponse;
 
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
-    const department = searchParams.get('department')?.trim() || '';
-    const semester = searchParams.get('semester')?.trim() || '';
-    const status = searchParams.get('status')?.trim() || '';
-    const academicYear = searchParams.get('academicYear')?.trim() || '';
+    const department  = searchParams.get('department')?.trim()  || '';
+    const semester    = searchParams.get('semester')?.trim()    || '';
+    const status      = searchParams.get('status')?.trim()      || '';
+    const academicYear= searchParams.get('academicYear')?.trim()|| '';
 
-    const query = {};
-    if (department) query.department = department;
-    if (semester) query.semester = semester;
-    if (status) query.status = status;
-    if (academicYear) query.academicYear = academicYear;
+    const filter = {};
+    if (department)   filter.department   = department;
+    if (semester)     filter.semester     = semester;
+    if (status)       filter.status       = status;
+    if (academicYear) filter.academicYear = academicYear;
 
-    const uploads = await ResultUpload.find(query)
-      .sort({ updatedAt: -1 })
-      .select('-entries -auditLog')
-      .lean();
+    const docs = await rawFind('ResultUpload', filter, {
+      sort: { updatedAt: -1 },
+      projection: { entries: 0, auditLog: 0 },
+    });
 
-    const serialized = uploads.map((u) => ({
-      ...u,
-      _id: u._id.toString(),
-      createdAt: u.createdAt?.toISOString(),
-      updatedAt: u.updatedAt?.toISOString(),
-      publishedAt: u.publishedAt?.toISOString() || null,
-    }));
-
+    const serialized = docs.map(serializeUploadList);
     return NextResponse.json({ success: true, data: serialized }, { status: 200 });
   } catch (error) {
     console.error('Result uploads GET error:', error);
@@ -51,32 +45,23 @@ export async function GET(request) {
 // ── POST: Create a new result upload (draft) ──
 export async function POST(request) {
   try {
-    // Require admin authentication
     const { authorized, response: authResponse } = await requireAdmin(request);
     if (!authorized) return authResponse;
 
-    await dbConnect();
-
     const body = await request.json();
     const {
-      academicYear,
-      department,
-      semester,
-      subjectCode,
-      subjectName,
-      credits,
-      entries,
-      batch = 'N/A' // Fallback for cached schema
+      academicYear, department, semester,
+      subjectCode, subjectName, credits,
+      entries, batch = 'N/A',
     } = body;
 
-    // ── Validate required fields ──
+    // Validate required fields
     if (!academicYear || !department || !semester || !subjectCode || !subjectName || !credits) {
       return NextResponse.json(
-        { success: false, message: 'All filter fields (academicYear, department, semester, subjectCode, subjectName, credits) are required.' },
+        { success: false, message: 'All filter fields are required.' },
         { status: 400 }
       );
     }
-
     if (!Array.isArray(entries) || entries.length === 0) {
       return NextResponse.json(
         { success: false, message: 'At least one student grade entry is required.' },
@@ -84,33 +69,31 @@ export async function POST(request) {
       );
     }
 
-    // ── Validate each entry has student + grade ──
-    const VALID_GRADES = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'E', 'F'];
+    // Validate grades
     for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i];
-      if (!entry.student) {
+      const e = entries[i];
+      if (!e.student) {
         return NextResponse.json(
           { success: false, message: `Entry #${i + 1} is missing a student ID.` },
           { status: 400 }
         );
       }
-      if (!entry.grade || !VALID_GRADES.includes(entry.grade)) {
+      if (!e.grade || !VALID_GRADES.includes(e.grade)) {
         return NextResponse.json(
-          { success: false, message: `Entry #${i + 1} has an invalid grade "${entry.grade}". Allowed: ${VALID_GRADES.join(', ')}` },
+          { success: false, message: `Entry #${i + 1} has an invalid grade "${e.grade}".` },
           { status: 400 }
         );
       }
     }
 
-    // ── Verify students exist ──
-    const studentIds = entries.map((e) => e.student);
+    // Verify students exist via Prisma
+    const studentIds = entries.map(e => e.student);
     const existingStudents = await prisma.studentProfile.findMany({
       where: { id: { in: studentIds } },
-      select: { id: true }
+      select: { id: true },
     });
-    const existingIds = new Set(existingStudents.map((s) => s.id));
-    const missingIds = studentIds.filter((id) => !existingIds.has(id));
-
+    const existingIds = new Set(existingStudents.map(s => s.id));
+    const missingIds = studentIds.filter(id => !existingIds.has(id));
     if (missingIds.length > 0) {
       return NextResponse.json(
         { success: false, message: `Students not found: ${missingIds.join(', ')}` },
@@ -118,43 +101,45 @@ export async function POST(request) {
       );
     }
 
-    // ── Create the upload (draft) ──
-    const upload = await ResultUpload.create({
+    // Insert via Prisma raw command (avoids Mongoose/dbConnect)
+    const now  = new Date();
+    const newId = newOid();
+
+    await rawInsert('ResultUpload', {
+      _id:         toOidFilter(newId),
       academicYear,
       department,
       semester,
       subjectCode,
       subjectName,
-      credits: Number(credits),
-      batch, // include batch to satisfy cached schema if necessary
-      status: 'draft',
-      entries,
-      auditLog: [
-        {
-          action: 'created',
-          performedBy: 'Admin',
-          performedAt: new Date(),
-          details: `Draft created with ${entries.length} student(s).`,
-        },
-      ],
+      credits:     Number(credits),
+      batch,
+      status:      'draft',
+      entries:     entries.map(e => ({ student: toOidFilter(e.student), grade: e.grade })),
+      auditLog:    [{
+        action:      'created',
+        performedBy: 'Admin',
+        performedAt: toDateRaw(now),
+        details:     `Draft created with ${entries.length} student(s).`,
+      }],
+      publishedAt: null,
+      publishedBy: null,
+      createdAt:   toDateRaw(now),
+      updatedAt:   toDateRaw(now),
     });
 
     return NextResponse.json(
-      { success: true, data: { _id: upload._id.toString() }, message: 'Draft saved successfully.' },
+      { success: true, data: { _id: newId }, message: 'Draft saved successfully.' },
       { status: 201 }
     );
   } catch (error) {
-    // Handle duplicate key error
-    if (error.code === 11000) {
+    // Duplicate key (same subject already uploaded)
+    if (error.message?.includes('E11000') || error.code === 11000) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'A result upload for this subject already exists for the selected academic year, department, batch, and semester.',
-        },
+        { success: false, message: 'A result upload for this subject already exists for this year, department and semester.' },
         { status: 409 }
       );
     }
-
     console.error('Result uploads POST error:', error);
     return NextResponse.json(
       { success: false, message: 'Unable to create result upload.' },

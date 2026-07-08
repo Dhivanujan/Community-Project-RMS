@@ -1,22 +1,16 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
-import dbConnect from '@/lib/dbConnect';
-import ResultUpload from '@/models/ResultUpload';
-import Student from '@/models/Student';
-import GpaReport from '@/models/GpaReport';
 import prisma from '@/lib/prisma';
 import { recalculateStudentGPA } from '@/lib/gpa';
 import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
+import { rawFind, toOidFilter } from '@/lib/rawMongo';
 
-// Grade → GPA point conversion (already in config)
 const gradeToGPA = GRADE_POINT_MAP;
 
 export async function GET(request) {
   try {
     const { authorized, response: authResponse } = await requireAdmin(request);
     if (!authorized) return authResponse;
-
-    await dbConnect();
 
     const { searchParams } = new URL(request.url);
     const department = searchParams.get('department')?.trim() || '';
@@ -31,7 +25,7 @@ export async function GET(request) {
     if (batch) query.batch = batch;
     if (semester) query.semester = semester;
 
-    const uploads = await ResultUpload.find(query).lean();
+    const uploads = await rawFind('ResultUpload', query);
 
     // Fetch all student profiles from Prisma to map name and roll number without depending on mongoose populate
     const studentProfiles = await prisma.studentProfile.findMany({});
@@ -48,7 +42,7 @@ export async function GET(request) {
     // ── 1. Grade Distribution (across all filtered uploads) ──
     const gradeCount = {};
     uploads.forEach((upload) => {
-      upload.entries.forEach((entry) => {
+      (upload.entries || []).forEach((entry) => {
         const g = entry.grade;
         gradeCount[g] = (gradeCount[g] || 0) + 1;
       });
@@ -67,7 +61,7 @@ export async function GET(request) {
     uploads.forEach((upload) => {
       const dept = upload.department;
       if (!deptGpaMap[dept]) deptGpaMap[dept] = { sum: 0, count: 0 };
-      upload.entries.forEach((entry) => {
+      (upload.entries || []).forEach((entry) => {
         const gpa = gradeToGPA[entry.grade] ?? 0;
         deptGpaMap[dept].sum += gpa;
         deptGpaMap[dept].count += 1;
@@ -84,7 +78,7 @@ export async function GET(request) {
     uploads.forEach((upload) => {
       const key = `${upload.semester}|||${upload.department}`;
       if (!semDeptMap[key]) semDeptMap[key] = { sum: 0, count: 0, semester: upload.semester, department: upload.department };
-      upload.entries.forEach((entry) => {
+      (upload.entries || []).forEach((entry) => {
         semDeptMap[key].sum += gradeToGPA[entry.grade] ?? 0;
         semDeptMap[key].count += 1;
       });
@@ -98,9 +92,9 @@ export async function GET(request) {
     // ── 4. Top Performers (per student, weighted avg GPA across all their entries) ──
     const studentGpaMap = {};
     uploads.forEach((upload) => {
-      upload.entries.forEach((entry) => {
+      (upload.entries || []).forEach((entry) => {
         if (!entry.student) return;
-        const sid = entry.student.toString();
+        const sid = typeof entry.student === 'object' && entry.student.$oid ? entry.student.$oid : entry.student.toString();
         const profile = profileMap[sid];
         if (!profile) return;
 
@@ -130,17 +124,17 @@ export async function GET(request) {
       .slice(0, 10);
 
     // ── 5. Summary Stats ──
-    const totalEntries = uploads.reduce((sum, u) => sum + u.entries.length, 0);
+    const totalEntries = uploads.reduce((sum, u) => sum + (u.entries || []).length, 0);
     const totalGPA = uploads.reduce((sum, u) => {
-      return sum + u.entries.reduce((s, e) => s + (gradeToGPA[e.grade] ?? 0), 0);
+      return sum + (u.entries || []).reduce((s, e) => s + (gradeToGPA[e.grade] ?? 0), 0);
     }, 0);
     const overallAvgGPA = totalEntries > 0 ? parseFloat((totalGPA / totalEntries).toFixed(2)) : 0;
     const totalPublished = uploads.length;
     const uniqueStudents = Object.keys(studentGpaMap).length;
 
     // ── 6. Self-healing Seeding ──
-    const gpaCount = await GpaReport.countDocuments();
-    if (gpaCount === 0) {
+    const gpaReportsCount = (await rawFind('GpaReport', {})).length;
+    if (gpaReportsCount === 0) {
       const uniqueStudentIds = Object.keys(studentGpaMap);
       for (const studentId of uniqueStudentIds) {
         try {
@@ -173,7 +167,13 @@ export async function GET(request) {
       gpaQuery.studentId = { $regex: searchStudentId, $options: 'i' };
     }
 
-    const gpaRecords = await GpaReport.find(gpaQuery).sort({ studentId: 1 }).lean();
+    const gpaRecords = await rawFind('GpaReport', gpaQuery, { sort: { studentId: 1 } });
+
+    const serializedGpaRecords = gpaRecords.map(rec => ({
+      ...rec,
+      _id: typeof rec._id === 'object' && rec._id.$oid ? rec._id.$oid : rec._id.toString(),
+      student: typeof rec.student === 'object' && rec.student.$oid ? rec.student.$oid : rec.student.toString(),
+    }));
 
     return NextResponse.json({
       success: true,
@@ -188,7 +188,7 @@ export async function GET(request) {
         departmentComparison,
         semesterTrend,
         topPerformers,
-        gpaRecords,
+        gpaRecords: serializedGpaRecords,
       },
     });
   } catch (error) {

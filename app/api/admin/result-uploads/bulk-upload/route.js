@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
-import dbConnect from '@/lib/dbConnect';
-import ResultUpload from '@/models/ResultUpload';
 import prisma from '@/lib/prisma';
+import { rawFindOne } from '@/lib/rawMongo';
 
 // ── Grade mapping: Marks → Grade ──
 function marksToGrade(marks) {
@@ -70,8 +69,6 @@ export async function POST(request) {
   try {
     const { authorized, response: authResponse } = await requireAdmin(request);
     if (!authorized) return authResponse;
-
-    await dbConnect();
 
     const formData = await request.formData();
     const file        = formData.get('file');
@@ -164,7 +161,7 @@ export async function POST(request) {
     });
 
     // ── Check for existing upload ──
-    const existing = await ResultUpload.findOne({ academicYear, department, semester, subjectCode }).lean();
+    const existing = await rawFindOne('ResultUpload', { academicYear, department, semester, subjectCode });
 
     const validRows   = [];
     const invalidRows = [];

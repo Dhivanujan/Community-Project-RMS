@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
 import { requireStudent } from '@/lib/auth';
-import Result from '@/models/Result';
 import {
   hasStudentIdentifier,
   normalizeStudentIdentifier,
@@ -10,6 +8,7 @@ import {
   roundTo,
   semesterSortKey,
 } from '@/lib/student/shared';
+import { rawFind, toOidFilter } from '@/lib/rawMongo';
 
 const GPA_SCALE = [
   { grade: 'A+', range: '4.00', desc: 'Exceptional' },
@@ -27,8 +26,6 @@ export async function GET(request) {
     // Require authentication
     const { authorized, response: authResponse, user } = await requireStudent(request);
     if (!authorized) return authResponse;
-
-    await dbConnect();
 
     const { searchParams } = new URL(request.url);
     const identifiers = normalizeStudentIdentifier(searchParams);
@@ -65,7 +62,7 @@ export async function GET(request) {
       );
     }
 
-    const results = await Result.find({ student: student._id }).sort({ createdAt: -1 }).lean();
+    const results = await rawFind('Result', { student: toOidFilter(student._id) }, { sort: { createdAt: -1 } });
 
     const sortedResults = [...results].sort(
       (a, b) => semesterSortKey(b.semester) - semesterSortKey(a.semester)

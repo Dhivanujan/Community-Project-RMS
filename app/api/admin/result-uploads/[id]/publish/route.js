@@ -1,158 +1,146 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
 import { requireAdmin } from '@/lib/auth';
-import dbConnect from '@/lib/dbConnect';
-import ResultUpload from '@/models/ResultUpload';
-import Result from '@/models/Result';
-import StudentNotification from '@/models/StudentNotification';
-import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
 import prisma from '@/lib/prisma';
+import {
+  toOidFilter, toDateRaw, parseOid,
+  rawFindOne, rawUpdate, rawUpsert,
+} from '@/lib/rawMongo';
+import { GRADE_POINT_MAP } from '@/lib/resultUpload/config';
 import { sendResultPublishedEmail } from '@/lib/email';
-import { recalculateStudentGPA } from '@/lib/gpa';
+
+function isValidOid(id) {
+  return /^[a-f\d]{24}$/i.test(id);
+}
 
 // ── POST: Publish a result upload ──
 export async function POST(request, { params }) {
   try {
-    // Require admin authentication
-    const { authorized, response: authResponse, user } = await requireAdmin(request);
+    const { authorized, response: authResponse } = await requireAdmin(request);
     if (!authorized) return authResponse;
 
-    await dbConnect();
-
     const { id } = params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid upload ID format.' },
-        { status: 400 }
-      );
+    if (!isValidOid(id)) {
+      return NextResponse.json({ success: false, message: 'Invalid upload ID format.' }, { status: 400 });
     }
 
-    const upload = await ResultUpload.findById(id);
+    const upload = await rawFindOne('ResultUpload', { _id: toOidFilter(id) });
     if (!upload) {
-      return NextResponse.json(
-        { success: false, message: 'Result upload not found.' },
-        { status: 404 }
-      );
+      return NextResponse.json({ success: false, message: 'Result upload not found.' }, { status: 404 });
     }
-
     if (upload.status === 'published') {
+      return NextResponse.json({ success: false, message: 'This result upload has already been published.' }, { status: 400 });
+    }
+
+    const incomplete = (upload.entries || []).filter(e => !e.grade);
+    if (incomplete.length > 0) {
       return NextResponse.json(
-        { success: false, message: 'This result upload has already been published.' },
+        { success: false, message: `${incomplete.length} student(s) have no grades assigned.` },
         { status: 400 }
       );
     }
 
-    // ── Validate all entries have grades ──
-    const incompleteEntries = upload.entries.filter((e) => !e.grade);
-    if (incompleteEntries.length > 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: `${incompleteEntries.length} student(s) do not have grades assigned. All students must have grades before publishing.`,
-        },
-        { status: 400 }
-      );
-    }
+    const subjectLabel = `${upload.subjectCode} - ${upload.subjectName}`;
 
-    // ── For each student, upsert into the existing Result model ──
-    const subjectEntry = {
-      subjectName: `${upload.subjectCode} - ${upload.subjectName}`,
-      credits: upload.credits,
-    };
-
+    // ── For each student: upsert Result doc + notification ──
     for (const entry of upload.entries) {
-      const studentId = entry.student;
+      const studentId = parseOid(entry.student);
       const grade = entry.grade;
+      const credits = upload.credits;
+      const gradePoint = GRADE_POINT_MAP[grade] ?? 0;
 
-      // Find or create a Result doc for this student + semester
-      let resultDoc = await Result.findOne({
-        student: studentId,
+      // Upsert the student's Result record for this semester
+      const existing = await rawFindOne('Result', {
+        student: toOidFilter(studentId),
         semester: upload.semester,
       });
 
-      if (resultDoc) {
-        // Check if subject already exists in this result
-        const existingSubjectIndex = resultDoc.subjects.findIndex(
-          (s) => s.subjectName === subjectEntry.subjectName
-        );
+      if (existing) {
+        // Check if subject already in subjects array
+        const subjects = existing.subjects || [];
+        const idx = subjects.findIndex(s => s.subjectName === subjectLabel);
 
-        if (existingSubjectIndex >= 0) {
-          // Update existing subject grade
-          resultDoc.subjects[existingSubjectIndex].grade = grade;
+        let updatedSubjects;
+        if (idx >= 0) {
+          updatedSubjects = subjects.map((s, i) =>
+            i === idx ? { ...s, grade } : s
+          );
         } else {
-          // Add new subject
-          resultDoc.subjects.push({
-            subjectName: subjectEntry.subjectName,
-            grade: grade,
-            credits: subjectEntry.credits,
-          });
+          updatedSubjects = [...subjects, { subjectName: subjectLabel, grade, credits }];
         }
+
+        // Recalculate GPA
+        let weightedSum = 0, totalCredits = 0;
+        for (const s of updatedSubjects) {
+          const gp = GRADE_POINT_MAP[s.grade];
+          if (gp !== undefined && s.credits > 0) {
+            weightedSum  += gp * s.credits;
+            totalCredits += s.credits;
+          }
+        }
+        const gpa = totalCredits > 0 ? Math.round((weightedSum / totalCredits) * 100) / 100 : 0;
+
+        await rawUpdate(
+          'Result',
+          { student: toOidFilter(studentId), semester: upload.semester },
+          { $set: { subjects: updatedSubjects, gpa, totalCredits, updatedAt: toDateRaw(new Date()) } }
+        );
       } else {
-        // Create new result document
-        resultDoc = new Result({
-          student: studentId,
-          semester: upload.semester,
-          gpa: 0,
-          totalCredits: 0,
-          subjects: [
-            {
-              subjectName: subjectEntry.subjectName,
-              grade: grade,
-              credits: subjectEntry.credits,
-            },
-          ],
-        });
-      }
+        // Create new Result document
+        const { newOid } = await import('@/lib/rawMongo');
+        const resultId = newOid();
+        const now = new Date();
+        const gpa = credits > 0 ? Math.round((gradePoint * credits) / credits * 100) / 100 : 0;
 
-      // ── Recalculate GPA and total credits ──
-      let weightedSum = 0;
-      let totalCredits = 0;
-
-      for (const subject of resultDoc.subjects) {
-        const gradePoint = GRADE_POINT_MAP[subject.grade];
-        if (gradePoint !== undefined && subject.credits > 0) {
-          weightedSum += gradePoint * subject.credits;
-          totalCredits += subject.credits;
-        }
-      }
-
-      resultDoc.gpa = totalCredits > 0 ? Math.round((weightedSum / totalCredits) * 100) / 100 : 0;
-      resultDoc.totalCredits = totalCredits;
-
-      await resultDoc.save();
-
-      // ── Create notification for the student ──
-      try {
-        await StudentNotification.findOneAndUpdate(
-          { student: studentId, sourceResultId: resultDoc._id },
+        await rawUpsert(
+          'Result',
+          { student: toOidFilter(studentId), semester: upload.semester },
           {
             $set: {
-              type: 'results',
-              category: 'Results',
-              title: `${upload.semester} results updated`,
-              description: `Results published for ${upload.subjectCode} - ${upload.subjectName}. Grade: ${grade}`,
-              read: false,
+              student:      toOidFilter(studentId),
+              semester:     upload.semester,
+              gpa,
+              totalCredits: credits,
+              subjects:     [{ subjectName: subjectLabel, grade, credits }],
+              updatedAt:    toDateRaw(now),
             },
             $setOnInsert: {
-              student: studentId,
-              sourceResultId: resultDoc._id,
+              createdAt: toDateRaw(now),
             },
-          },
-          { upsert: true, returnDocument: 'after' }
+          }
         );
-      } catch (notifError) {
-        // Non-blocking: don't fail publish if notification creation fails
-        console.warn('Notification creation warning:', notifError.message);
       }
 
-      // ── Send email to the correct user mail ──
+      // ── Notification (non-blocking) ──
+      try {
+        const notifNow = new Date();
+        await rawUpsert(
+          'StudentNotification',
+          { student: toOidFilter(studentId), type: 'results', 'meta.subjectCode': upload.subjectCode },
+          {
+            $set: {
+              student:     toOidFilter(studentId),
+              type:        'results',
+              category:    'Results',
+              title:       `${upload.semester} results updated`,
+              description: `Results published for ${subjectLabel}. Grade: ${grade}`,
+              read:        false,
+              meta:        { subjectCode: upload.subjectCode },
+              updatedAt:   toDateRaw(notifNow),
+            },
+            $setOnInsert: { createdAt: toDateRaw(notifNow) },
+          }
+        );
+      } catch (notifErr) {
+        console.warn('Notification upsert warning:', notifErr.message);
+      }
+
+      // ── Email (non-blocking) ──
       try {
         const profile = await prisma.studentProfile.findUnique({
-          where: { id: studentId.toString() },
+          where: { id: studentId },
           include: { user: true },
         });
-
-        if (profile && profile.user && profile.user.email) {
+        if (profile?.user?.email) {
           await sendResultPublishedEmail(
             profile.user.email,
             profile.firstName,
@@ -164,32 +152,33 @@ export async function POST(request, { params }) {
             upload.batch
           );
         }
-      } catch (emailError) {
-        console.warn('Email send warning:', emailError.message);
+      } catch (emailErr) {
+        console.warn('Email send warning:', emailErr.message);
       }
     }
 
     // ── Mark upload as published ──
-    upload.status = 'published';
-    upload.publishedAt = new Date();
-    upload.publishedBy = 'Admin';
-    upload.auditLog.push({
-      action: 'published',
-      performedBy: 'Admin',
-      performedAt: new Date(),
-      details: `Published ${upload.entries.length} result(s) for ${upload.subjectCode}.`,
-    });
-
-    await upload.save();
-
-    // ── Trigger GPA recalculation for each student ──
-    for (const entry of upload.entries) {
-      try {
-        await recalculateStudentGPA(entry.student);
-      } catch (gpaError) {
-        console.error(`GPA recalculation error for student ${entry.student}:`, gpaError);
+    const publishedAt = new Date();
+    await rawUpdate(
+      'ResultUpload',
+      { _id: toOidFilter(id) },
+      {
+        $set: {
+          status:      'published',
+          publishedAt: toDateRaw(publishedAt),
+          publishedBy: 'Admin',
+          updatedAt:   toDateRaw(publishedAt),
+        },
+        $push: {
+          auditLog: {
+            action:      'published',
+            performedBy: 'Admin',
+            performedAt: toDateRaw(publishedAt),
+            details:     `Published ${upload.entries.length} result(s) for ${upload.subjectCode}.`,
+          },
+        },
       }
-    }
+    );
 
     return NextResponse.json(
       {

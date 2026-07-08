@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { requireStudent } from '@/lib/auth';
-import dbConnect from '@/lib/dbConnect';
-import Student from '@/models/Student';
-import StudentPreference from '@/models/StudentPreference';
-import User from '@/models/User';
 import prisma from '@/lib/prisma';
 import {
   hasStudentIdentifier,
@@ -13,6 +9,7 @@ import {
   resolveUserForStudent,
 } from '@/lib/student/shared';
 import { validatePassword } from '@/lib/passwordPolicy';
+import { rawFindOne, rawUpdate, rawUpsert, toOidFilter } from '@/lib/rawMongo';
 
 const DEFAULT_PREFERENCES = {
   emailNotifications: true,
@@ -44,8 +41,6 @@ export async function GET(request) {
     const { authorized, response: authResponse, user } = await requireStudent(request);
     if (!authorized) return authResponse;
 
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const identifiers = normalizeStudentIdentifier(searchParams);
 
@@ -72,7 +67,7 @@ export async function GET(request) {
 
     const [studentUser, preferences] = await Promise.all([
       resolveUserForStudent(student),
-      StudentPreference.findOne({ student: student._id }).lean(),
+      rawFindOne('StudentPreference', { student: toOidFilter(student._id) }),
     ]);
 
     const preferenceData = {
@@ -117,10 +112,8 @@ export async function GET(request) {
 export async function PATCH(request) {
   try {
     // Require authentication
-    const { authorized, response: authResponse, user } = await requireStudent(request);
+    const { authorized, response: authResponse } = await requireStudent(request);
     if (!authorized) return authResponse;
-
-    await dbConnect();
 
     const body = await request.json();
     const { studentId, rollNumber, email, fullName, preferences } = body || {};
@@ -147,8 +140,20 @@ export async function PATCH(request) {
     }
 
     if (typeof fullName === 'string' && fullName.trim()) {
-      await User.updateOne({ email: student.email, role: 'Student' }, { $set: { name: fullName.trim() } });
-      await Student.updateOne({ _id: student._id }, { $set: { name: fullName.trim() } });
+      await prisma.user.updateMany({
+        where: { email: student.email, role: 'Student' },
+        data: { name: fullName.trim() },
+      });
+      const names = fullName.trim().split(' ');
+      const firstName = names[0] || '';
+      const lastName = names.slice(1).join(' ') || '';
+      await prisma.studentProfile.update({
+        where: { id: student._id },
+        data: { firstName, lastName },
+      });
+
+      await rawUpdate('User', { email: student.email, role: 'Student' }, { $set: { name: fullName.trim() } });
+      await rawUpdate('Student', { _id: toOidFilter(student._id) }, { $set: { name: fullName.trim() } });
     }
 
     const allowedPreferenceFields = [
@@ -168,13 +173,13 @@ export async function PATCH(request) {
     }
 
     if (Object.keys(updatePreferenceSet).length > 0) {
-      await StudentPreference.updateOne(
-        { student: student._id },
+      await rawUpsert(
+        'StudentPreference',
+        { student: toOidFilter(student._id) },
         {
           $set: updatePreferenceSet,
-          $setOnInsert: { student: student._id },
-        },
-        { upsert: true }
+          $setOnInsert: { student: toOidFilter(student._id) },
+        }
       );
     }
 
@@ -199,8 +204,6 @@ export async function PATCH(request) {
 
 export async function POST(request) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { studentId, rollNumber, email, currentPassword, newPassword } = body || {};
 
@@ -271,17 +274,20 @@ export async function POST(request) {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    if (user.id) {
+    const userId = user.id || parseOid(user._id);
+
+    if (userId) {
       await prisma.user.update({
-        where: { id: user.id },
+        where: { id: userId },
         data: { password: hashedPassword },
       });
-    } else {
-      await User.updateOne(
-        { _id: user._id },
-        { $set: { password: hashedPassword } }
-      );
     }
+
+    await rawUpdate(
+      'User',
+      { email: student.email },
+      { $set: { password: hashedPassword } }
+    );
 
     return NextResponse.json(
       {

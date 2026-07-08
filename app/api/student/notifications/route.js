@@ -1,8 +1,4 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
-import dbConnect from '@/lib/dbConnect';
-import Result from '@/models/Result';
-import StudentNotification from '@/models/StudentNotification';
 import { requireStudent } from '@/lib/auth';
 import {
   hasStudentIdentifier,
@@ -10,42 +6,58 @@ import {
   resolveStudent,
   roundTo,
 } from '@/lib/student/shared';
+import {
+  rawFind,
+  rawFindOne,
+  rawUpdate,
+  rawUpsert,
+  toOidFilter,
+  parseOid,
+  toDateRaw,
+} from '@/lib/rawMongo';
+
+function isValidOid(id) {
+  return /^[a-f\d]{24}$/i.test(id);
+}
 
 async function seedResultNotifications(studentId) {
-  const latestResults = await Result.find({ student: studentId })
-    .sort({ updatedAt: -1 })
-    .limit(20)
-    .lean();
+  const sid = String(studentId);
+  const latestResults = await rawFind(
+    'Result',
+    { student: toOidFilter(sid) },
+    { sort: { updatedAt: -1 }, limit: 20 }
+  );
 
   for (const result of latestResults) {
     const publishedSubjects = (result.subjects || []).filter((subject) => Boolean(subject?.grade)).length;
+    const resultId = parseOid(result._id);
 
-    await StudentNotification.findOneAndUpdate(
-      { student: studentId, sourceResultId: result._id },
+    await rawUpsert(
+      'StudentNotification',
+      { student: toOidFilter(sid), sourceResultId: toOidFilter(resultId) },
       {
         $setOnInsert: {
-          student: studentId,
-          sourceResultId: result._id,
+          student: toOidFilter(sid),
+          sourceResultId: toOidFilter(resultId),
           type: 'results',
           category: 'Results',
           title: `${result.semester} results updated`,
           description: `Published ${publishedSubjects} subject(s) with semester GPA ${roundTo(Number(result.gpa) || 0, 2)}.`,
           read: false,
+          createdAt: toDateRaw(new Date()),
+          updatedAt: toDateRaw(new Date()),
         },
-      },
-      { upsert: true, new: false }
+      }
     );
   }
 }
 
 export async function GET(request) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
 
     // Try API auth, bypass error if not found
-    let identifiers;
+    let identifiers = {};
     try {
       identifiers = normalizeStudentIdentifier(searchParams);
 
@@ -55,7 +67,7 @@ export async function GET(request) {
           identifiers.email = user.email;
         }
       }
-    } catch(e) {}
+    } catch (e) {}
 
     if (!hasStudentIdentifier(identifiers)) {
       return NextResponse.json(
@@ -78,16 +90,13 @@ export async function GET(request) {
       );
     }
 
-    // NOTE: seedResultNotifications is now called via POST endpoint, not GET
-    // This ensures GET operations remain idempotent and don't have side effects
-
     const category = searchParams.get('category')?.trim() || 'All';
-    const query = { student: student._id };
+    const filter = { student: toOidFilter(student._id) };
     if (category !== 'All') {
-      query.category = category;
+      filter.category = category;
     }
 
-    const notifications = await StudentNotification.find(query).sort({ createdAt: -1 }).lean();
+    const notifications = await rawFind('StudentNotification', filter, { sort: { createdAt: -1 } });
     const unreadCount = notifications.filter((item) => !item.read).length;
 
     return NextResponse.json(
@@ -95,14 +104,14 @@ export async function GET(request) {
         success: true,
         data: {
           notifications: notifications.map((item) => ({
-            id: String(item._id),
+            id: parseOid(item._id),
             type: item.type,
             category: item.category,
             title: item.title,
             description: item.description,
             read: item.read,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
+            createdAt: item.createdAt?.$date?.$numberLong ? new Date(parseInt(item.createdAt.$date.$numberLong)).toISOString() : item.createdAt,
+            updatedAt: item.updatedAt?.$date?.$numberLong ? new Date(parseInt(item.updatedAt.$date.$numberLong)).toISOString() : item.updatedAt,
           })),
           unreadCount,
           filters: ['All', 'Results', 'Academic', 'General'],
@@ -124,8 +133,6 @@ export async function GET(request) {
 
 export async function PATCH(request) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { notificationId, read, markAllRead } = body || {};
     let { studentId, rollNumber, email } = body || {};
@@ -136,7 +143,7 @@ export async function PATCH(request) {
         if (authorized && user?.email) {
           email = user.email;
         }
-      } catch(e) {}
+      } catch (e) {}
     }
 
     if (!studentId && !rollNumber && !email) {
@@ -161,11 +168,15 @@ export async function PATCH(request) {
     }
 
     if (markAllRead) {
-      await StudentNotification.updateMany({ student: student._id, read: false }, { $set: { read: true } });
+      await rawUpdate(
+        'StudentNotification',
+        { student: toOidFilter(student._id), read: false },
+        { $set: { read: true, updatedAt: toDateRaw(new Date()) } }
+      );
       return NextResponse.json({ success: true, message: 'All notifications marked as read.' }, { status: 200 });
     }
 
-    if (!notificationId || !mongoose.Types.ObjectId.isValid(notificationId)) {
+    if (!notificationId || !isValidOid(notificationId)) {
       return NextResponse.json(
         {
           success: false,
@@ -175,11 +186,13 @@ export async function PATCH(request) {
       );
     }
 
-    const updated = await StudentNotification.findOneAndUpdate(
-      { _id: notificationId, student: student._id },
-      { $set: { read: Boolean(read) } },
-      { new: true }
-    ).lean();
+    await rawUpdate(
+      'StudentNotification',
+      { _id: toOidFilter(notificationId), student: toOidFilter(student._id) },
+      { $set: { read: Boolean(read), updatedAt: toDateRaw(new Date()) } }
+    );
+
+    const updated = await rawFindOne('StudentNotification', { _id: toOidFilter(notificationId) });
 
     if (!updated) {
       return NextResponse.json(
@@ -195,9 +208,9 @@ export async function PATCH(request) {
       {
         success: true,
         data: {
-          id: String(updated._id),
+          id: parseOid(updated._id),
           read: updated.read,
-          updatedAt: updated.updatedAt,
+          updatedAt: updated.updatedAt?.$date?.$numberLong ? new Date(parseInt(updated.updatedAt.$date.$numberLong)).toISOString() : updated.updatedAt,
         },
       },
       { status: 200 }
@@ -217,8 +230,6 @@ export async function PATCH(request) {
 // POST: Seed/generate notifications from latest results
 export async function POST(request) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { studentId, rollNumber, email } = body || {};
 

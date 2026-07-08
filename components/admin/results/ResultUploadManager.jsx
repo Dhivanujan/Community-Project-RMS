@@ -89,27 +89,39 @@ export default function ResultUploadManager() {
         setFilters((prev) => {
             const updated = { ...prev, [field]: value };
 
-            // Reset dependent fields
+            // Reset dependent fields (subject changes when dept or semester changes)
             if (field === 'department' || field === 'semester') {
                 updated.subjectCode = '';
                 updated.subjectName = '';
                 updated.credits = 0;
             }
-            if (field === 'department') {
-                // Reset students when key filter changes
-                setStudents([]);
-                setGrades({});
-                setValidationErrors({});
-            }
 
             return updated;
         });
+
+        // Reset students when department changes
+        if (field === 'department') {
+            setStudents([]);
+            setGrades({});
+            setValidationErrors({});
+        }
+
+        // Reset students when semester changes (new semester = new subject context)
+        if (field === 'semester') {
+            setStudents([]);
+            setGrades({});
+            setValidationErrors({});
+        }
     };
 
-    // ── Fetch students based on department and academic year ──
+    // ── Fetch students based on filters (department, academicYear are required; semester + subjectCode improve accuracy) ──
     const fetchStudents = useCallback(async () => {
         if (!filters.department || !filters.academicYear) {
             showToast('Please select both Academic Year and Department first.', 'warning');
+            return;
+        }
+        if (!filters.semester) {
+            showToast('Please select a Semester first.', 'warning');
             return;
         }
 
@@ -120,19 +132,24 @@ export default function ResultUploadManager() {
             const res = await fetch('/api/students');
             const data = await res.json();
 
+            if (!res.ok) {
+                throw new Error(data?.error || data?.message || 'Failed to fetch students from server.');
+            }
+
             // Filter locally by department and academicYear as enrollmentYear
             const studentsArray = Array.isArray(data) ? data : data.data || [];
             const filtered = studentsArray.filter((s) => {
                 const isDeptMatch = s.department === filters.department;
-                
+
                 // Allow exact match or matching the first year in the string "2021/2022" -> "2021"
                 const sYear = String(s.enrollmentYear || '').trim();
                 const fYear = String(filters.academicYear || '').trim();
-                
-                const isYearMatch = sYear === fYear || 
-                                    (fYear.includes('/') && sYear === fYear.split('/')[0]) ||
-                                    (sYear.includes('/') && fYear === sYear.split('/')[0]);
-                
+
+                const isYearMatch =
+                    sYear === fYear ||
+                    (fYear.includes('/') && sYear === fYear.split('/')[0]) ||
+                    (sYear.includes('/') && fYear === sYear.split('/')[0]);
+
                 return isDeptMatch && isYearMatch;
             });
 
@@ -145,8 +162,8 @@ export default function ResultUploadManager() {
             setStudents(serialized);
 
             // Initialize grades (empty for new, or preserve existing)
-            let initialGrades = {};
             if (view === 'new') {
+                const initialGrades = {};
                 serialized.forEach((s) => {
                     initialGrades[s._id] = '';
                 });
@@ -154,23 +171,27 @@ export default function ResultUploadManager() {
             }
 
             if (serialized.length === 0) {
-                showToast(`No students found for ${filters.department} in ${filters.academicYear}.`, 'warning');
+                showToast(
+                    `No students found for ${filters.department} (${filters.academicYear}). Check department and year.`,
+                    'warning'
+                );
             } else {
-                showToast(`${serialized.length} student(s) loaded successfully.`);
+                showToast(`${serialized.length} student(s) loaded for ${filters.department}.`);
             }
         } catch (err) {
             console.error('Failed to fetch students:', err);
-            showToast('Failed to load students. Please try again.', 'error');
+            showToast(err.message || 'Failed to load students. Please try again.', 'error');
         } finally {
             setIsLoadingStudents(false);
         }
-    }, [filters.department, filters.academicYear, view]);
+    }, [filters.department, filters.academicYear, filters.semester, view, showToast]);
 
+    // Auto-fetch students when all 4 key filters are set in 'new' mode
     useEffect(() => {
-        if (filters.department && filters.academicYear && view === 'new') {
+        if (filters.department && filters.academicYear && filters.semester && view === 'new') {
             fetchStudents();
         }
-    }, [filters.department, filters.academicYear, view, fetchStudents]);
+    }, [filters.department, filters.academicYear, filters.semester, view, fetchStudents]);
 
     // ── Handle grade change ──
     const handleGradeChange = (studentId, grade) => {

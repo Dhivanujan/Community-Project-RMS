@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
 import { requireStudent } from '@/lib/auth';
-import Result from '@/models/Result';
 import {
   hasStudentIdentifier,
   normalizeStudentIdentifier,
@@ -9,6 +7,7 @@ import {
   roundTo,
   semesterSortKey,
 } from '@/lib/student/shared';
+import { rawFind, toOidFilter } from '@/lib/rawMongo';
 
 const GRADE_POINT_MAP = {
   'A+': 4.0,
@@ -67,8 +66,6 @@ function calculateSemesterGpa(subjects, fallbackGpa) {
 
 export async function GET(request) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     let identifiers = normalizeStudentIdentifier(searchParams);
 
@@ -106,12 +103,12 @@ export async function GET(request) {
       );
     }
 
-    const query = { student: student._id };
+    const filter = { student: toOidFilter(student._id) };
     if (semesterFilter) {
-      query.semester = semesterFilter;
+      filter.semester = semesterFilter;
     }
 
-    const results = await Result.find(query).sort({ createdAt: -1 }).lean();
+    const results = await rawFind('Result', filter, { sort: { createdAt: -1 } });
     const sorted = [...results].sort((a, b) => semesterSortKey(b.semester) - semesterSortKey(a.semester));
 
     const semesters = sorted.map((result) => result.semester);
